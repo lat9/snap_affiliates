@@ -1,0 +1,45 @@
+<?php
+// +----------------------------------------------------------------------+
+// |Snap Affiliates for Zen Cart                                          |
+// +----------------------------------------------------------------------+
+// | Copyright (c) 2013, Vinos de Frutas Tropicales (lat9) for ZC 1.5.0+  |
+// |                                                                      |
+// | Original: Copyright (c) 2009 Michael Burke                           |
+// | http://www.filterswept.com                                           |
+// |                                                                      |
+// | This source file is subject to version 2.0 of the GPL license.       |
+// +----------------------------------------------------------------------+
+//-bof-c-v2.4.0
+require(DIR_WS_MODULES . zen_get_module_directory('require_languages.php'));
+
+$breadcrumb->add(NAVBAR_TITLE);
+
+if (!isset($_SESSION['customer_id'])) {
+  zen_redirect(zen_href_link(FILENAME_REFERRER_SIGNUP, '', 'SSL'));
+  
+} else {
+  $query = "SELECT * FROM ". TABLE_REFERRERS ." WHERE referrer_customers_id = " . (int)$_SESSION['customer_id'];
+  $referrer = $db->Execute($query);
+
+  if (!is_object($referrer) || $referrer->EOF ) {
+    zen_redirect(zen_href_link(FILENAME_REFERRER_SIGNUP, '', 'SSL'));
+    
+  } else {
+    $approved = (bool)$referrer->fields['referrer_approved'];
+    $banned = (bool)$referrer->fields['referrer_banned'];
+    if ( !( $approved && !$banned ) ) {
+      zen_redirect(zen_href_link(FILENAME_ACCOUNT, '', 'SSL'));
+      
+    } elseif (isset($_POST['action']) && $_POST['action'] == 'update') {
+      if (isset($_POST['url']) && strlen($_POST['url']) != 0) {
+        $url = zen_db_input($_POST['url']);
+        $db->Execute( 'UPDATE ' . TABLE_REFERRERS . " SET referrer_homepage = '$url' WHERE referrer_customers_id = " . (int)$_SESSION['customer_id'] );
+        $messageStack->add_session('referrer_main', SUCCESS_HOMEPAGE_UPDATED, 'success');
+        zen_redirect(zen_href_link(FILENAME_REFERRER_MAIN), '', 'SSL');
+      } else {
+        $messageStack->add('referrer_edit', ERROR_NO_HOMEPAGE);
+      }
+    }
+  }
+}
+//-eof-c-v2.4.0
