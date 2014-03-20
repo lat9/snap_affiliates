@@ -22,9 +22,11 @@
 //  20130907 - 1.0.1
 //    - BUGFIX: Incorrect variable referenced after email comment notification
 //    - Allow email message to be updated by observer prior to processing.
+//  20131005 - 1.1.0
+//    - Allow admin-only messages to be sent.
 //
-define('OSH_UPDATED_BY_VERSION', '1.0.1');
-define('OSH_UPDATED_BY_DATE', '2013-09-08');
+define('OSH_UPDATED_BY_VERSION', '1.1.0');
+define('OSH_UPDATED_BY_DATE', '2013-11-29');
 
 // -----
 // 1) Add the updated_by column to the orders_status_history table, if it doesn't already exist.
@@ -59,8 +61,11 @@ if (!function_exists('zen_update_orders_history')) {
   // - $updated_by .............. If non-null, the specified value will be used for the like-named field.  Otherwise,
   //                              the value will be calculated based on some defaults.
   // - $orders_status ........... The orders_status value for the update.  If set to -1, no change in the status value was detected.
-  // - $notify_customer ......... Identifies whether the history record is sent and visible to the customer (0), 
-  //                              visible but not sent (1) or hidden from the customer (-1).
+  // - $notify_customer ......... Identifies whether the history record is sent via email and visible to the customer via the "account_history_info" page:
+  //                               0 ... No emails sent, customer can view on "account_history_info"
+  //                               1 ... Email sent, customer can view on "account_history_info"
+  //                              -1 ... No emails sent, comments and status-change hidden from customer view
+  //                              -2 ... Email sent only to configured admins; status-change hidden from customer view
   // - $message ................. The comments associated with the history record, if non-blank.
   // - $email_include_message ... Identifies whether (true) or not (false) to include the status message ($message) in any email sent.
   // - $email_subject ........... If specified, overrides the default email subject line.
@@ -99,20 +104,22 @@ if (!function_exists('zen_update_orders_history')) {
 //-eof-c-v1.0.1
         if ($orders_status == -1) {
           $orders_status = $osh_info->fields['orders_status'];
+          
         }
         $zco_notifier->notify('ZEN_UPDATE_ORDERS_HISTORY_STATUS_VALUES', array ( /*-bof-a-v0.0.4*/ 'orders_id' => $orders_id, /*-eof-a-v0.0.4*/ 'new' => $orders_status, 'old' => $osh_info->fields['orders_status'] ));  /*v1.0.0m*/
         
-        $db->Execute( "UPDATE " . TABLE_ORDERS . " SET orders_status = '" . zen_db_input($orders_status) . "', last_modified = now() WHERE orders_id = $orders_id" );
+
+        $db->Execute( "UPDATE " . TABLE_ORDERS . " SET orders_status = '" . zen_db_input($orders_status) . "', last_modified = now() WHERE orders_id = $orders_id");
         
-        $notify_customer = (isset($notify_customer) && ($notify_customer == 1 || $notify_customer == -1)) ? $notify_customer : 0;
+        $notify_customer = (isset($notify_customer) && ($notify_customer == 1 || $notify_customer == -1 || $notify_customer == -2)) ? $notify_customer : 0; /*v1.1.0c*/
         
-        if (IS_ADMIN_FLAG === true && $notify_customer == 1) {
+        if (IS_ADMIN_FLAG === true && ($notify_customer == 1 || $notify_customer == -2)) {
           $status_name = $db->Execute("SELECT orders_status_name FROM " . TABLE_ORDERS_STATUS . " WHERE orders_status_id = " . (int)$orders_status . " AND language_id = " . (int)$_SESSION['languages_id']);
           $orders_status_name = ($status_name->EOF) ? 'N/A' : $status_name->fields['orders_status_name'];
-          $email_comments = (zen_not_null($message) && $email_include_message === true) ? (EMAIL_TEXT_COMMENTS_UPDATE . $message . "\n\n") : '';
+          $email_comments = (zen_not_null($message) && $email_include_message === true) ? (OSH_EMAIL_TEXT_COMMENTS_UPDATE . $message . "\n\n") : '';
 
 //-bof-a-v1.0.0
-          if ($osh_info->fields['orders_status'] != $orders_status) {
+          if ($orders_status != $osh_info->fields['orders_status']) {
             $status_text = OSH_EMAIL_TEXT_STATUS_UPDATED;
             $status_value_text = sprintf(OSH_EMAIL_TEXT_STATUS_CHANGE, zen_get_orders_status_name($osh_info->fields['orders_status']), $orders_status_name);
             
@@ -141,7 +148,10 @@ if (!function_exists('zen_update_orders_history')) {
           $html_msg['EMAIL_TEXT_STATUS_PLEASE_REPLY'] = str_replace('\n','', OSH_EMAIL_TEXT_STATUS_PLEASE_REPLY);
           $html_msg['EMAIL_PAYPAL_TRANSID'] = '';
 
-          zen_mail($osh_info->fields['customers_name'], $osh_info->fields['customers_email_address'], ((zen_not_null($email_subject)) ? $email_subject : (OSH_EMAIL_TEXT_SUBJECT . ' #' . $orders_id)), $email_text, STORE_NAME, EMAIL_FROM, $html_msg, 'order_status');  /*v1.0.0c*/
+          if ($notify_customer == 1) {  /*v1.1.0a*/
+            zen_mail($osh_info->fields['customers_name'], $osh_info->fields['customers_email_address'], ((zen_not_null($email_subject)) ? $email_subject : (OSH_EMAIL_TEXT_SUBJECT . ' #' . $orders_id)), $email_text, STORE_NAME, EMAIL_FROM, $html_msg, 'order_status');  /*v1.0.0c*/
+            
+          }  /*v1.1.0a*/
 
           // PayPal Trans ID, if any
           $sql = "SELECT txn_id, parent_txn_id FROM " . TABLE_PAYPAL . " WHERE order_id = :orderID ORDER BY last_modified DESC, date_added DESC, parent_txn_id DESC, paypal_ipn_id DESC ";

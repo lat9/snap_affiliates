@@ -17,3 +17,8 @@ define('OSH_EMAIL_TEXT_STATUS_NO_CHANGE', 'Your order\'s status has not changed:
 define('OSH_EMAIL_TEXT_STATUS_LABEL', '<strong>Current status: </strong> %s' . "\n\n");  /*v1.0.0c*/
 define('OSH_EMAIL_TEXT_STATUS_CHANGE', '<strong>Old status:</strong> %1$s, <strong>New status:</strong> %2$s' . "\n\n");  /*v1.0.0c*/
 define('OSH_EMAIL_TEXT_STATUS_PLEASE_REPLY', 'Please reply to this email if you have any questions.' . "\n");
+
+// -----
+// Used by orders.php, so that the orders.php language file doesn't require change!
+//
+define('TABLE_HEADING_UPDATED_BY', 'Updated By');  /*v1.0.2a*/
