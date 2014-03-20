@@ -10,8 +10,8 @@
 if (!defined('IS_ADMIN_FLAG')) {
     die('Illegal Access');
 }
-define('SNAP_MODULE_CURRENT_VERSION', '2.5.0'); /*v2.5.0c*/
-define('SNAP_MODULE_UPDATE_DATE', '2013-07-29'); /*v2.5.0c*/
+define('SNAP_MODULE_CURRENT_VERSION', '2.6.1'); /*v2.6.1c*/
+define('SNAP_MODULE_UPDATE_DATE', '2014-03-20'); /*v2.6.1c*/
 
 //----
 // Create each of the database tables for the referrers plugin, if they don't already exist.
@@ -39,7 +39,7 @@ $db->Execute($sql);
 //
 $configurationGroupTitle = 'Affiliate Program';
 $currentVersion = SNAP_MODULE_CURRENT_VERSION;
-$currentDescription = SNAP_MODULE_UPDATE_DATE . ', <a href="http://vinosdefrutastropicales.com" target="_blank">Vinos de Frutas Tropicales</a>';  /*v2.3.0c*/
+$currentDescription = SNAP_MODULE_UPDATE_DATE . ', <a href="http://vinosdefrutastropicales.com" target="_blank" rel="noreferrer">Vinos de Frutas Tropicales</a>';  /*v2.3.0c*/
 
 //-bof-v2.1.2c-Provide fix-up for problem with previous versions' auto-install
 $configuration = $db->Execute("SELECT configuration_group_id FROM " . TABLE_CONFIGURATION_GROUP . " WHERE configuration_group_title = '$configurationGroupTitle' ORDER BY configuration_group_id ASC;");
@@ -59,6 +59,7 @@ if ($configuration->EOF) {
 
 } else {
   $configuration_group_id = $configuration->fields['configuration_group_id'];
+  
 }
 //-eof-v2.1.2c-Provide fix-up for problem with previous versions' auto-install
 
@@ -87,7 +88,7 @@ if (!defined('SNAP_MODULE_VERSION') || SNAP_MODULE_VERSION !== $currentVersion) 
     array ( 'version' => '1.1', 'title' => 'Affiliate Key Prefix', 'key' => 'SNAP_KEY_PREFIX', 'value' => 'CNWR_', 'description' => 'Enter the prefix value to use for affiliate keys associated with your store\'s Affiliate Program. <strong>Note:</strong> If you change this value after you have started your program, existing affiliates will no longer earn their commissions!<br /><br />Default: <strong>CNWR_</strong>', 'sort_order' => 16, 'use_function' => 'NULL', 'set_function' => 'NULL'),
     array ( 'version' => '1.1', 'title' => 'Send Affiliate Emails To', 'key' => 'SNAP_ADMIN_EMAIL', 'value' => 'Enter email address here', 'description' => 'Enter the email address to which affiliate-related sign-up emails should be sent.<br />', 'sort_order' => 18, 'use_function' => 'NULL', 'set_function' => 'NULL'),
     array ( 'version' => '1.1', 'title' => 'Affiliate Program Images', 'key' => 'SNAP_AFFILIATE_IMAGES', 'value' => '', 'description' => 'Identify the images that your affiliates can use in their back-links.  Each file must be present in your store\'s /images/referrers directory and be named <em>ref.ww.hh.ext</em> where <em>ww</em> is the image width, <em>hh</em> is the image height and <em>ext</em> is the image extension (gif or jpg).<br /><br />Use the format /ww,hh,ext/[ww,hh,ext/...] to identify the files.  For example, if your store uses the files named ref.60.60.gif and ref.120.60.jpg for your program, you will enter this field as <b>/60,60,gif/120,60,jpg/</b><br />', 'sort_order' => 19, 'use_function' => 'NULL', 'set_function' => 'zen_cfg_textarea('),
-    array ( 'version' => '1.1', 'title' => 'Include in Information Sidebox?', 'key' => 'SNAP_INFORMATION_SIDEBOX', 'value' => 'true', 'description' => 'Identifies whether (\'true\') or not (\'false\') to include a link to your Affiliate Program in the Information sidebox.<br /><br />Default: <strong>\'true\'</strong>.', 'sort_order' => 20, 'use_function' => 'NULL', 'set_function' => 'zen_cfg_select_option(array(\'true\', \'false\'),'),
+    array ( 'version' => '1.1', 'title' => 'Include in Information Sidebox?', 'key' => 'SNAP_INFORMATION_SIDEBOX', 'value' => 'false', 'description' => 'Identifies whether (\'true\') or not (\'false\') to include a link to your Affiliate Program in the Information sidebox.<br /><br />Default: <strong>\'false\'</strong>.', 'sort_order' => 20, 'use_function' => 'NULL', 'set_function' => 'zen_cfg_select_option(array(\'true\', \'false\'),'),  //-v2.6.1c
     array ( 'version' => '2.1.0', 'title' => 'Affiliate Display Count', 'key' => 'SNAP_MAX_REFERRER_DISPLAY', 'value' => '50', 'description' => 'Specifies the maximum number of affiliates to show on each page of your admin\'s <em>Customers-&gt;Referrers</em>.<br /><br />Default: <strong>50</strong><br /><br />', 'sort_order' => 22, 'use_function' => 'NULL', 'set_function' => 'NULL'), /*v2.1.0a*/
     array ( 'version' => '2.1.0', 'title' => 'Allow Self-Commissions', 'key' => 'SNAP_AFFILIATE_KEY_USE', 'value' => 'false', 'description' => 'Identifies whether (\'true\') or not (\'false\') an affiliate receives commission for purchases made using their own <em>affiliate key</em>.<br /><br />Default: <strong>\'false\'</strong>.', 'sort_order' => 24, 'use_function' => 'NULL', 'set_function' => 'zen_cfg_select_option(array(\'true\', \'false\'),'), /*v2.1.0a*/
     array ( 'version' => '2.1.0', 'title' => 'Order Status Exclusions', 'key' => 'SNAP_ORDER_STATUS_EXCLUSIONS', 'value' => '', 'description' => 'Exclude orders with the following <em>Order Status</em> values from affiliate commissions. Specify the values as a packed (i.e. no spaces) comma-separated list.<br /><br />Default: <br /><br />', 'sort_order' => 26, 'use_function' => 'NULL', 'set_function' => 'NULL'), /*v2.1.0a*/
