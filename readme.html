@@ -38,7 +38,7 @@ ul li ul { padding-left: 0; }
 <body>
 <a name="top" id="top"></a>
 <h1>Snap Affiliates for Zen Cart 1.5.0, 1.5.1, 1.5.2</h1>
-<h3>Version 2.6.0 by lat9</h3>
+<h3>Version 2.6.1 by lat9</h3>
 <p>Current support thread at Zen Cart Forums: <a href="http://www.zen-cart.com/showthread.php?206579-Snap-Affiliates-v2-0-for-Zen-Cart-v1-5-0-and-later" target="_blank">www.zen-cart.com/showthread.php?206579-Snap-Affiliates-v2-0-for-Zen-Cart-v1-5-0-and-later</a>.  This software is provided for your use under the GNU General Public License v2.0.</p>
 
 <h3>Usage Notes</h3>
@@ -59,7 +59,7 @@ ul li ul { padding-left: 0; }
 <p><strong>Note:</strong> If your store doesn't use the information sidebox, you can add PHP code to your alternate menu structure to create the "Referrer Signup" link.  Here's the code used in the sidebox to add the link; you'll need to change the <em>$information[]</em> variable to match your menu's structure:</p>
 <pre>
   if (SNAP_INFORMATION_SIDEBOX === 'true') {
-    $information[] = '<a href="' . zen_href_link(FILENAME_REFERRER_SIGNUP, '', 'SSL'). '">' . BOX_INFORMATION_REFERRER_TERMS . '</a>';
+    $information[] = '&lt;a href="' . zen_href_link(FILENAME_REFERRER_SIGNUP, '', 'SSL'). '"&gt;' . BOX_INFORMATION_REFERRER_TERMS . '&lt;/a&gt;';
   }
 </pre>
 
@@ -108,6 +108,7 @@ ul li ul { padding-left: 0; }
       <li><strong>2.2.0</strong>. Added <em>Cookie Lifetime</em>.</li>
       <li><strong>2.3.0</strong>. Added <em>Purchases Per Cookie</em>. Updated <em>Customers-&gt;Referrers</em> to include links to commissioned orders and <em>Customers-&gt;Orders</em> to include a link to the commissioned referrer if the order resulted in a commission payment.</li>
       <li><strong>2.5.0</strong>. Added <em>Combine Exclusions on Referrers Page?</em> and added the <em>updated_by</em> column to the <em>orders_status_history</em> table.</li>
+      <li><strong>2.6.1</strong>. Changed the default for <em>Include in Information Sidebox</em> from &quot;true&quot; to &quot;false&quot;.</li>
     </ul>
   </dd>
   
@@ -127,7 +128,7 @@ ul li ul { padding-left: 0; }
   <dd>Images that you use for your affiliate program reside in your store's /images/referrers directory (created as part of the install).  Each file's matches the template <strong>ref.<em>ww</em>.<em>hh</em>.<em>ext</em></strong> where <em>ww</em> is the pixel-width, <em>hh</em> is the pixel-height and <em>ext</em> is the file extension (usually gif or jpg) of the image.<br /><br />You identify your images to the plugin by entering this information into a fixed template: /<em>ww</em>,<em>hh</em>,<em>ext</em>/[<em>ww</em>,<em>hh</em>,<em>ext</em>/&hellip;].  If, for example, you have two banner image files (ref.60.80.gif and ref.120.60.jpg), you will enter <strong>/60,80,gif/120,60,jpg/</strong> into this field.</dd>
   
   <dt id="info_box">Include in Information Sidebox?</dt>
-  <dd>This true/false switch identifies whether or not an <em>Our Affiliate Program</em> link appears in your store's "Information" sidebox. (Default: true)</dd>
+  <dd>This true/false switch identifies whether or not an <em>Our Affiliate Program</em> link appears in your store's "Information" sidebox. (Default: false)</dd>
 
   <dt id="config_adc">Affiliate Display Count</dt>
   <dd>Specifies the maximum number of affiliates to display on each page of your admin's <em>Customers-&gt;Referrers</em>. (Default: 50)</dd>
@@ -309,6 +310,11 @@ ul li ul { padding-left: 0; }
     <li>Updated to v1.1.0 of the "Common Orders Status History" framework, to pull in downwardly-compatible changes for Zen Cart v1.5.2.</li>
     <li>Update information sidebox to use SSL on the <em>contact_us</em> page (as changed in Zen Cart v1.5.2.).</li>
   </ul></li>
+  <li>v2.6.1, 2014-03-20:<ul>
+    <li>Corrected the code display in the <a href="#sidebox">Information Sidebox</a> section of this readme.</li>
+    <li>Changed the default value on initial installation of the <em>Include in Information Sidebox</em> setting from <b>true</b> to <b>false</b>.</li>
+    <li>Include updates to the <em>Orders Status History &mdash; Updated By</em> plugin (v1.1.0).</li>
+  </ul></li>
 </ul>
 
 <h2 id="ufapv">Upgrading from a Previous Version</h2>
@@ -455,6 +461,19 @@ ul li ul { padding-left: 0; }
     </ol></td>
     <td class="c3"><p>None</p></td>
   </tr>  
+ 
+  <tr>
+    <td class="c1">v2.6.1</td>
+    <td><ol>
+      <li><span class="osh">/includes/functions/extra_functions/osh_updated_by_functions.php</span></li>
+      <li>/YOUR_ADMIN/includes/functions/extra_functions/init_referrers.php</li>
+      <li><span class="osh">/YOUR_ADMIN/includes/languages/extra_definitions/osh_updated_by.php</span></li>
+    </ol></td>
+    <td class="c3"><ol>
+      <li><em>Module Version</em> updated to v2.6.1.</li>
+      <li>Default value for <em>Include in Information Sidebox?</em> changed from true to false.</li>
+    </ol></td>
+  </tr>
   
 </table>
 
