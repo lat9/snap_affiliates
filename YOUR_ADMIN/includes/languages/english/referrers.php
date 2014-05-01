@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------+
-// | Snap Affiliates for Zen Cart                                         |
+// | Snap Affiliates for Zen Cart v1.5.0+                                 |
 // +----------------------------------------------------------------------+
-// | Copyright (c) 2013, Vinos de Frutas Tropicales (lat9) for ZC 1.5.0+  |
+// | Copyright (c) 2013-2014, Vinos de Frutas Tropicales (lat9)           |
 // |                                                                      |
 // | Original: Copyright (c) 2009 Michael Burke                           |
 // | http://www.filterswept.com                                           |
@@ -27,7 +27,7 @@ define('HEADING_EMAIL', 'Email Address');
 
 define('LABEL_REFERRER_ID', 'Referrer ID:');
 define('LABEL_ORDERS_TOTAL', 'Orders Total:');
-define('LABEL_WEBSITE', HEADING_WEBSITE . ':  <a href="http://%1$s" target="_blank">%1$s</a>' . "\n"); /*v2.4.1c*/
+define('LABEL_WEBSITE', HEADING_WEBSITE . ':  <a href="http://%1$s" target="_blank" rel="noreferrer">%1$s</a>' . "\n"); /*v2.4.1c*, v2.7.0 added rel="noreferrer"*/
 define('LABEL_EMAIL', HEADING_EMAIL . ': <a href="mailto:%1$s">%1$s</a>' . "\n");
 define('LABEL_PHONE', 'Phone:');
 define('LABEL_NAME_ADDRESS', 'Name and Address:');
@@ -52,6 +52,17 @@ define('TEXT_UNBAN', 'Unban');
 define('TEXT_PAY', 'Pay'); /*v2.1.0a*/
 define('TEXT_UPDATE', 'Update'); /*v2.1.0a*/
 define('TEXT_DISPLAY_SPLIT', 'Displaying %1$u to %2$u (of %3$u referrers)');
+
+//-bof-v2.7.0a
+define('TEXT_PAY_SELECTED', 'Pay Selected');
+define('TEXT_CHOOSE_COMMISSIONS', 'Choose Unpaid Commissions to be Paid');
+define('HEADING_CHOOSE', 'Select');
+define('HEADING_CALCULATED_COMMISSION', 'Calculated Commission');
+define('HEADING_COMMISSION_TO_PAY', 'Commission to Pay');
+define('ERROR_COMMISSION_CANT_BE_ZERO', 'A commission payment must be greater than 0.');
+define('ERROR_CHOOSE_COMMISSION_TO_PAY', 'Please choose at least one commission to be paid.');
+define('SUCCESS_PAYMENT_MADE', 'Your commission payment of %1$s to %2$s %3$s has been recorded.');
+//-eof-v2.7.0a
 
 define('TEXT_NONCOMMISSIONABLE', ' (Non-Commissionable)');  /*v2.5.0a*/
 
@@ -87,8 +98,8 @@ define('EMAIL_MESSAGE_BANNED_TEXT', 'Your referrer account with ' . STORE_NAME .
 ** 3) The link to the store's referrer_tools page
 ** 4) The link to the store's contact_us page
 */
-define('EMAIL_SUBJECT_PAID', 'Payment: ' . STORE_NAME . 'referrer account');
-define('EMAIL_MESSAGE_PAID_HTML', 'A commission payment was recently made for your ' . STORE_NAME . ' referral account. Your total earnings this period were <strong>%1$s</strong>.<br /><br />To view your complete order history, you can (<a href="%2$s">login</a>) and view your referrer (<a href="%3$s">statistics</a>). If you have any questions, don\'t hesitate to <a href="%4$s">contact us</a>.<br /><br />Sincerely,<br /><br />' . STORE_OWNER); /*v2.1.0c*/
+define('EMAIL_SUBJECT_PAID', 'Payment: ' . STORE_NAME . ' referrer account');  //-v2.7.0c (added leading space)
+define('EMAIL_MESSAGE_PAID_HTML', 'A commission payment was recently made for your ' . STORE_NAME . ' referral account. Your total earnings this period were <strong>%1$s</strong>.<br /><br />To view your complete order history, you can <a href="%2$s">login</a> and view your referrer <a href="%3$s">statistics</a>. If you have any questions, don\'t hesitate to <a href="%4$s">contact us</a>.<br /><br />Sincerely,<br /><br />' . STORE_OWNER); /*v2.1.0c, v2.7.0c*/
 define('EMAIL_MESSAGE_PAID_TEXT', 'A commission payment was recently made for your ' . STORE_NAME . ' referral account. Your total earnings this period were %1$s.' . "\n\n" . 'To view your complete order history, you can login (%2$s) and view your referrer statistics (%3$s).  If you have any questions, don\'t hesitate to contact us using this link: %4$s.' . "\n\nSincerely,\n\n" . STORE_OWNER); /*v2.1.0c*/
 
 /* ----

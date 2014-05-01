@@ -2,7 +2,7 @@
 // +----------------------------------------------------------------------+
 // |Snap Affiliates for Zen Cart                                          |
 // +----------------------------------------------------------------------+
-// | Copyright (c) 2013, Vinos de Frutas Tropicales (lat9) for ZC 1.5.0+  |
+// | Copyright (c) 2013-2014, Vinos de Frutas Tropicales (lat9)           |
 // +----------------------------------------------------------------------+
 // | This source file is subject to version 2.0 of the GPL license.       |
 // +----------------------------------------------------------------------+
@@ -10,8 +10,8 @@
 if (!defined('IS_ADMIN_FLAG')) {
     die('Illegal Access');
 }
-define('SNAP_MODULE_CURRENT_VERSION', '2.6.1'); /*v2.6.1c*/
-define('SNAP_MODULE_UPDATE_DATE', '2014-03-20'); /*v2.6.1c*/
+define('SNAP_MODULE_CURRENT_VERSION', '2.7.0');
+define('SNAP_MODULE_UPDATE_DATE', '2014-04-29');
 
 //----
 // Create each of the database tables for the referrers plugin, if they don't already exist.
@@ -27,12 +27,30 @@ $sql = "CREATE TABLE IF NOT EXISTS " . TABLE_REFERRERS . " (
 $db->Execute($sql);
 
 $sql = "CREATE TABLE IF NOT EXISTS " . TABLE_COMMISSION . " (
-  commission_orders_id int(11) not null primary key,
+  commission_id int(11) not null auto_increment primary key,
+  commission_orders_id int(11) not null,
   commission_referrer_key varchar(96) not null,
   commission_rate float not null,
-  commission_paid datetime not null
-  )";
+  commission_paid datetime not null,
+  commission_paid_amount float not null,
+  commission_manual tinyint(1) NOT NULL default '0'
+  )";  //-v2.7.0c
 $db->Execute($sql);
+
+// -----
+// For upgrades, check for the presence of the commission_id and commission_paid_amount fields and add them if required.
+//
+//-bof-v2.7.0a
+if (!$sniffer->field_exists (TABLE_COMMISSION, 'commission_id')) {
+  $db->Execute ("ALTER TABLE " . TABLE_COMMISSION . " DROP PRIMARY KEY , ADD COLUMN commission_id int(11) NOT NULL auto_increment PRIMARY KEY");
+}
+if (!$sniffer->field_exists (TABLE_COMMISSION, 'commission_paid_amount')) {
+  $db->Execute ("ALTER TABLE " . TABLE_COMMISSION . " ADD COLUMN commission_paid_amount float NOT NULL");
+}
+if (!$sniffer->field_exists (TABLE_COMMISSION, 'commission_manual')) {
+  $db->Execute ("ALTER TABLE " . TABLE_COMMISSION . " ADD COLUMN commission_manual tinyint(1) NOT NULL default '0'");
+}
+//-eof-v2.7.0a
 
 //----
 // Create the Configuration->Affiliate Program item, if it's not already there.

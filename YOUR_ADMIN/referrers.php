@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------+
-// | Snap Affiliates for Zen Cart                                         |
+// | Snap Affiliates for Zen Cart v1.5.0 and later                        |
 // +----------------------------------------------------------------------+
-// | Copyright (c) 2013, Vinos de Frutas Tropicales (lat9) for ZC 1.5.0+  |
+// | Copyright (c) 2013-2014, Vinos de Frutas Tropicales (lat9)           |
 // |                                                                      |
 // | Original: Copyright (c) 2009 Michael Burke                           |
 // | http://www.filterswept.com                                           |
@@ -67,6 +67,7 @@ $selectedID = get_var('referrer');
 $mode = get_var('mode');
 $selected = 0;
 $referrersdisplayed = 0;
+$pay_message = '';  //-v2.7.0a
 
 $today = getdate();
 $activity_begin = mktime(0, 0, 0, 1, 1, $today['year'] - 9);
@@ -151,10 +152,10 @@ while (!$referrerResults->EOF) {
     $exclude_clause = " AND ( $exclude_clause ) ";
   }
 
-  $query = "SELECT o.orders_id, o.date_purchased, o.order_total, c.commission_rate, c.commission_paid, o.orders_status
+  $query = "SELECT o.orders_id, o.date_purchased, o.order_total, c.commission_rate, c.commission_paid, o.orders_status, c.commission_id, c.commission_paid_amount, c.commission_manual
               FROM " . TABLE_ORDERS . " o, " . TABLE_COMMISSION . " c
              WHERE c.commission_referrer_key = '" . $referrers[$idx]['referrer_key'] . "'
-               AND o.orders_id = c.commission_orders_id"; /*v2.1.0c*/
+               AND o.orders_id = c.commission_orders_id"; /*v2.1.0c, v2.7.0c*/
 
   $orderResults = $db->Execute($query);
   $orders = array();
@@ -193,7 +194,7 @@ while (!$referrerResults->EOF) {
     }
 
     if ($activity_begin < $purchase_date && $purchase_date < $activity_end) {
-      $ordersCommission = $commission * $total;
+      $ordersCommission = ($isCommissionPaid && $orderResults->fields['commission_paid_amount'] != 0) ? $orderResults->fields['commission_paid_amount'] : ($commission * $total);  //-v2.7.0c
       $ordersTotal = $total;
 
       if (!$isCommissionPaid) {  /*v2.5.0c*/
@@ -253,50 +254,71 @@ switch($mode) {
       send_notification_email ($referrers[$selected], EMAIL_SUBJECT_BANNED, EMAIL_MESSAGE_BANNED_TEXT, EMAIL_MESSAGE_BANNED_HTML);
     }
     break;
-    
-  case TEXT_PAY:
-    $commission_paid = $referrers[$selected]['status_breakdown'][0]['unpaid_commission']; /*v2.1.0a*/
-    $referrers[$selected]['status_breakdown'][0]['unpaid_commission'] = 0; /*v2.1.0c*/
-    
-    $now = date("Y-m-d H:i:s", time());
-
-//-bof-c-v2.1.0: Don't show commission paid if the order_status value for the current order is
-// one of the "excluded" ones.  Note that the 'unpaid_commission' has already factored this in!
-//
-    reset($referrers[$selected]['orders']);
-    foreach($referrers[$selected]['orders'] as &$current_order) {
-      if ( $current_order['commission_paid'] == '0000-00-00 00:00:00' && !array_key_exists((int)$current_order['orders_status'], $orders_status_names) ) {
-        $query = "UPDATE " . TABLE_COMMISSION . " SET commission_paid = NOW() WHERE commission_orders_id = " . (int)$current_order['orders_id'];
-        $db->Execute($query);
+//-bof-v2.7.0c  
+  case TEXT_PAY_SELECTED:
+    if (!isset ($_POST['payList']) || !is_array ($_POST['payList'])) {
+      $pay_message = ERROR_CHOOSE_COMMISSION_TO_PAY;
+      $mode = TEXT_PAY;
+      
+    } else {
+      $commissions = array ();
+      foreach ($_POST['payList'] as $commission_id => $value) {
+        if (!isset ($_POST['commission'][$commission_id]) || $_POST['commission'][$commission_id] <= 0) {
+          $pay_message = ERROR_COMMISSION_CANT_BE_ZERO;
+          $mode = TEXT_PAY;
+          
+        } else {
+          $commissions[$commission_id] = array ( 'calculated' => $_POST['calculated'][$commission_id], 'paid' => $_POST['commission'][$commission_id] );
+          
+        }
+      }
+          
+      $now = date("Y-m-d H:i:s", time());
+      $total_paid = 0;
+      foreach ($commissions as $commission_id => $commission) {
+        $commission_manual = ($commission['calculated'] == $commission['paid']) ? 0 : 1;
+        $db->Execute ("UPDATE " . TABLE_COMMISSION . " SET commission_paid = '$now', commission_paid_amount = '" . $commission['paid'] . "', commission_manual = $commission_manual WHERE commission_id = $commission_id");
         
-        $current_order['commission_paid'] = $now;
-//-bof-a-v2.5.0
-        // -----
-        // Add a comment to the order's status-history table (hidden from the customer) to identify that the commission payment was made.
-        // The order's current status is unchanged.
-        //
-        $status_comment = sprintf(TEXT_ORDERS_STATUS_PAID, $currencies->format(floatval( ($current_order['order_total'] - $current_order['value']) * $current_order['commission_rate'] )), $referrers[$selected]['customers_firstname'] . ' ' . $referrers[$selected]['customers_lastname']);
-        zen_update_orders_history($current_order['orders_id'], $status_comment);
-//-eof-a-v2.5.0
+        foreach ($referrers[$selected]['orders'] as &$current_order) {
+          if ($current_order['commission_id'] == $commission_id) {
+            $total_paid += $commission['paid'];
+            
+            // -----
+            // Add a comment to the order's status-history table (hidden from the customer) to identify that the commission payment was made.
+            // The order's current status is unchanged.
+            //
+            $status_comment = sprintf (TEXT_ORDERS_STATUS_PAID, $currencies->format ($commission['paid']), $referrers[$selected]['customers_firstname'] . ' ' . $referrers[$selected]['customers_lastname']);
+            zen_update_orders_history ($current_order['commission_orders_id'], $status_comment);
+            break;
+            
+          }
+        }
+      }
 
+      if ($total_paid != 0) {
+        $total_paid_formatted = $currencies->format (floatval ($total_paid));
+        send_notification_email (
+          $referrers[$selected], 
+          EMAIL_SUBJECT_PAID,
+          sprintf(EMAIL_MESSAGE_PAID_TEXT, $total_paid_formatted, zen_catalog_href_link (FILENAME_LOGIN, '', 'SSL'), zen_catalog_href_link (FILENAME_REFERRER_MAIN, '', 'SSL'), zen_catalog_href_link (FILENAME_CONTACT_US, '', 'NONSSL')),
+          sprintf(EMAIL_MESSAGE_PAID_HTML, $total_paid_formatted, zen_catalog_href_link (FILENAME_LOGIN, '', 'SSL'), zen_catalog_href_link (FILENAME_REFERRER_MAIN, '', 'SSL'), zen_catalog_href_link (FILENAME_CONTACT_US, '', 'NONSSL'))); /*v2.1.0c*/   
+        
+        $messageStack->add_session (sprintf (SUCCESS_PAYMENT_MADE, $total_paid_formatted, $referrers[$selected]['customers_firstname'], $referrers[$selected]['customers_lastname']), 'success');
+        
+        zen_redirect (zen_href_link (FILENAME_REFERRERS, 'referrer=' . $referrers[$selected]['customers_id'] . '&amp;mode=details'));
+        
       }
     }
-//-eof-c-v2.1.0
 
-    send_notification_email (
-      $referrers[$selected], 
-      EMAIL_SUBJECT_PAID,
-      sprintf(EMAIL_MESSAGE_PAID_TEXT, $currencies->format(floatval($commission_paid)), zen_catalog_href_link(FILENAME_LOGIN, '', 'SSL'), zen_catalog_href_link(FILENAME_REFERRER_MAIN, '', 'SSL'), zen_catalog_href_link(FILENAME_CONTACT_US, '', 'NONSSL')),
-      sprintf(EMAIL_MESSAGE_PAID_HTML, $currencies->format(floatval($commission_paid)), zen_catalog_href_link(FILENAME_LOGIN, '', 'SSL'), zen_catalog_href_link(FILENAME_REFERRER_MAIN, '', 'SSL'), zen_catalog_href_link(FILENAME_CONTACT_US, '', 'NONSSL'))); /*v2.1.0c*/
-
+//-eof-v2.7.0c
     break;
     
   case TEXT_UPDATE:
-    if (!is_numeric($_POST['commission']) || ((int)$_POST['commission'] < 0) || ((int)$_POST['commission'] > 100)) {
+    if (!ctype_digit($_POST['commission']) || $_POST['commission'] < 0 || $_POST['commission'] > 100) {
       $messageStack->add(ERROR_INVALID_PERCENTAGE, 'error');
       
     } else {
-      $commission = floatval((int)$_POST['commission']) / 100;
+      $commission = floatval ($_POST['commission']) / 100;
       $query = "UPDATE ". TABLE_REFERRERS ." SET referrer_commission = " . $commission . " WHERE referrer_customers_id = " . (int)$referrers[$selected]['customers_id'];
       $db->Execute($query);
 
@@ -319,6 +341,7 @@ switch($mode) {
 .historyFooter { border-top: 1px solid grey; font-weight: bold; }
 .noInput { padding: 2px 0; }
 .center { text-align: center; }
+.error { border: 1px dashed red; padding: 2px; color: red; font-weight: bold; }
 </style>
 <link rel="stylesheet" type="text/css" href="includes/stylesheet.css">
 <link rel="stylesheet" type="text/css" media="print" href="includes/stylesheet_print.css">
@@ -413,7 +436,7 @@ foreach ($referrers as $referrer) {
  </tr>
 <?php
 
-} elseif ($mode == 'details' || $mode == TEXT_APPROVE || $mode == TEXT_BAN || $mode == TEXT_UNBAN || $mode == TEXT_PAY || $mode == TEXT_UPDATE) {
+} elseif ($mode == 'details' || $mode == TEXT_APPROVE || $mode == TEXT_BAN || $mode == TEXT_UNBAN || $mode == TEXT_PAY_SELECTED || $mode == TEXT_UPDATE) { //-v2.7.0c
 
 ?>
  <tr>
@@ -639,9 +662,19 @@ foreach($orders_status_names as $current_orders_status => $status_name) {
   }
 //-eof-a-v2.5.0
   $current_total = ($current_orders_status === $orders_status) ? $total : 0;  /*v2.5.0c*/
+  
+//-bof-v2.7.0c
+  if ($status_name == '' && $order['ispaid'] && $order['commission_paid_amount'] != 0) {
+    $commission_value = $order['commission_paid_amount'];
+    
+  } else {
+    $commission_value = $commission * $current_total;
+    
+  }
 ?>
-        <td class="center history<?php echo $toggle; ?>"><?php echo $currencies->format( $commission * $current_total ); ?></td> <?php /*v2.5.0c, add 'center' */ ?>
+        <td class="center history<?php echo $toggle; ?>"><?php echo $currencies->format ( $commission_value ); ?></td> <?php /*v2.5.0c, add 'center' */ ?>
 <?php
+//-eof-v2.7.0c
 }
 //-eof-v2.1.0a
 ?>
@@ -693,7 +726,92 @@ foreach ($referrers[$selected]['status_breakdown'] as $order_status => $current_
   </td>
  </tr>
 <?php
+//-bof-v2.7.0
+} elseif ($mode == TEXT_PAY) {
+?>
+  <tr>
+    <td><table width="100%">
+      <tr><td width="100%" class="formAreaTitle"><br /><?php echo TEXT_REFERRER_INFO; ?></td></tr>
+      <tr>
+        <td class="formArea"><table width="100%">
+         <tr>
+          <td valign="top"><?php echo LABEL_NAME_ADDRESS; ?></td>
+          <td><?php echo nl2br(zen_address_label($referrers[$selected]['customers_id'], zen_get_customers_address_primary($referrers[$selected]['customers_id']))); ?></td>
+         </tr>
+         <tr>
+          <td><?php echo HEADING_WEBSITE . ':'; ?></td>
+          <td><a href="<?php echo 'http://' . $referrers[$selected]['referrer_homepage']; /*v2.4.1c*/ ?>" target="_blank"><?php echo $referrers[$selected]['referrer_homepage']; ?></a></td>
+         </tr>
+         <tr>
+          <td><?php echo HEADING_EMAIL . ':'; ?></td>
+          <td><a href="mailto:<?php echo $referrers[$selected]['customers_email_address']; ?>"><?php echo $referrers[$selected]['customers_email_address']; ?></a></td>
+         </tr>
+         <tr>
+          <td><?php echo LABEL_PHONE; ?></td>
+          <td><?php echo $referrers[$selected]['customers_telephone']; ?></td>
+         </tr>
+        </table></form></td>
+      </tr>
+      <tr><td width="100%" class="formAreaTitle"><br /><?php echo TEXT_CHOOSE_COMMISSIONS; ?></td></tr>
+<?php
+  if ($pay_message != '') {
+?>
+      <tr><td width="100%" class="error"><?php echo $pay_message; ?></td></tr>
+<?php
+  }
+?>
+      <tr>
+        <td class="formArea"><?php echo zen_draw_form('referrers', FILENAME_REFERRERS, '', 'post', '', true) . zen_draw_hidden_field ('referrer', $referrers[$selected]['customers_id']); ?><table width="100%" cellspacing="0" cellpadding="3">
+          <tr>
+            <td class="historyHeader center"><?php echo HEADING_CHOOSE; ?></td>
+            <td class="historyHeader center"><?php echo HEADING_ORDER_ID; ?></td>
+            <td class="historyHeader"><?php echo HEADING_ORDER_DATE; ?></td>
+            <td class="historyHeader center"><?php echo HEADING_ORDER_TOTAL; ?></td>
+            <td class="historyHeader center"><?php echo HEADING_COMMISSION_RATE; ?></td>
+            <td class="historyHeader center"><?php echo HEADING_CALCULATED_COMMISSION; ?></td>
+            <td class="historyHeader center"><?php echo HEADING_COMMISSION_TO_PAY; ?></td>
+          </tr>
+<?php
+  $toggle = 'A';
+  $customers_id = $referrers[$selected]['customers_id'];
+  foreach ($referrers[$selected]['orders'] as $order) {
+    if (!$order['ispaid']) {
+      $commission_id = $order['commission_id'];
+      $commissionable_total = $order['order_total'] - $order['value'];
+      $commission = number_format ($commissionable_total * $order['commission_rate'], $currencies->get_decimal_places (DEFAULT_CURRENCY));
+      $choose = (isset ($_POST['payList'][$commission_id]));
+      $commission_to_pay = ($choose) ? $_POST['commission'][$commission_id] : (string)$commission;
+?>
+          <tr>
+            <td class="history<?php echo $toggle; ?> center"><?php echo zen_draw_checkbox_field ("payList[$commission_id]", false, $choose, '', 'class="cBox"') . zen_draw_hidden_field ("calculated[$commission_id]", (string)$commission); ?></td>
+            <td class="history<?php echo $toggle; ?> center"><a href="<?php echo zen_href_link (FILENAME_ORDERS, 'oID=' . $order['orders_id'] . '&action=edit', 'NONSSL'); ?>"><?php echo $order['orders_id']; ?></a></td>
+            <td class="history<?php echo $toggle; ?>"><?php echo $order['date_purchased']; ?></td>
+            <td class="center history<?php echo $toggle; ?>"><?php echo $currencies->format ($commissionable_total); ?></td>
+            <td class="center history<?php echo $toggle; ?>"><?php echo $order['commission_rate'] * 100; ?>%</td>
+            <td class="center history<?php echo $toggle; ?>"><?php echo $currencies->format ($commission); ?></td>
+            <td class="center history<?php echo $toggle; ?>"><?php echo zen_draw_input_field ("commission[$commission_id]", $commission_to_pay); ?></td>
+          </tr>
+<?php
+      $toggle = ($toggle == 'A') ? 'B' : 'A';
+      
+    }
+  }
+?>
+          <tr>
+            <td colspan="7" align="right" class="history<?php echo $toggle; ?>"><input type="submit" name="mode" value="<?php echo TEXT_PAY_SELECTED; ?>" /></td>
+          </tr>
+        </table></form></td>
+      </tr>
+      <tr>
+        <td width="100%" align="right">
+          <br><?php echo "<a href='" . zen_href_link (FILENAME_REFERRERS, 'referrer=' . $referrers[$selected]['customers_id'] . '&amp;mode=details') . "'>" . zen_image_button('button_cancel.gif', IMAGE_CANCEL) . "</a>"; ?>
+        </td>
+      </tr>
+    </table></td>
+  </tr>
+<?php
 }
+//-eof-v2.7.0
 ?>
 </table>
 <?php
