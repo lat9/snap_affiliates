@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
-<title>Snap Affiliates for Zen-Cart&reg; 1.5.0, 1.5.1 and v1.5.2</title>
+<title>Snap Affiliates for Zen-Cart&reg;</title>
 
 <style type="text/css">
 <!--
@@ -37,8 +37,8 @@ ul li ul { padding-left: 0; }
 
 <body>
 <a name="top" id="top"></a>
-<h1>Snap Affiliates for Zen Cart 1.5.0, 1.5.1, 1.5.2</h1>
-<h3>Version 2.7.0 by lat9</h3>
+<h1>Snap Affiliates for Zen Cart 1.5.0 through 1.5.3</h1>
+<h3>Version 2.7.1 by lat9</h3>
 <p>Current support thread at Zen Cart Forums: <a href="http://www.zen-cart.com/showthread.php?206579-Snap-Affiliates-v2-0-for-Zen-Cart-v1-5-0-and-later" target="_blank">www.zen-cart.com/showthread.php?206579-Snap-Affiliates-v2-0-for-Zen-Cart-v1-5-0-and-later</a>.  This software is provided for your use under the GNU General Public License v2.0.</p>
 
 <h3>Usage Notes</h3>
@@ -324,6 +324,9 @@ ul li ul { padding-left: 0; }
   <li>v2.7.0, 2014-05-01:<ul>
     <li>Allow store-owners to more control the commission paid to their affiliates and to selectively pay payable commissions.</li>
   </ul></li>
+  <li>v2.7.1, 2014-07-13:<ul>
+    <li>Include previously-missed change to the account-page template (downwardly-compatible) for Zen Cart v1.5.2 and v1.5.3.</li>
+  </ul></li>
 </ul>
 
 <h2 id="ufapv">Upgrading from a Previous Version</h2>
@@ -497,7 +500,16 @@ ul li ul { padding-left: 0; }
       <li>The primary key for this table was changed from <em>commission_orders_id</em> to <em>commission_id</em>.</li>
       <li>The <em>commission_manual</em> value is set to 1 if the calculated value of the <em>commission_payment_amount</em> was manually changed during the commission-payment process.</li>
     </ol></td>
-  </tr>  
+  </tr>
+  
+  <tr>
+    <td class="c1">v2.7.1</td>
+    <td><ol>
+      <li>/includes/templates/YOUR_TEMPLATE/templates/tpl_account_default.php</lii>
+    </ol></td>
+    <td class="c3"><p>None</p></td>
+  </tr> 
+  
 </table>
 
 <h2>Un-install</h2>
