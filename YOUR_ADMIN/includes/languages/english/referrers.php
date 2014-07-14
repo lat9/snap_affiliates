@@ -18,6 +18,7 @@ define('ERROR_INVALID_PERCENTAGE', 'The "Current Commission Rate" value must be 
 // Language file for the Customers->Referrers Tool
 define('HEADING_FIRST_NAME', 'First Name');
 define('HEADING_LAST_NAME', 'Last Name');
+define('HEADING_EMAIL_ADDRESS', 'Email Address');  //-v2.7.1a
 define('HEADING_WEBSITE', 'Website');
 define('HEADING_APPROVED', 'Approved');
 define('HEADING_BANNED', 'Banned');

@@ -278,8 +278,7 @@ switch($mode) {
       foreach ($commissions as $commission_id => $commission) {
         $commission_manual = ($commission['calculated'] == $commission['paid']) ? 0 : 1;
         $db->Execute ("UPDATE " . TABLE_COMMISSION . " SET commission_paid = '$now', commission_paid_amount = '" . $commission['paid'] . "', commission_manual = $commission_manual WHERE commission_id = $commission_id");
-        
-        foreach ($referrers[$selected]['orders'] as &$current_order) {
+         foreach ($referrers[$selected]['orders'] as $current_order) {
           if ($current_order['commission_id'] == $commission_id) {
             $total_paid += $commission['paid'];
             
@@ -288,7 +287,7 @@ switch($mode) {
             // The order's current status is unchanged.
             //
             $status_comment = sprintf (TEXT_ORDERS_STATUS_PAID, $currencies->format ($commission['paid']), $referrers[$selected]['customers_firstname'] . ' ' . $referrers[$selected]['customers_lastname']);
-            zen_update_orders_history ($current_order['commission_orders_id'], $status_comment);
+            zen_update_orders_history ($current_order['orders_id'], $status_comment);
             break;
             
           }
@@ -314,11 +313,11 @@ switch($mode) {
     break;
     
   case TEXT_UPDATE:
-    if (!ctype_digit($_POST['commission']) || $_POST['commission'] < 0 || $_POST['commission'] > 100) {
+    if (!is_numeric($_POST['commission']) || ((int)$_POST['commission'] < 0) || ((int)$_POST['commission'] > 100)) {
       $messageStack->add(ERROR_INVALID_PERCENTAGE, 'error');
       
     } else {
-      $commission = floatval ($_POST['commission']) / 100;
+      $commission = floatval((int)$_POST['commission']) / 100;
       $query = "UPDATE ". TABLE_REFERRERS ." SET referrer_commission = " . $commission . " WHERE referrer_customers_id = " . (int)$referrers[$selected]['customers_id'];
       $db->Execute($query);
 
@@ -388,6 +387,7 @@ if ($mode == '' || $mode == 'summary') {
        <tr class="dataTableHeadingRow">
         <td class="dataTableHeadingContent"><?php echo HEADING_LAST_NAME; ?></td>
         <td class="dataTableHeadingContent"><?php echo HEADING_FIRST_NAME; ?></td>
+        <td class="dataTableHeadingContent"><?php echo HEADING_EMAIL_ADDRESS; ?></td>  <?php /*v2.7.1a*/ ?>
         <td class="dataTableHeadingContent"><?php echo HEADING_WEBSITE; ?></td>
         <td class="dataTableHeadingContent"><?php echo HEADING_APPROVED; ?></td>
         <td class="dataTableHeadingContent"><?php echo HEADING_BANNED; ?></td>
@@ -401,6 +401,7 @@ foreach ($referrers as $referrer) {
        <tr class="dataTableRow<?php echo ($current_selection) ? 'Selected' : ''; ?>" onmouseover="rowOverEffect(this);" onmouseout="rowOutEffect(this);" onclick="document.location.href='<?php echo zen_href_link(FILENAME_REFERRERS, zen_get_all_get_params(array('action')) . 'referrer=' . $referrer['customers_id'] . '&amp;mode=details', 'NONSSL'); ?>'">
         <td class="dataTableContent"><?php echo $referrer['customers_lastname']; ?></td>
         <td class="dataTableContent"><?php echo $referrer['customers_firstname']; ?></td>
+        <td class="dataTableContent"><?php echo $referrer['customers_email_address']; ?></td>  <?php /*v2.7.1a*/ ?>
         <td class="dataTableContent"><?php echo $referrer['referrer_homepage']; ?></td>
         <td class="dataTableContent"><?php echo ($referrer['referrer_approved'] == 1) ? TEXT_YES : '<span class="alert">' . TEXT_NO . '</span>'; ?></td>
         <td class="dataTableContent"><?php echo ($referrer['referrer_banned'] == 1) ? '<span class="alert">' . TEXT_YES . '</span>' : TEXT_NO; ?></td>
