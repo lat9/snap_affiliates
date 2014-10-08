@@ -140,7 +140,8 @@ if (!$is_logged_in) {
       <div class="thead c1"><?php echo HEADING_PURCHASE_DATE; ?></div>
       <div class="thead c2"><?php echo HEADING_AMOUNT; ?></div>
       <div class="thead c1"><?php echo HEADING_COMMISSION_RATE; ?></div>
-      <div class="thead c2"><?php echo HEADING_AMOUNT; ?></div>
+      <div class="thead c2"><?php echo HEADING_COMMISSION_CALCULATED; ?></div>
+      <div class="thead c2"><?php echo HEADING_COMMISSION_PAID; ?></div>
       <div class="thead c1"><?php echo HEADING_COMMISSION_PAY_DATE; ?></div>
     </div>
 
@@ -154,7 +155,8 @@ if (!$is_logged_in) {
       <div class="item c1a"><?php echo date('F j, Y', $entry['date']); ?></div>
       <div class="item c2"><?php echo $currencies->format($entry['amount']); ?></div>
       <div class="item c3"><?php echo number_format($entry['commission'] * 100, 0) . '%'; ?></div>
-      <div class="item c4"><?php echo $currencies->format($entry['commission'] * $entry['amount']); ?></div>
+      <div class="item c4"><?php echo $currencies->format($entry['commission_calculated']); ?></div>
+      <div class="item c4a"><?php echo $currencies->format($entry['commission_paid']); ?></div>
       <div class="item c5"><?php echo $nice_date; ?></div>
     </div>   
 <?php
@@ -165,11 +167,14 @@ if (!$is_logged_in) {
       <div class="item c1"><?php echo HEADING_TOTALS; ?></div>
       <div class="item c2"><?php echo $currencies->format($activity_total); ?></div>
       <div class="item c3"><?php echo '&nbsp;'; ?></div>
+      <div class="item c3a"><?php echo '&nbsp;'; ?></div>
       <div class="item c4"><?php echo $currencies->format($activity_commission); ?></div>
       <div class="item c5"><?php echo '&nbsp;'; ?></div>
     </div>
   </div>
   </form>
+  
+  <p><?php echo TEXT_COMMISSION_PAID; ?></p>
 <?php
       }  // Signed in, submitted, approved and not banned
     }  // Signed in, submitted but not approved

@@ -97,7 +97,7 @@ if (!$is_logged_in) {
 
       $no_status_exclusions = (sizeof($status_exclude_array) == 1 && $status_exclude_array[0] == '') ? true : false;  /*v2.5.1a*/
       
-      $query = "SELECT o.orders_id, o.date_purchased, o.order_total, c.commission_paid, c.commission_rate, o.orders_status
+      $query = "SELECT o.orders_id, o.date_purchased, o.order_total, c.commission_paid, c.commission_rate, o.orders_status, c.commission_paid_amount
 	                FROM ". TABLE_ORDERS ." o, " . TABLE_COMMISSION . " c 
                   WHERE c.commission_referrer_key = '" . $referrer->fields['referrer_key'] . "' 
                     AND o.orders_id = c.commission_orders_id"; /*v2.1.0c*/
@@ -133,18 +133,20 @@ if (!$is_logged_in) {
           $current_date = 0;
         }
         
+        $commission_calculated = $commission * $current_amount;
+        $commission_paid = $orders->fields['commission_paid_amount'];
         if ( $no_status_exclusions || !($current_date == 0 && in_array($orders->fields['orders_status'], $status_exclude_array)) ) {  /*v2.5.0a,v2.5.1c*/
           $total_total += $current_amount;
-          $total_commission += $commission * $current_amount;
+          $total_commission += $commission_paid;
 
           if( $purchase_date > $year_start ) {
             $yearly_total += $current_amount;
-            $yearly_commission += $commission * $current_amount;
+            $yearly_commission += $commission_paid;
           }
           
           if ($current_date === 0) {
             $unpaid_total += $current_amount;
-            $unpaid_commission += $commission * $current_amount;
+            $unpaid_commission += $commission_calculated;
           }
           
           if ($current_date > $last_payout) {
@@ -153,9 +155,9 @@ if (!$is_logged_in) {
 
           if ($activity_begin < $current_date && $current_date < $activity_end) {  /*v2.5.0c*/
             $activity_total += $current_amount;
-            $activity_commission += $commission * $current_amount;
+            $activity_commission += $commission_paid;
 
-            array_push( $activity, array('amount' => $current_amount, 'date' => $purchase_date, 'paid' => $current_date, 'commission' => $commission) );
+            array_push( $activity, array('amount' => $current_amount, 'date' => $purchase_date, 'paid' => $current_date, 'commission' => $commission, 'commission_calculated' => $commission_calculated, 'commission_paid' => $commission_paid) );
           }
           
         }  /*v2.5.0a*/
@@ -165,3 +167,4 @@ if (!$is_logged_in) {
     }
   }
 }
+$flag_disable_right = $flag_disable_left = true;

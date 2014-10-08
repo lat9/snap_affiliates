@@ -40,6 +40,10 @@ define('TEXT_UNPAID', 'Unpaid');
 define('HEADING_PURCHASE_DATE', 'Date of Purchase');
 define('HEADING_AMOUNT', 'Amount');
 define('HEADING_COMMISSION_RATE', 'Commission Rate');
-define('HEADING_COMMISSION', 'Commission');
+define('HEADING_COMMISSION_CALCULATED', 'Calculated Commission');
+define('HEADING_COMMISSION_PAID', '<sup>*</sup>Commission Paid');
 define('HEADING_COMMISSION_PAY_DATE', 'Commission Paid On');
 define('HEADING_TOTALS', 'Totals');
+
+define('TEXT_COMMISSION_PAID', '<strong><sup>*</sup>Commission Paid</strong> amounts include any refunds or returns that have being deducted from the final commission amount. For more information on how
+commissions are calculated please visit our <a href="' . zen_href_link (FILENAME_REFERRER_SIGNUP, 'terms', 'SSL') . '">Referrer Terms and Conditions</a>.');

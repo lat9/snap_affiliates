@@ -38,7 +38,7 @@ ul li ul { padding-left: 0; }
 <body>
 <a name="top" id="top"></a>
 <h1>Snap Affiliates for Zen Cart 1.5.0 through 1.5.3</h1>
-<h3>Version 2.7.1 by lat9</h3>
+<h3>Version 2.7.2 by lat9</h3>
 <p>Current support thread at Zen Cart Forums: <a href="http://www.zen-cart.com/showthread.php?206579-Snap-Affiliates-v2-0-for-Zen-Cart-v1-5-0-and-later" target="_blank">www.zen-cart.com/showthread.php?206579-Snap-Affiliates-v2-0-for-Zen-Cart-v1-5-0-and-later</a>.  This software is provided for your use under the GNU General Public License v2.0.</p>
 
 <h3>Usage Notes</h3>
@@ -126,7 +126,7 @@ ul li ul { padding-left: 0; }
   <dd>Identify the admin-level email address to which all affiliate-related emails are sent.  Emails are generated during affiliate signup (the <em>referrer_signup</em> page) and within your admin when an affiliate is either authorized, banned or paid.</dd>
   
   <dt id="config_api">Affiliate Program Images</dt>
-  <dd>Images that you use for your affiliate program reside in your store's /images/referrers directory (created as part of the install).  Each file's matches the template <strong>ref.<em>ww</em>.<em>hh</em>.<em>ext</em></strong> where <em>ww</em> is the pixel-width, <em>hh</em> is the pixel-height and <em>ext</em> is the file extension (usually gif or jpg) of the image.<br /><br />You identify your images to the plugin by entering this information into a fixed template: /<em>ww</em>,<em>hh</em>,<em>ext</em>/[<em>ww</em>,<em>hh</em>,<em>ext</em>/&hellip;].  If, for example, you have two banner image files (ref.60.80.gif and ref.120.60.jpg), you will enter <strong>/60,80,gif/120,60,jpg/</strong> into this field.</dd>
+  <dd>Images that you use for your affiliate program reside in your store's /images/referrers directory (created as part of the install).  Each file's name matches the template <strong>ref.<em>ww</em>.<em>hh</em>.<em>ext</em></strong> where <em>ww</em> is the pixel-width, <em>hh</em> is the pixel-height and <em>ext</em> is the file extension (usually gif or jpg) of the image.<br /><br />You identify your images to the plugin by entering this information into a fixed template: /<em>ww</em>,<em>hh</em>,<em>ext</em>/[<em>ww</em>,<em>hh</em>,<em>ext</em>/&hellip;].  If, for example, you have two banner image files (ref.60.80.gif and ref.120.60.jpg), you will enter <strong>/60,80,gif/120,60,jpg/</strong> into this field.</dd>
   
   <dt id="info_box">Include in Information Sidebox?</dt>
   <dd>This true/false switch identifies whether or not an <em>Our Affiliate Program</em> link appears in your store's "Information" sidebox. (Default: false)</dd>
@@ -328,6 +328,10 @@ ul li ul { padding-left: 0; }
     <li>Include previously-missed change to the account-page template (downwardly-compatible) for Zen Cart v1.5.2 and v1.5.3.</li>
     <li>Add email address to admin-level <em>Customers-&gt;Referrers</em> display.</li>
   </ul></li>
+  <li>v2.7.2, 2014-10-08:<ul>
+    <li>BUGFIX: The /images/referrers directory was missing from the plugin's distribution; I've included an &quot;empty&quot; index.html file to ensure that the structure is included!</li>
+    <li>BUGFIX: The referrers_main page didn't account for manually-updated commission payments.  Thanks to <em>mvstudio</em> for the report and the suggested code to correct!  Please note that sideboxes are now disabled when the referrers_main page is displayed.  If you want your sideboxes to remain, edit /includes/modules/pages/referrers_main/header_php.php and remove (or comment-out) the last line in that file.</li>
+  </ul></li>
 </ul>
 
 <h2 id="ufapv">Upgrading from a Previous Version</h2>
@@ -512,6 +516,17 @@ ul li ul { padding-left: 0; }
     </ol></td>
     <td class="c3"><p>None</p></td>
   </tr> 
+   
+  <tr class="o">
+    <td class="c1">v2.7.2</td>
+    <td><ol>
+      <li>/images/referrers/index.html</li>
+      <li>/includes/languages/english/YOUR_TEMPLATE/referrer_main.php</li>
+      <li>/includes/modules/pages/referrer_main/header_php.php</li>
+      <li>/includes/templates/YOUR_TEMPLATE/tpl_referrer_main_default.php</li>
+    </ol></td>
+    <td class="c3"><p>None</p></td>
+  </tr>
   
 </table>
 
