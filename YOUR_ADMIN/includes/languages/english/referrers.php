@@ -27,6 +27,7 @@ define('HEADING_COMMISSION_RATE', 'Commission Rate');
 define('HEADING_EMAIL', 'Email Address');
 
 define('LABEL_REFERRER_ID', 'Referrer ID:');
+define('LABEL_HOME_PAGE_LINK', 'Home-page Link:');  //-v2.7.3
 define('LABEL_ORDERS_TOTAL', 'Orders Total:');
 define('LABEL_WEBSITE', HEADING_WEBSITE . ':  <a href="http://%1$s" target="_blank" rel="noreferrer">%1$s</a>' . "\n"); /*v2.4.1c*, v2.7.0 added rel="noreferrer"*/
 define('LABEL_EMAIL', HEADING_EMAIL . ': <a href="mailto:%1$s">%1$s</a>' . "\n");

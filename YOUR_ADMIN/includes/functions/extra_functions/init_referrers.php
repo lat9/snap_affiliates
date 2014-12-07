@@ -10,8 +10,8 @@
 if (!defined('IS_ADMIN_FLAG')) {
     die('Illegal Access');
 }
-define('SNAP_MODULE_CURRENT_VERSION', '2.7.0');
-define('SNAP_MODULE_UPDATE_DATE', '2014-04-29');
+define('SNAP_MODULE_CURRENT_VERSION', '2.7.3');
+define('SNAP_MODULE_UPDATE_DATE', '2014-12-07');
 
 //----
 // Create each of the database tables for the referrers plugin, if they don't already exist.

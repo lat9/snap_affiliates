@@ -423,6 +423,14 @@ foreach ($referrers as $referrer) {
       <table width="100%" cellspacing="0" cellpadding="2">
        <tr class="infoBoxHeading"><td class="infoBoxHeading"><?php echo $referrers[$selected]['customers_firstname'] . ' ' . $referrers[$selected]['customers_lastname']; ?></td></tr>
        <tr><td class="infoBoxContent"><br /><?php echo LABEL_REFERRER_ID . ' ' . $referrers[$selected]['referrer_key']; ?></td></tr>
+<?php
+//-bof-v2.7.3a
+$home_page_link = zen_catalog_href_link (FILENAME_DEFAULT, 'referrer=' . $referrers[$selected]['referrer_key']);
+?>
+       <tr><td class="infoBoxContent"><br /><?php echo LABEL_HOME_PAGE_LINK . ' '; ?><a href="<?php echo $home_page_link; ?>" target="_blank"><?php echo $home_page_link; ?></a></td></tr>
+<?php
+//-eof-v2.7.3a
+?>
        <tr><td class="infoBoxContent"><br /><?php echo LABEL_ORDERS_TOTAL . ' ' . $currencies->format($referrers[$selected]['status_breakdown'][0]['total']); /*v2.1.0c*/ ?></td></tr>
        <tr><td class="infoBoxContent"><br /><?php echo LABEL_UNPAID . ' ' . $currencies->format($referrers[$selected]['status_breakdown'][0]['unpaid_commission']); /*v2.1.0c*/ ?></td></tr>
        <tr><td class="infoBoxContent"><br /><?php echo sprintf(LABEL_EMAIL, $referrers[$selected]['customers_email_address']); ?></td></tr>
