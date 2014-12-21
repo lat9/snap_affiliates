@@ -37,8 +37,8 @@ ul li ul { padding-left: 0; }
 
 <body>
 <a name="top" id="top"></a>
-<h1>Snap Affiliates for Zen Cart 1.5.0 through 1.5.3</h1>
-<h3>Version 2.7.3 by lat9</h3>
+<h1>Snap Affiliates for Zen Cart 1.5.0 through 1.5.4</h1>
+<h3>Version 2.8.0 by lat9</h3>
 <p>Current support thread at Zen Cart Forums: <a href="http://www.zen-cart.com/showthread.php?206579-Snap-Affiliates-v2-0-for-Zen-Cart-v1-5-0-and-later" target="_blank">www.zen-cart.com/showthread.php?206579-Snap-Affiliates-v2-0-for-Zen-Cart-v1-5-0-and-later</a>.  This software is provided for your use under the GNU General Public License v2.0.</p>
 
 <h3>Usage Notes</h3>
@@ -220,10 +220,12 @@ ul li ul { padding-left: 0; }
     <li>/includes/templates/YOUR_TEMPLATE/templates/tpl_referrer_tools_default.php</li>
     <li>/YOUR_ADMIN/referrers.php</li>
     <li>/YOUR_ADMIN/images/icons/cash.jpg</li>
+    <li>/YOUR_ADMIN/includes/auto_loaders/config.zc154_compatibility.php</li>
     <li>/YOUR_ADMIN/includes/extra_datafiles/referrers_filenames.php</li>
     <li>/YOUR_ADMIN/includes/functions/extra_functions/init_referrers.php</li>
     <li><span class="osh">/YOUR_ADMIN/includes/functions/extra_functions/osh_updated_by_admin_functions.php</span></li>
     <li>/YOUR_ADMIN/includes/functions/extra_functions/referrers_functions.php</li>
+    <li>/YOUR_ADMIN/includes/init_includes/init_zc154_compatibility.php</li>
     <li>/YOUR_ADMIN/includes/languages/english/referrers.php</li>
     <li><span class="osh">/YOUR_ADMIN/includes/languages/english/osh_updated_by.php</span></li>
     <li>/YOUR_ADMIN/includes/languages/english/extra_definitions/referrers_info.php</li>
@@ -334,6 +336,9 @@ ul li ul { padding-left: 0; }
   </ul></li>
   <li>v2.7.3, 2014-12-07:<ul>
     <li>Add the <em>Home-page link</em> to <a href="#acr">Customers-&gt;Referrers</a>.</li>
+  </ul></li>
+  <li>v2.8.0, 2014-12-21:<ul>
+    <li>CHANGE: Use Zen Cart v1.5.4 as the base for any core-file modifications.</li>
   </ul></li>
 </ul>
 
@@ -537,6 +542,17 @@ ul li ul { padding-left: 0; }
       <li>/YOUR_ADMIN/referrers.php</li>
       <li>/YOUR_ADMIN/includes/functions/extra_functions/init_referrers.php</li>
       <li>/YOUR_ADMIN/includes/languages/english/referrers.php</li>
+    </ol></td>
+    <td class="c3"><p>None</p></td>
+  </tr>
+  
+  <tr class="o">
+    <td class="c1">v2.8.0</td>
+    <td><ol>
+      <li><span class="corefile">/YOUR_ADMIN/orders.php</span></li>
+      <li><span class="added">/YOUR_ADMIN/includes/auto_loaders/config.zc154_compatibility.php</span></li>
+      <li>/YOUR_ADMIN/includes/functions/extra_functions/init_referrers.php</li>
+      <li><span class="added">/YOUR_ADMIN/includes/init_includes/init_zc154_compatibility.php</span></li>
     </ol></td>
     <td class="c3"><p>None</p></td>
   </tr>
