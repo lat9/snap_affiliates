@@ -1,28 +1,19 @@
 <?php
-// +----------------------------------------------------------------------+
-// |Snap Affiliates for Zen Cart                                          |
-// +----------------------------------------------------------------------+
-// | Copyright (c) 2013, Vinos de Frutas Tropicales (lat9) for ZC 1.5.0+  |
-// |                                                                      |
-// | Original: Copyright (c) 2009 Michael Burke                           |
-// | http://www.filterswept.com                                           |
-// |                                                                      |
-// +----------------------------------------------------------------------+
-// | This source file is subject to version 2.0 of the GPL license.       |
-// +----------------------------------------------------------------------+
+// +---------------------------------------------------------------------------+
+// |Snap Affiliates for Zen Cart                                               |
+// +---------------------------------------------------------------------------+
+// | Copyright (c) 2013-2015, Vinos de Frutas Tropicales (lat9) for ZC 1.5.0+  |
+// |                                                                           |
+// | Original: Copyright (c) 2009 Michael Burke                                |
+// | http://www.filterswept.com                                                |
+// |                                                                           |
+// +---------------------------------------------------------------------------+
+// | This source file is subject to version 2.0 of the GPL license.            |
+// +---------------------------------------------------------------------------+
 
 require(DIR_WS_MODULES . zen_get_module_directory('require_languages.php'));
 
 define('DIR_WS_IMAGES_REFERRERS', DIR_WS_IMAGES . 'referrers/');
-function get_image_src($name) {
-  global $filename2;
-  $filename = DIR_WS_IMAGES_REFERRERS . $name;
-  clearstatcache();
-  if (!file_exists($filename)) {
-    $filename = '';
-  }
-  return $filename;
-}
 
 if (!$_SESSION['customer_id']) {
   $_SESSION['navigation']->set_snapshot();
@@ -52,9 +43,11 @@ if (SNAP_AFFILIATE_IMAGES != '') {
       $width = $fileinfo[0];
       $height = $fileinfo[1];
       $extension = $fileinfo[2];
-      $filename = get_image_src("ref.$width.$height.$extension");
-      if ($filename != '') {
-        $snap_banners[] = array ( 'name' => $filename, 'width' => $width, 'height' => $height );
+      $filenames = glob (DIR_WS_IMAGES_REFERRERS . "ref*.$width.$height.$extension");
+      if ($filenames !== false {
+        foreach ($filenames as $filename) {
+          $snap_banners[] = array ( 'name' => $filename, 'width' => $width, 'height' => $height );
+        }
       }
     }
   }
