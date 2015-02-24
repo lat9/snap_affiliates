@@ -2,7 +2,7 @@
 // +----------------------------------------------------------------------+
 // | Snap Affiliates for Zen Cart v1.5.0 and later                        |
 // +----------------------------------------------------------------------+
-// | Copyright (c) 2013-2015, Vinos de Frutas Tropicales (lat9)           |
+// | Copyright (c) 2013-2014, Vinos de Frutas Tropicales (lat9)           |
 // |                                                                      |
 // | Original: Copyright (c) 2009 Michael Burke                           |
 // | http://www.filterswept.com                                           |
@@ -11,9 +11,17 @@
 // | This source file is subject to version 2.0 of the GPL license.       |
 // +----------------------------------------------------------------------+
 
-function get_var ($name) {
-  return (isset ($_POST[$name])) ? $_POST[$name] : ((isset ($_GET[$name])) ? $_GET[$name] : '');
+function get_var($name) {
+  $result = '';
 
+  if( isset( $_GET[$name] ) ) {
+    $result = $_GET[$name];
+
+  } else if( isset( $_POST[$name] ) ) {
+    $result = $_POST[$name];
+  }
+
+  return $result;
 }
 
 function send_notification_email($referrer, $subject, $text, $html) {
@@ -296,7 +304,7 @@ switch($mode) {
         
         $messageStack->add_session (sprintf (SUCCESS_PAYMENT_MADE, $total_paid_formatted, $referrers[$selected]['customers_firstname'], $referrers[$selected]['customers_lastname']), 'success');
         
-        zen_redirect (zen_href_link (FILENAME_REFERRERS, 'referrer=' . $referrers[$selected]['customers_id'] . '&mode=details'));
+        zen_redirect (zen_href_link (FILENAME_REFERRERS, 'referrer=' . $referrers[$selected]['customers_id'] . '&amp;mode=details'));
         
       }
     }
@@ -323,11 +331,9 @@ switch($mode) {
 
 ?>
 <!doctype html public "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html <?php echo HTML_PARAMS; ?>>
+<html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=<?php echo CHARSET; ?>">
 <style type="text/css">
-<!--
 .historyHeader { border-bottom: 1px dashed grey; }
 .historyA { background-color: #ccffcc; }
 .historyB { }
@@ -335,7 +341,6 @@ switch($mode) {
 .noInput { padding: 2px 0; }
 .center { text-align: center; }
 .error { border: 1px dashed red; padding: 2px; color: red; font-weight: bold; }
-// -->
 </style>
 <link rel="stylesheet" type="text/css" href="includes/stylesheet.css">
 <link rel="stylesheet" type="text/css" media="print" href="includes/stylesheet_print.css">
@@ -343,7 +348,7 @@ switch($mode) {
 <script type="text/javascript" src="includes/menu.js"></script>
 <script type="text/javascript" src="includes/general.js"></script>
 <script type="text/javascript">
-<!--
+  <!--
   function init()
   {
     cssjsmenu('navbar');
@@ -353,7 +358,7 @@ switch($mode) {
       kill.disabled = true;
     }
   }
-// -->
+  // -->
 </script>
 </head>
 <body onload="init();">
@@ -361,106 +366,117 @@ switch($mode) {
 <?php require(DIR_WS_INCLUDES . 'header.php'); ?>
 
 <table border="0" width="100%" cellspacing="2" cellpadding="2">
-  <tr>
-    <td><table border="0" width="100%" cellspacing="2" cellpadding="2">
-        <tr>
-          <td class="pageHeading"><?php echo TEXT_REFERRERS; /*v2.1.0c*/ ?></td>
-        </tr>
-    </table></td>
-  </tr>
+ <tr>
+  <td>
+   <table border="0" width="100%" cellspacing="2" cellpadding="2">
+    <tr>
+     <td class="pageHeading"><?php echo TEXT_REFERRERS; /*v2.1.0c*/ ?></td>
+    </tr>
+   </table>
+  </td>
+ </tr>
 <?php
 if ($mode == '' || $mode == 'summary') {
 ?>
-  <tr>
-    <td><table width="100%" cellpadding="0" cellspacing="0">
-      <tr>
-        <td valign="top" width="75%"><table border="0" width="100%" cellspacing="0" cellpadding="2">
-          <tr class="dataTableHeadingRow">
-            <td class="dataTableHeadingContent"><?php echo HEADING_LAST_NAME; ?></td>
-            <td class="dataTableHeadingContent"><?php echo HEADING_FIRST_NAME; ?></td>
-            <td class="dataTableHeadingContent"><?php echo HEADING_EMAIL_ADDRESS; ?></td>  <?php /*v2.7.1a*/ ?>
-            <td class="dataTableHeadingContent"><?php echo HEADING_WEBSITE; ?></td>
-            <td class="dataTableHeadingContent"><?php echo HEADING_APPROVED; ?></td>
-            <td class="dataTableHeadingContent"><?php echo HEADING_BANNED; ?></td>
-            <td class="dataTableHeadingContent"><?php echo HEADING_UNPAID_TOTAL; ?></td>
-            <td class="dataTableHeadingContent"><?php echo HEADING_COMMISSION_RATE; ?></td>
-          </tr>
+ <tr>
+  <td>
+   <table width="100%" cellpadding="0" cellspacing="0">
+    <tr>
+     <td valign="top" width="75%">
+      <table border="0" width="100%" cellspacing="0" cellpadding="2">
+       <tr class="dataTableHeadingRow">
+        <td class="dataTableHeadingContent"><?php echo HEADING_LAST_NAME; ?></td>
+        <td class="dataTableHeadingContent"><?php echo HEADING_FIRST_NAME; ?></td>
+        <td class="dataTableHeadingContent"><?php echo HEADING_EMAIL_ADDRESS; ?></td>  <?php /*v2.7.1a*/ ?>
+        <td class="dataTableHeadingContent"><?php echo HEADING_WEBSITE; ?></td>
+        <td class="dataTableHeadingContent"><?php echo HEADING_APPROVED; ?></td>
+        <td class="dataTableHeadingContent"><?php echo HEADING_BANNED; ?></td>
+        <td class="dataTableHeadingContent"><?php echo HEADING_UNPAID_TOTAL; ?></td>
+        <td class="dataTableHeadingContent"><?php echo HEADING_COMMISSION_RATE; ?></td>
+       </tr>
 <?php
 foreach ($referrers as $referrer) {
   $current_selection = ($referrers[$selected] == $referrer);
 ?>
-          <tr class="dataTableRow<?php echo ($current_selection) ? 'Selected' : ''; ?>" onmouseover="rowOverEffect(this);" onmouseout="rowOutEffect(this);" onclick="document.location.href='<?php echo zen_href_link(FILENAME_REFERRERS, zen_get_all_get_params(array('action')) . 'referrer=' . $referrer['customers_id'] . '&mode=details', 'NONSSL'); ?>'">
-            <td class="dataTableContent"><?php echo $referrer['customers_lastname']; ?></td>
-            <td class="dataTableContent"><?php echo $referrer['customers_firstname']; ?></td>
-            <td class="dataTableContent"><?php echo $referrer['customers_email_address']; ?></td>  <?php /*v2.7.1a*/ ?>
-            <td class="dataTableContent"><?php echo $referrer['referrer_homepage']; ?></td>
-            <td class="dataTableContent"><?php echo ($referrer['referrer_approved'] == 1) ? TEXT_YES : '<span class="alert">' . TEXT_NO . '</span>'; ?></td>
-            <td class="dataTableContent"><?php echo ($referrer['referrer_banned'] == 1) ? '<span class="alert">' . TEXT_YES . '</span>' : TEXT_NO; ?></td>
-            <td class="dataTableContent"><?php echo $currencies->format($referrer['status_breakdown'][0]['unpaid_commission']); /*v2.1.0c*/ ?></td>
-            <td class="dataTableContent"><?php echo $referrer['referrer_commission'] * 100 . '%'; ?></td>
-          </tr>
+       <tr class="dataTableRow<?php echo ($current_selection) ? 'Selected' : ''; ?>" onmouseover="rowOverEffect(this);" onmouseout="rowOutEffect(this);" onclick="document.location.href='<?php echo zen_href_link(FILENAME_REFERRERS, zen_get_all_get_params(array('action')) . 'referrer=' . $referrer['customers_id'] . '&amp;mode=details', 'NONSSL'); ?>'">
+        <td class="dataTableContent"><?php echo $referrer['customers_lastname']; ?></td>
+        <td class="dataTableContent"><?php echo $referrer['customers_firstname']; ?></td>
+        <td class="dataTableContent"><?php echo $referrer['customers_email_address']; ?></td>  <?php /*v2.7.1a*/ ?>
+        <td class="dataTableContent"><?php echo $referrer['referrer_homepage']; ?></td>
+        <td class="dataTableContent"><?php echo ($referrer['referrer_approved'] == 1) ? TEXT_YES : '<span class="alert">' . TEXT_NO . '</span>'; ?></td>
+        <td class="dataTableContent"><?php echo ($referrer['referrer_banned'] == 1) ? '<span class="alert">' . TEXT_YES . '</span>' : TEXT_NO; ?></td>
+        <td class="dataTableContent"><?php echo $currencies->format($referrer['status_breakdown'][0]['unpaid_commission']); /*v2.1.0c*/ ?></td>
+        <td class="dataTableContent"><?php echo $referrer['referrer_commission'] * 100 . '%'; ?></td>
+       </tr>
 <?php
 }
 ?>
-          <tr>
-            <td colspan="3" class="smallText" valign="top"><?php echo $referrer_split->display_count($referrer_query_numrows, SNAP_MAX_REFERRER_DISPLAY, $_GET['page'], TEXT_DISPLAY_SPLIT); /*v2.1.0c*/ ?></td>
-            <td colspan="4" class="smallText" align="right"><?php echo $referrer_split->display_links($referrer_query_numrows, SNAP_MAX_REFERRER_DISPLAY, MAX_DISPLAY_PAGE_LINKS, $_GET['page']); /*v2.1.0c*/ ?></td>
-          </tr>
+       <tr>
+        <td colspan="3" class="smallText" valign="top"><?php echo $referrer_split->display_count($referrer_query_numrows, SNAP_MAX_REFERRER_DISPLAY, $_GET['page'], TEXT_DISPLAY_SPLIT); /*v2.1.0c*/ ?></td>
+        <td colspan="4" class="smallText" align="right"><?php echo $referrer_split->display_links($referrer_query_numrows, SNAP_MAX_REFERRER_DISPLAY, MAX_DISPLAY_PAGE_LINKS, $_GET['page']); /*v2.1.0c*/ ?></td>
+       </tr>
        
-        </table></td>
+      </table>
+     </td>
      
-        <td valign="top" width="25%"><table width="100%" cellspacing="0" cellpadding="2">
-          <tr class="infoBoxHeading"><td class="infoBoxHeading"><?php echo $referrers[$selected]['customers_firstname'] . ' ' . $referrers[$selected]['customers_lastname']; ?></td></tr>
-          <tr><td class="infoBoxContent"><br /><?php echo LABEL_REFERRER_ID . ' ' . $referrers[$selected]['referrer_key']; ?></td></tr>
+     <td valign="top" width="25%">
+      <table width="100%" cellspacing="0" cellpadding="2">
+       <tr class="infoBoxHeading"><td class="infoBoxHeading"><?php echo $referrers[$selected]['customers_firstname'] . ' ' . $referrers[$selected]['customers_lastname']; ?></td></tr>
+       <tr><td class="infoBoxContent"><br /><?php echo LABEL_REFERRER_ID . ' ' . $referrers[$selected]['referrer_key']; ?></td></tr>
 <?php
 //-bof-v2.7.3a
 $home_page_link = zen_catalog_href_link (FILENAME_DEFAULT, 'referrer=' . $referrers[$selected]['referrer_key']);
 ?>
-          <tr><td class="infoBoxContent"><br /><?php echo LABEL_HOME_PAGE_LINK . ' '; ?><a href="<?php echo $home_page_link; ?>" target="_blank"><?php echo $home_page_link; ?></a></td></tr>
+       <tr><td class="infoBoxContent"><br /><?php echo LABEL_HOME_PAGE_LINK . ' '; ?><a href="<?php echo $home_page_link; ?>" target="_blank"><?php echo $home_page_link; ?></a></td></tr>
 <?php
 //-eof-v2.7.3a
 ?>
-          <tr><td class="infoBoxContent"><br /><?php echo LABEL_ORDERS_TOTAL . ' ' . $currencies->format($referrers[$selected]['status_breakdown'][0]['total']); /*v2.1.0c*/ ?></td></tr>
-          <tr><td class="infoBoxContent"><br /><?php echo LABEL_UNPAID . ' ' . $currencies->format($referrers[$selected]['status_breakdown'][0]['unpaid_commission']); /*v2.1.0c*/ ?></td></tr>
-          <tr><td class="infoBoxContent"><br /><?php echo sprintf(LABEL_EMAIL, $referrers[$selected]['customers_email_address']); ?></td></tr>
-          <tr><td class="infoBoxContent"><br /><?php echo sprintf(LABEL_WEBSITE, $referrers[$selected]['referrer_homepage']); ?></td></tr>
-          <tr><td class="infoBoxContent"><br /><?php echo LABEL_PHONE . ' ' . $referrers[$selected]['customers_telephone']; ?></td></tr>
-          <tr><td class="infoBoxContent"><br /><?php echo ($referrercount > 0) ? ('<a href="' . zen_href_link(FILENAME_REFERRERS, 'referrer=' . $referrers[$selected]['customers_id'] . '&mode=details', 'NONSSL') . '">' . zen_image_button('button_details.gif', IMAGE_DETAILS) . '</a>') : '&nbsp;'; /*v2.1.0c*/ ?></td></tr>
-        </table></td>
-      </tr>
-    </table></td>
-  </tr>
+       <tr><td class="infoBoxContent"><br /><?php echo LABEL_ORDERS_TOTAL . ' ' . $currencies->format($referrers[$selected]['status_breakdown'][0]['total']); /*v2.1.0c*/ ?></td></tr>
+       <tr><td class="infoBoxContent"><br /><?php echo LABEL_UNPAID . ' ' . $currencies->format($referrers[$selected]['status_breakdown'][0]['unpaid_commission']); /*v2.1.0c*/ ?></td></tr>
+       <tr><td class="infoBoxContent"><br /><?php echo sprintf(LABEL_EMAIL, $referrers[$selected]['customers_email_address']); ?></td></tr>
+       <tr><td class="infoBoxContent"><br /><?php echo sprintf(LABEL_WEBSITE, $referrers[$selected]['referrer_homepage']); ?></td></tr>
+       <tr><td class="infoBoxContent"><br /><?php echo LABEL_PHONE . ' ' . $referrers[$selected]['customers_telephone']; ?></td></tr>
+       <tr><td class="infoBoxContent"><br /><?php echo ($referrercount > 0) ? ('<a href="' . zen_href_link(FILENAME_REFERRERS, 'referrer=' . $referrers[$selected]['customers_id'] . '&amp;mode=details', 'NONSSL') . '">' . zen_image_button('button_details.gif', IMAGE_DETAILS) . '</a>') : '&nbsp;'; /*v2.1.0c*/ ?></td></tr>
+      </table>
+     </td>
+    </tr>
+   </table>
+  </td>
+ </tr>
 <?php
 
 } elseif ($mode == 'details' || $mode == TEXT_APPROVE || $mode == TEXT_BAN || $mode == TEXT_UNBAN || $mode == TEXT_PAY_SELECTED || $mode == TEXT_UPDATE) { //-v2.7.0c
 
 ?>
-  <tr>
-    <td><table width="100%">
-      <tr><td width="100%" class="formAreaTitle"><br /><?php echo TEXT_REFERRER_INFO; ?></td></tr>
-      <tr>
-        <td class="formArea"><table width="100%">
-          <tr>
-            <td valign="top"><?php echo LABEL_NAME_ADDRESS; ?></td>
-            <td><?php echo nl2br(zen_address_label($referrers[$selected]['customers_id'], zen_get_customers_address_primary($referrers[$selected]['customers_id']))); ?></td>
-          </tr>
-          <tr>
-            <td><?php echo HEADING_WEBSITE . ':'; ?></td>
-            <td><a href="<?php echo 'http://' . $referrers[$selected]['referrer_homepage']; /*v2.4.1c*/ ?>" target="_blank"><?php echo $referrers[$selected]['referrer_homepage']; ?></a></td>
-          </tr>
-          <tr>
-            <td><?php echo HEADING_EMAIL . ':'; ?></td>
-            <td><a href="mailto:<?php echo $referrers[$selected]['customers_email_address']; ?>"><?php echo $referrers[$selected]['customers_email_address']; ?></a></td>
-          </tr>
-          <tr>
-            <td><?php echo LABEL_PHONE; ?></td>
-            <td><?php echo $referrers[$selected]['customers_telephone']; ?></td>
-          </tr>
-        </table></td>
-      </tr>
-      <tr><td class="formAreaTitle"><br /><?php echo TEXT_STATUS; ?></td></tr>
-      <tr>
-        <td class="formArea">
+ <tr>
+  <td>
+   <table width="100%">
+    <tr><td width="100%" class="formAreaTitle"><br /><?php echo TEXT_REFERRER_INFO; ?></td></tr>
+    <tr>
+     <td class="formArea">
+      <table width="100%">
+       <tr>
+        <td valign="top"><?php echo LABEL_NAME_ADDRESS; ?></td>
+        <td><?php echo nl2br(zen_address_label($referrers[$selected]['customers_id'], zen_get_customers_address_primary($referrers[$selected]['customers_id']))); ?></td>
+       </tr>
+       <tr>
+        <td><?php echo HEADING_WEBSITE . ':'; ?></td>
+        <td><a href="<?php echo 'http://' . $referrers[$selected]['referrer_homepage']; /*v2.4.1c*/ ?>" target="_blank"><?php echo $referrers[$selected]['referrer_homepage']; ?></a></td>
+       </tr>
+       <tr>
+        <td><?php echo HEADING_EMAIL . ':'; ?></td>
+        <td><a href="mailto:<?php echo $referrers[$selected]['customers_email_address']; ?>"><?php echo $referrers[$selected]['customers_email_address']; ?></a></td>
+       </tr>
+       <tr>
+        <td><?php echo LABEL_PHONE; ?></td>
+        <td><?php echo $referrers[$selected]['customers_telephone']; ?></td>
+       </tr>
+      </table>
+     </td>
+    </tr>
+    <tr><td class="formAreaTitle"><br /><?php echo TEXT_STATUS; ?></td></tr>
+    <tr>
+     <td class="formArea">
 <?php
 $commission_to_pay = floatval($referrers[$selected]['status_breakdown'][0]['unpaid_commission']); /*v2.1.0a*/
 
@@ -480,46 +496,55 @@ if ($referrers[$selected]['referrer_approved'] == 0) {
 }
 //-eof-v2.1.0c
 
-echo zen_draw_form('referrers', FILENAME_REFERRERS, '', 'post', '', true) . zen_draw_hidden_field ('referrer', $referrers[$selected]['customers_id']);
+echo zen_draw_form('referrers', FILENAME_REFERRERS, '', 'post', '', true);
 ?>
-        <table width="100%">
+      <input type="hidden" name="referrer" value="<?php echo $referrers[$selected]['customers_id']; ?>" />
+      <input type="hidden" name="mode" value="" />
+
+      <table width="100%">
       
-          <tr>
-            <td valign="top"><?php echo LABEL_APPROVED; ?></td>
-            <td valign="top"><?php echo ($referrers[$selected]['referrer_approved'] == 1) ? TEXT_YES : '<span class="alert">' . TEXT_NO . '</span>'; ?></td>
-            <td><input type="submit" name="mode" value="<?php echo TEXT_APPROVE; /*v2.1.0c*/ ?>"<?php echo $approve_disabled; /*v2.1.0a*/ ?> /></td>
-          </tr>
+       <tr>
+        <td valign="top"><?php echo LABEL_APPROVED; ?></td>
+        <td valign="top"><?php echo ($referrers[$selected]['referrer_approved'] == 1) ? TEXT_YES : '<span class="alert">' . TEXT_NO . '</span>'; ?></td>
+	      <td><input type="submit" name="mode" value="<?php echo TEXT_APPROVE; /*v2.1.0c*/ ?>"<?php echo $approve_disabled; /*v2.1.0a*/ ?> /></td>
+       </tr>
        
-          <tr>
-            <td valign="top"><?php echo LABEL_BANNED; ?></td>
-            <td valign="top"><?php echo ($referrers[$selected]['referrer_banned'] == 1) ? '<span class="alert">' . TEXT_YES . '</span>' : TEXT_NO; ?></td>
-            <td><input type="submit" name="mode" value="<?php echo ($referrers[$selected]['referrer_banned'] == 1) ? TEXT_UNBAN : TEXT_BAN; ?>"<?php echo $ban_disabled; /*v2.1.0a*/ ?> /></td>
-          </tr>
+       <tr>
+        <td valign="top"><?php echo LABEL_BANNED; ?></td>
+        <td valign="top"><?php echo ($referrers[$selected]['referrer_banned'] == 1) ? '<span class="alert">' . TEXT_YES . '</span>' : TEXT_NO; ?></td>
+        <td><input type="submit" name="mode" value="<?php echo ($referrers[$selected]['referrer_banned'] == 1) ? TEXT_UNBAN : TEXT_BAN; ?>"<?php echo $ban_disabled; /*v2.1.0a*/ ?> /></td>
+       </tr>
        
-          <tr>
-            <td valign="top"><?php echo LABEL_UNPAID_COMMISSION; ?></td>
-            <td valign="top"><?php echo $currencies->format($commission_to_pay); /*v2.1.0c*/ ?></td>
-            <td><input type="submit" name="mode" value="<?php echo TEXT_PAY; /*v2.1.0c*/ ?>"<?php echo $pay_disabled; /*v2.1.0a*/ ?> /></td>
-          </tr>
+       <tr>
+        <td valign="top"><?php echo LABEL_UNPAID_COMMISSION; ?></td>
+        <td valign="top"><?php echo $currencies->format($commission_to_pay); /*v2.1.0c*/ ?></td>
+        <td><input type="submit" name="mode" value="<?php echo TEXT_PAY; /*v2.1.0c*/ ?>"<?php echo $pay_disabled; /*v2.1.0a*/ ?> /></td>
+       </tr>
        
-          <tr>
-            <td valign="top"><?php echo LABEL_CURRENT_COMMISSION_RATE; ?></td>
-            <td valign="top"><input type="text" size="5" value="<?php echo $referrers[$selected]['referrer_commission'] * 100; ?>" name="commission" />%</td>
-            <td><input type="submit" name="mode" value="<?php echo TEXT_UPDATE; /*v2.1.0c*/ ?>"<?php echo $update_disabled; /*v2.1.0a*/ ?> /></td>
-          </tr>
+       <tr>
+        <td valign="top"><?php echo LABEL_CURRENT_COMMISSION_RATE; ?></td>
+        <td valign="top"><input type="text" size="5" value="<?php echo $referrers[$selected]['referrer_commission'] * 100; ?>" name="commission" />%</td>
+        <td><input type="submit" name="mode" value="<?php echo TEXT_UPDATE; /*v2.1.0c*/ ?>"<?php echo $update_disabled; /*v2.1.0a*/ ?> /></td>
+       </tr>
        
-        </table></form></td>
-      </tr>
-      <tr>
-        <td width="100%"><br />
+      </table>
+     </form>
+     </td>
+    </tr>
+    <tr>
+     <td width="100%">
+      <br>
 <?php
-echo zen_draw_form('dateform', FILENAME_REFERRERS, 'mode=details', 'get', '', true) . zen_draw_hidden_field ('referrer', $referrers[$selected]['customers_id']);
+echo zen_draw_form('dateform', FILENAME_REFERRERS, '', 'get', '', true);
 ?>
-        <table width="100%">
-          <tr>
-            <td class="formAreaTitle"><?php echo TEXT_ORDER_HISTORY; ?></td>
-            <td align="right"><?php echo TEXT_FROM . zen_draw_hidden_field ('start', $activity_begin); ?>
-              <select onchange="document.dateform.start.value = this.options[this.selectedIndex].value; document.dateform.submit();">
+      <input type="hidden" name="referrer" value="<?php echo $referrers[$selected]['customers_id']; ?>" />
+      <input type="hidden" name="mode" value="details" />
+      <table width="100%">
+       <tr>
+        <td class="formAreaTitle"><?php echo TEXT_ORDER_HISTORY; ?></td>
+        <td align="right"><?php echo TEXT_FROM; ?>
+         <input type="hidden" name="start" value="<?php echo $activity_begin; ?>" />
+         <select onchange="document.dateform.start.value = this.options[this.selectedIndex].value; document.dateform.submit();">
 <?php
 $begin = getdate($activity_begin);
 $end = getdate($activity_end);
@@ -531,8 +556,8 @@ for ($i = 1; $i <= $bound; ++$i ) {
   printf("<option value=\"%u\"%s>%s</option>\n", $timetemp, ($i == $begin['mon']) ? ' selected="selected"' : '', date('F j', $timetemp ));
 }
 ?>
-              </select>
-              <select onchange="document.dateform.start.value = this.options[this.selectedIndex].value; document.dateform.submit();">
+         </select>
+         <select onchange="document.dateform.start.value = this.options[this.selectedIndex].value; document.dateform.submit();">
 <?php
 for( $i = $today['year'] - 9; $i <= $today['year']; ++$i ) {
   $timetemp = mktime(0, 0, 0, $begin['mon'], 1, $i);
@@ -540,8 +565,9 @@ for( $i = $today['year'] - 9; $i <= $today['year']; ++$i ) {
   printf("<option value=\"%u\"%s>%s</option>\n", $timetemp, ( $i == $begin['year'] ) ? ' selected="selected"' : '', date( 'Y', $timetemp ));
 }
 ?>
-              </select><?php echo TEXT_TO . zen_draw_hidden_field ('end', $activity_end); ?>
-              <select onchange="document.dateform.end.value = this.options[this.selectedIndex].value; document.dateform.submit();">
+         </select><?php echo TEXT_TO; ?>
+         <input type="hidden" name="end" value="<?php echo $activity_end; ?>" />
+         <select onchange="document.dateform.end.value = this.options[this.selectedIndex].value; document.dateform.submit();">
 <?php
 $bound = ( $end['year'] == $today['year'] ) ? $today['mon'] : 12;
 
@@ -551,8 +577,8 @@ for( $i = 1; $i <= $bound; ++$i ) {
   printf("<option value=\"%u\"%s>%s</option>\n", $timetemp, ($i == $end['mon']) ? ' selected="selected"' : '', date( 'F j', $timetemp ));
 }
 ?>
-              </select>
-              <select onchange="document.dateform.end.value = this.options[this.selectedIndex].value; document.dateform.submit();">
+         </select>
+         <select onchange="document.dateform.end.value = this.options[this.selectedIndex].value; document.dateform.submit();">
 <?php
 $firstvalue = max($begin['year'], $today['year'] - 9);
 
@@ -562,41 +588,44 @@ for( $i = $firstvalue; $i <= $today['year']; ++$i ) {
   printf("<option value=\"%u\"%s>%s</option>\n", $timetemp, ( $i == $end['year'] ) ? ' selected="selected"' : '', date( 'Y', $timetemp ) );
 }
 ?>
-              </select>
-            </td>
-          </tr>
-        </table></form></td>
-      </tr>
-      <tr>
-      <td class="formArea"><table width="100%" cellspacing="0" cellpadding="3">
-        <tr>
-          <td class="historyHeader"><?php echo HEADING_ORDER_ID; ?></td><?php /*v2.3.0a*/ ?>
-          <td class="historyHeader"><?php echo HEADING_ORDER_DATE; ?></td>
+         </select>
+        </td>
+       </tr>
+      </table>
+     </form>
+     </td>
+    </tr>
+    <tr>
+     <td class="formArea">
+      <table width="100%" cellspacing="0" cellpadding="3">
+       <tr>
+        <td class="historyHeader"><?php echo HEADING_ORDER_ID; ?></td><?php /*v2.3.0a*/ ?>
+        <td class="historyHeader"><?php echo HEADING_ORDER_DATE; ?></td>
 <?php
 //-bof-v2.1.0a: Add order totals exclusions columns
 reset($orders_status_names);
 foreach ($orders_status_names as $order_status => $status_name) {
   if (SNAP_AFFILIATE_COMBINE_EXCLUSIONS == 'Yes' && $status_name != '' && $status_name != TEXT_NONCOMMISSIONABLE) continue;  /*v2.5.0a*/
 ?>
-          <td class="historyHeader"><?php echo HEADING_ORDER_TOTAL . $status_name; ?></td>
+        <td class="historyHeader"><?php echo HEADING_ORDER_TOTAL . $status_name; ?></td>
 <?php
 }
 //-eof-v2.1.0a
 ?>
-          <td class="historyHeader"><?php echo HEADING_COMMISSION_RATE; ?></td>
+        <td class="historyHeader"><?php echo HEADING_COMMISSION_RATE; ?></td>
 <?php
 //-bof-v2.1.0a: Add order totals exclusions columns
 reset($orders_status_names);
 foreach ($orders_status_names as $order_status => $status_name) {
   if (SNAP_AFFILIATE_COMBINE_EXCLUSIONS == 'Yes' && $status_name != '' && $status_name != TEXT_NONCOMMISSIONABLE) continue;  /*v2.5.0a*/
 ?>
-          <td class="historyHeader"><?php echo HEADING_COMMISSION_TOTAL . $status_name; ?></td>
+        <td class="historyHeader"><?php echo HEADING_COMMISSION_TOTAL . $status_name; ?></td>
 <?php
 }
 //-eof-v2.1.0a
 ?>
-          <td class="historyHeader"><?php echo HEADING_COMMISSION_PAY_DATE; ?></td>
-        </tr>
+        <td class="historyHeader"><?php echo HEADING_COMMISSION_PAY_DATE; ?></td>
+       </tr>
 <?php
 $toggle = 'A';
 
@@ -610,9 +639,9 @@ foreach( $referrers[$selected]['orders'] as $order ) {
     $total = 0;
   }
 ?>
-        <tr>
-          <td class="history<?php echo $toggle; ?>"><a href="<?php echo zen_href_link(FILENAME_ORDERS, 'oID=' . $order['orders_id'] . '&action=edit', 'NONSSL'); ?>"><?php echo $order['orders_id']; ?></a></td><?php /*v2.3.0a*/ ?>
-          <td class="history<?php echo $toggle; ?>"><?php echo $order['date_purchased']; ?></td>
+       <tr>
+        <td class="history<?php echo $toggle; ?>"><a href="<?php echo zen_href_link(FILENAME_ORDERS, 'oID=' . $order['orders_id'] . '&action=edit', 'NONSSL'); ?>"><?php echo $order['orders_id']; ?></a></td><?php /*v2.3.0a*/ ?>
+        <td class="history<?php echo $toggle; ?>"><?php echo $order['date_purchased']; ?></td>
 <?php
 //-bof-v2.1.0a: Add order totals exclusions columns
 reset($orders_status_names);
@@ -626,12 +655,12 @@ foreach($orders_status_names as $current_orders_status => $status_name) {
   }
 //-eof-a-v2.5.0
 ?>
-          <td class="center history<?php echo $toggle; ?>"><?php echo $currencies->format( ($current_orders_status === $orders_status) ? $total : 0 ); /*v2.5.0c*/ ?></td>
+        <td class="center history<?php echo $toggle; ?>"><?php echo $currencies->format( ($current_orders_status === $orders_status) ? $total : 0 ); /*v2.5.0c*/ ?></td>
 <?php
 }
 //-eof-v2.1.0a
 ?>
-          <td class="center history<?php echo $toggle; ?>"><?php echo $commission * 100; ?>%</td>  <?php /*v2.5.0c, add 'center' */ ?>
+        <td class="center history<?php echo $toggle; ?>"><?php echo $commission * 100; ?>%</td>  <?php /*v2.5.0c, add 'center' */ ?>
 <?php
 //-bof-v2.1.0a: Add order totals exclusions columns
 reset($orders_status_names);
@@ -652,54 +681,59 @@ foreach($orders_status_names as $current_orders_status => $status_name) {
     
   }
 ?>
-          <td class="center history<?php echo $toggle; ?>"><?php echo $currencies->format ( $commission_value ); ?></td> <?php /*v2.5.0c, add 'center' */ ?>
+        <td class="center history<?php echo $toggle; ?>"><?php echo $currencies->format ( $commission_value ); ?></td> <?php /*v2.5.0c, add 'center' */ ?>
 <?php
 //-eof-v2.7.0c
 }
 //-eof-v2.1.0a
 ?>
-          <td class="history<?php echo $toggle; ?>"><?php echo ($order['commission_paid'] == '0000-00-00 00:00:00') ? TEXT_UNPAID : $order['commission_paid']; ?></td>
-        </tr>
+        <td class="history<?php echo $toggle; ?>"><?php echo ($order['commission_paid'] == '0000-00-00 00:00:00') ? TEXT_UNPAID : $order['commission_paid']; ?></td>
+       </tr>
 <?php
   $toggle = ($toggle == 'A') ? 'B' : 'A';
 }
 
 ?>
-        <tr>
-          <td class="historyFooter" colspan="2"><?php echo HEADING_TOTALS; ?></td><?php /*v2.3.0c*/ ?>
+       <tr>
+        <td class="historyFooter" colspan="2"><?php echo HEADING_TOTALS; ?></td><?php /*v2.3.0c*/ ?>
 <?php
 //-bof-v2.1.0a: Add order totals exclusions columns
 reset($referrers[$selected]['status_breakdown']);
 foreach($referrers[$selected]['status_breakdown'] as $order_status => $current_totals) {  /*v2.5.0c*/
   if (SNAP_AFFILIATE_COMBINE_EXCLUSIONS == 'Yes' && $order_status !== 0 && $order_status != '*') continue;  /*v2.5.0a*/
 ?>
-          <td class="center historyFooter"><?php echo $currencies->format( $current_totals['total'] ); ?></td>  <?php /*v2.5.0c, add 'center' */ ?>
+        <td class="center historyFooter"><?php echo $currencies->format( $current_totals['total'] ); ?></td>  <?php /*v2.5.0c, add 'center' */ ?>
 <?php
 }
 //-eof-v2.1.0a
 ?>
-          <td class="historyFooter">&nbsp;</td>
+	      <td class="historyFooter">&nbsp;</td>
 <?php
 //-bof-v2.1.0a: Add order totals exclusions columns
 reset($referrers[$selected]['status_breakdown']);
 foreach ($referrers[$selected]['status_breakdown'] as $order_status => $current_totals) {  /*v2.5.0c*/
   if (SNAP_AFFILIATE_COMBINE_EXCLUSIONS == 'Yes' && $order_status !== 0 && $order_status != '*') continue;  /*v2.5.0a*/
 ?>
-          <td class="center historyFooter"><?php echo $currencies->format( $current_totals['commission_total'] ); ?></td> <?php /*v2.5.0c, add 'center' */ ?>
+        <td class="center historyFooter"><?php echo $currencies->format( $current_totals['commission_total'] ); ?></td> <?php /*v2.5.0c, add 'center' */ ?>
 <?php
 }
 //-eof-v2.1.0a
 ?>
-          <td class="historyFooter">&nbsp;</td>
-        </tr>
+	      <td class="historyFooter">&nbsp;</td>
+       </tr>
 
-        </table></td>
-      </tr>
-      <tr>
-        <td width="100%" align='right'><br /><?php echo "<a href='" . zen_href_link(FILENAME_REFERRERS, 'referrer=' . $referrers[$selected]['customers_id'], 'NONSSL') . "'>" . zen_image_button('button_cancel.gif', IMAGE_CANCEL) . "</a>"; ?></td>
-      </tr>
-    </table></td>
-  </tr>
+      </table>
+     </td>
+    </tr>
+    <tr>
+     <td width="100%" align='right'>
+      <br>
+      <?php echo "<a href='" . zen_href_link(FILENAME_REFERRERS, 'referrer=' . $referrers[$selected]['customers_id'], 'NONSSL') . "'>" . zen_image_button('button_cancel.gif', IMAGE_CANCEL) . "</a>"; ?>
+     </td>
+    </tr>
+   </table>
+  </td>
+ </tr>
 <?php
 //-bof-v2.7.0
 } elseif ($mode == TEXT_PAY) {
@@ -709,22 +743,22 @@ foreach ($referrers[$selected]['status_breakdown'] as $order_status => $current_
       <tr><td width="100%" class="formAreaTitle"><br /><?php echo TEXT_REFERRER_INFO; ?></td></tr>
       <tr>
         <td class="formArea"><table width="100%">
-          <tr>
-            <td valign="top"><?php echo LABEL_NAME_ADDRESS; ?></td>
-            <td><?php echo nl2br(zen_address_label($referrers[$selected]['customers_id'], zen_get_customers_address_primary($referrers[$selected]['customers_id']))); ?></td>
-          </tr>
-          <tr>
-            <td><?php echo HEADING_WEBSITE . ':'; ?></td>
-            <td><a href="<?php echo 'http://' . $referrers[$selected]['referrer_homepage']; /*v2.4.1c*/ ?>" target="_blank"><?php echo $referrers[$selected]['referrer_homepage']; ?></a></td>
-          </tr>
-          <tr>
-            <td><?php echo HEADING_EMAIL . ':'; ?></td>
-            <td><a href="mailto:<?php echo $referrers[$selected]['customers_email_address']; ?>"><?php echo $referrers[$selected]['customers_email_address']; ?></a></td>
-          </tr>
-          <tr>
-            <td><?php echo LABEL_PHONE; ?></td>
-            <td><?php echo $referrers[$selected]['customers_telephone']; ?></td>
-          </tr>
+         <tr>
+          <td valign="top"><?php echo LABEL_NAME_ADDRESS; ?></td>
+          <td><?php echo nl2br(zen_address_label($referrers[$selected]['customers_id'], zen_get_customers_address_primary($referrers[$selected]['customers_id']))); ?></td>
+         </tr>
+         <tr>
+          <td><?php echo HEADING_WEBSITE . ':'; ?></td>
+          <td><a href="<?php echo 'http://' . $referrers[$selected]['referrer_homepage']; /*v2.4.1c*/ ?>" target="_blank"><?php echo $referrers[$selected]['referrer_homepage']; ?></a></td>
+         </tr>
+         <tr>
+          <td><?php echo HEADING_EMAIL . ':'; ?></td>
+          <td><a href="mailto:<?php echo $referrers[$selected]['customers_email_address']; ?>"><?php echo $referrers[$selected]['customers_email_address']; ?></a></td>
+         </tr>
+         <tr>
+          <td><?php echo LABEL_PHONE; ?></td>
+          <td><?php echo $referrers[$selected]['customers_telephone']; ?></td>
+         </tr>
         </table></form></td>
       </tr>
       <tr><td width="100%" class="formAreaTitle"><br /><?php echo TEXT_CHOOSE_COMMISSIONS; ?></td></tr>
@@ -779,7 +813,7 @@ foreach ($referrers[$selected]['status_breakdown'] as $order_status => $current_
       </tr>
       <tr>
         <td width="100%" align="right">
-          <br><?php echo "<a href='" . zen_href_link (FILENAME_REFERRERS, 'referrer=' . $referrers[$selected]['customers_id'] . '&mode=details') . "'>" . zen_image_button('button_cancel.gif', IMAGE_CANCEL) . "</a>"; ?>
+          <br><?php echo "<a href='" . zen_href_link (FILENAME_REFERRERS, 'referrer=' . $referrers[$selected]['customers_id'] . '&amp;mode=details') . "'>" . zen_image_button('button_cancel.gif', IMAGE_CANCEL) . "</a>"; ?>
         </td>
       </tr>
     </table></td>
