@@ -2,7 +2,7 @@
 // +----------------------------------------------------------------------+
 // | Snap Affiliates for Zen Cart v1.5.0 and later                        |
 // +----------------------------------------------------------------------+
-// | Copyright (c) 2013-2014, Vinos de Frutas Tropicales (lat9)           |
+// | Copyright (c) 2013-2015, Vinos de Frutas Tropicales (lat9)           |
 // |                                                                      |
 // | Original: Copyright (c) 2009 Michael Burke                           |
 // | http://www.filterswept.com                                           |
@@ -12,16 +12,8 @@
 // +----------------------------------------------------------------------+
 
 function get_var($name) {
-  $result = '';
+  return (isset ($_POST[$name])) ? $_POST[$name] : ((isset ($_GET[$name])) ? $_GET[$name] : '');
 
-  if( isset( $_GET[$name] ) ) {
-    $result = $_GET[$name];
-
-  } else if( isset( $_POST[$name] ) ) {
-    $result = $_POST[$name];
-  }
-
-  return $result;
 }
 
 function send_notification_email($referrer, $subject, $text, $html) {
@@ -54,19 +46,21 @@ $currencies = new currencies();
 
 $results = $db->Execute("SELECT count(*) AS count FROM " . TABLE_REFERRERS);
 $referrercount = ($results->EOF) ? 0 : intval($results->fields['count']);
-
+$selectedID = (int)get_var('referrer');
+$mode = get_var('mode');
+$and_clause = ($mode == '') ? '' : " AND r.referrer_customers_id = $selectedID";
 $query = "SELECT c.customers_id, c.customers_firstname, c.customers_lastname, c.customers_email_address, c.customers_telephone, r.referrer_customers_id, r.referrer_key, r.referrer_homepage, r.referrer_approved, r.referrer_banned, r.referrer_commission
             FROM " . TABLE_CUSTOMERS ." c, " . TABLE_REFERRERS . " r 
-            WHERE c.customers_id = r.referrer_customers_id 
-            ORDER BY c.customers_lastname";  /*v2.1.0c*/
-$referrer_split = new splitPageResults($_GET['page'], SNAP_MAX_REFERRER_DISPLAY, $query, $referrer_query_numrows);  /*v2.1.0a*/
+            WHERE c.customers_id = r.referrer_customers_id$and_clause 
+            ORDER BY c.customers_lastname, c.customers_firstname, c.customers_id";  /*v2.1.0c*/
+if ($mode == '') {
+  $referrer_split = new splitPageResults($_GET['page'], SNAP_MAX_REFERRER_DISPLAY, $query, $referrer_query_numrows);  /*v2.1.0a*/
+}
           
 $referrerResults = $db->Execute($query);
 $referrers = array();
-$selectedID = get_var('referrer');
-$mode = get_var('mode');
+
 $selected = 0;
-$referrersdisplayed = 0;
 $pay_message = '';  //-v2.7.0a
 
 $today = getdate();
@@ -130,8 +124,7 @@ $orders_status_names[0] = '';
 //
 while (!$referrerResults->EOF) {
   $idx = count($referrers);
-  $referrersdisplayed++;
-
+  
   array_push($referrers, $referrerResults->fields);
   $referrers[$idx]['status_breakdown'] = $orders_by_status;  /*v2.1.0a*/
 
@@ -304,7 +297,7 @@ switch($mode) {
         
         $messageStack->add_session (sprintf (SUCCESS_PAYMENT_MADE, $total_paid_formatted, $referrers[$selected]['customers_firstname'], $referrers[$selected]['customers_lastname']), 'success');
         
-        zen_redirect (zen_href_link (FILENAME_REFERRERS, 'referrer=' . $referrers[$selected]['customers_id'] . '&amp;mode=details'));
+        zen_redirect (zen_href_link (FILENAME_REFERRERS, 'referrer=' . $referrers[$selected]['customers_id'] . '&mode=details' . ((get_var ('page') != '') ? ('&page=' . (int)get_var ('page')) : '')));
         
       }
     }
@@ -398,7 +391,7 @@ if ($mode == '' || $mode == 'summary') {
 foreach ($referrers as $referrer) {
   $current_selection = ($referrers[$selected] == $referrer);
 ?>
-       <tr class="dataTableRow<?php echo ($current_selection) ? 'Selected' : ''; ?>" onmouseover="rowOverEffect(this);" onmouseout="rowOutEffect(this);" onclick="document.location.href='<?php echo zen_href_link(FILENAME_REFERRERS, zen_get_all_get_params(array('action')) . 'referrer=' . $referrer['customers_id'] . '&amp;mode=details', 'NONSSL'); ?>'">
+       <tr class="dataTableRow<?php echo ($current_selection) ? 'Selected' : ''; ?>" onmouseover="rowOverEffect(this);" onmouseout="rowOutEffect(this);" onclick="document.location.href='<?php echo zen_href_link(FILENAME_REFERRERS, 'referrer=' . $referrer['customers_id'] . '&mode=details' . ((get_var ('page') == '') ? '' : ('&page=' . (int)get_var ('page'))), 'NONSSL'); ?>'">
         <td class="dataTableContent"><?php echo $referrer['customers_lastname']; ?></td>
         <td class="dataTableContent"><?php echo $referrer['customers_firstname']; ?></td>
         <td class="dataTableContent"><?php echo $referrer['customers_email_address']; ?></td>  <?php /*v2.7.1a*/ ?>
@@ -436,7 +429,7 @@ $home_page_link = zen_catalog_href_link (FILENAME_DEFAULT, 'referrer=' . $referr
        <tr><td class="infoBoxContent"><br /><?php echo sprintf(LABEL_EMAIL, $referrers[$selected]['customers_email_address']); ?></td></tr>
        <tr><td class="infoBoxContent"><br /><?php echo sprintf(LABEL_WEBSITE, $referrers[$selected]['referrer_homepage']); ?></td></tr>
        <tr><td class="infoBoxContent"><br /><?php echo LABEL_PHONE . ' ' . $referrers[$selected]['customers_telephone']; ?></td></tr>
-       <tr><td class="infoBoxContent"><br /><?php echo ($referrercount > 0) ? ('<a href="' . zen_href_link(FILENAME_REFERRERS, 'referrer=' . $referrers[$selected]['customers_id'] . '&amp;mode=details', 'NONSSL') . '">' . zen_image_button('button_details.gif', IMAGE_DETAILS) . '</a>') : '&nbsp;'; /*v2.1.0c*/ ?></td></tr>
+       <tr><td class="infoBoxContent"><br /><?php echo ($referrercount > 0) ? ('<a href="' . zen_href_link(FILENAME_REFERRERS, 'referrer=' . $referrers[$selected]['customers_id'] . '&mode=details' . ((get_var ('page') == '') ? '' : ('&page=' . (int)get_var ('page'))), 'NONSSL') . '">' . zen_image_button('button_details.gif', IMAGE_DETAILS) . '</a>') : '&nbsp;'; /*v2.1.0c*/ ?></td></tr>
       </table>
      </td>
     </tr>
@@ -497,9 +490,11 @@ if ($referrers[$selected]['referrer_approved'] == 0) {
 //-eof-v2.1.0c
 
 echo zen_draw_form('referrers', FILENAME_REFERRERS, '', 'post', '', true);
+if (get_var ('page') != '') {
+  echo zen_draw_hidden_field ('page', (int)get_var ('page'));
+}
 ?>
       <input type="hidden" name="referrer" value="<?php echo $referrers[$selected]['customers_id']; ?>" />
-      <input type="hidden" name="mode" value="" />
 
       <table width="100%">
       
@@ -535,10 +530,12 @@ echo zen_draw_form('referrers', FILENAME_REFERRERS, '', 'post', '', true);
      <td width="100%">
       <br>
 <?php
-echo zen_draw_form('dateform', FILENAME_REFERRERS, '', 'get', '', true);
+echo zen_draw_form('dateform', FILENAME_REFERRERS, '', 'get', '', true) . zen_draw_hidden_field ('referrer', $referrers[$selected]['customers_id']) . zen_draw_hidden_field ('mode', 'details');
+if (get_var ('page') != '') {
+  echo zen_draw_hidden_field ('page', (int)get_var ('page'));
+  
+}
 ?>
-      <input type="hidden" name="referrer" value="<?php echo $referrers[$selected]['customers_id']; ?>" />
-      <input type="hidden" name="mode" value="details" />
       <table width="100%">
        <tr>
         <td class="formAreaTitle"><?php echo TEXT_ORDER_HISTORY; ?></td>
@@ -728,7 +725,7 @@ foreach ($referrers[$selected]['status_breakdown'] as $order_status => $current_
     <tr>
      <td width="100%" align='right'>
       <br>
-      <?php echo "<a href='" . zen_href_link(FILENAME_REFERRERS, 'referrer=' . $referrers[$selected]['customers_id'], 'NONSSL') . "'>" . zen_image_button('button_cancel.gif', IMAGE_CANCEL) . "</a>"; ?>
+      <?php echo "<a href='" . zen_href_link(FILENAME_REFERRERS, 'referrer=' . $referrers[$selected]['customers_id'] . ((get_var ('page') != '') ? ('&page=' . (int)get_var ('page')) : ''), 'NONSSL') . "'>" . zen_image_button('button_cancel.gif', IMAGE_CANCEL) . "</a>"; ?>
      </td>
     </tr>
    </table>
@@ -770,7 +767,15 @@ foreach ($referrers[$selected]['status_breakdown'] as $order_status => $current_
   }
 ?>
       <tr>
-        <td class="formArea"><?php echo zen_draw_form('referrers', FILENAME_REFERRERS, '', 'post', '', true) . zen_draw_hidden_field ('referrer', $referrers[$selected]['customers_id']); ?><table width="100%" cellspacing="0" cellpadding="3">
+        <td class="formArea">
+<?php 
+  echo zen_draw_form('referrers', FILENAME_REFERRERS, '', 'post', '', true) . zen_draw_hidden_field ('referrer', $referrers[$selected]['customers_id']);
+  if (get_var ('page') != '') {
+    echo zen_draw_hidden_field ('page', (int)get_var ('page'));
+    
+  }
+?>
+        <table width="100%" cellspacing="0" cellpadding="3">
           <tr>
             <td class="historyHeader center"><?php echo HEADING_CHOOSE; ?></td>
             <td class="historyHeader center"><?php echo HEADING_ORDER_ID; ?></td>
@@ -813,7 +818,7 @@ foreach ($referrers[$selected]['status_breakdown'] as $order_status => $current_
       </tr>
       <tr>
         <td width="100%" align="right">
-          <br><?php echo "<a href='" . zen_href_link (FILENAME_REFERRERS, 'referrer=' . $referrers[$selected]['customers_id'] . '&amp;mode=details') . "'>" . zen_image_button('button_cancel.gif', IMAGE_CANCEL) . "</a>"; ?>
+          <br><?php echo "<a href='" . zen_href_link (FILENAME_REFERRERS, 'referrer=' . $referrers[$selected]['customers_id'] . '&mode=details' . ((get_var ('page') != '') ? ('&page=' . (int)get_var ('page')) : '')) . "'>" . zen_image_button('button_cancel.gif', IMAGE_CANCEL) . "</a>"; ?>
         </td>
       </tr>
     </table></td>
