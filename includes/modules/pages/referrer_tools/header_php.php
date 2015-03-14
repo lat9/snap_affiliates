@@ -1,8 +1,8 @@
 <?php
 // +---------------------------------------------------------------------------+
-// |Snap Affiliates for Zen Cart                                               |
+// | Snap Affiliates for Zen Cart v1.5.0 and later.                            |
 // +---------------------------------------------------------------------------+
-// | Copyright (c) 2013-2015, Vinos de Frutas Tropicales (lat9) for ZC 1.5.0+  |
+// | Copyright (c) 2013-2015, Vinos de Frutas Tropicales (lat9)                |
 // |                                                                           |
 // | Original: Copyright (c) 2009 Michael Burke                                |
 // | http://www.filterswept.com                                                |
@@ -44,7 +44,7 @@ if (SNAP_AFFILIATE_IMAGES != '') {
       $height = $fileinfo[1];
       $extension = $fileinfo[2];
       $filenames = glob (DIR_WS_IMAGES_REFERRERS . "ref*.$width.$height.$extension");
-      if ($filenames !== false {
+      if ($filenames !== false) {
         foreach ($filenames as $filename) {
           $snap_banners[] = array ( 'name' => $filename, 'width' => $width, 'height' => $height );
         }

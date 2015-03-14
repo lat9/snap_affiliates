@@ -10,8 +10,8 @@
 if (!defined('IS_ADMIN_FLAG')) {
     die('Illegal Access');
 }
-define('SNAP_MODULE_CURRENT_VERSION', '2.8.2');
-define('SNAP_MODULE_UPDATE_DATE', '2015-02-26');
+define('SNAP_MODULE_CURRENT_VERSION', '3.0.0');
+define('SNAP_MODULE_UPDATE_DATE', '2015-03-14');
 
 //----
 // Create each of the database tables for the referrers plugin, if they don't already exist.
@@ -51,6 +51,17 @@ if (!$sniffer->field_exists (TABLE_COMMISSION, 'commission_manual')) {
   $db->Execute ("ALTER TABLE " . TABLE_COMMISSION . " ADD COLUMN commission_manual tinyint(1) NOT NULL default '0'");
 }
 //-eof-v2.7.0a
+
+//-bof-20150304-lat9-Add fields for commission payment type
+if (!$sniffer->field_exists (TABLE_REFERRERS, 'referrer_payment_type')) {
+  $db->Execute ("ALTER TABLE " . TABLE_REFERRERS . " ADD COLUMN referrer_payment_type char(2) NOT NULL default 'CM', ADD COLUMN referrer_payment_type_detail varchar(255) NOT NULL default ''");
+  
+}
+if (!$sniffer->field_exists (TABLE_COMMISSION, 'commission_payment_type')) {
+  $db->Execute ("ALTER TABLE " . TABLE_COMMISSION . " ADD COLUMN commission_payment_type char(2) NOT NULL default 'CM', ADD COLUMN commission_payment_type_detail varchar(255) NOT NULL default ''");
+  
+}
+//-eof-20150304-lat9
 
 //----
 // Create the Configuration->Affiliate Program item, if it's not already there.
@@ -112,7 +123,8 @@ if (!defined('SNAP_MODULE_VERSION') || SNAP_MODULE_VERSION !== $currentVersion) 
     array ( 'version' => '2.1.0', 'title' => 'Order Status Exclusions', 'key' => 'SNAP_ORDER_STATUS_EXCLUSIONS', 'value' => '', 'description' => 'Exclude orders with the following <em>Order Status</em> values from affiliate commissions. Specify the values as a packed (i.e. no spaces) comma-separated list.<br /><br />Default: <br /><br />', 'sort_order' => 26, 'use_function' => 'NULL', 'set_function' => 'NULL'), /*v2.1.0a*/
     array ( 'version' => '2.2.0', 'title' => 'Cookie Lifetime', 'key' => 'SNAP_COOKIE_LIFETIME', 'value' => 60*60*24*365, 'description' => 'Specify the lifetime, <strong>in seconds</strong>, of the cookie that is set when a customer enters your store via an affiliate\'s link.  As long as this cookie is set in the customer\'s browser cache, the affiliate (if approved and not banned) will receive a commission for any purchase made by the customer.<br /><br />Default: <strong>' . 60*60*24*365 . ' (60*60*24*365, i.e. one year)</strong><br /><br />', 'sort_order' => 30, 'use_function' => 'NULL', 'set_function' => 'NULL'), /*v2.2.0a*/
     array ( 'version' => '2.3.0', 'title' => 'Purchases Per Cookie', 'key' => 'SNAP_AFFILIATE_COOKIE_PURCHASES', 'value' => 'All', 'description' => 'Choose the number of purchases that a customer can make on a single affiliate cookie, either <em>All</em> or <em>One</em>. If you choose <em>All</em>, then all purchases by the customer within the "Cookie Lifetime" will result in a commission to the associated affiliate. If you choose <em>One</em>, the customer\'s affiliate cookie is deleted upon completion of their first purchase within the affiliate cookie\'s lifetime.<br /><br />Default: <strong>All</strong>.', 'sort_order' => 35, 'use_function' => 'NULL', 'set_function' => 'zen_cfg_select_option(array(\'All\', \'One\'),'), /*v2.3.0a*/
-    array ( 'version' => '2.4.0', 'title' => 'Combine Exclusions on Referrers Page?', 'key' => 'SNAP_AFFILIATE_COMBINE_EXCLUSIONS', 'value' => 'No', 'description' => 'If your store has a number of <em>Order Status Exclusions</em>, the display on a <em>Customers-&gt;Referrers</em> details page can get overloaded. To combine the "Order Total" and "Commission Total" values associated with <strong>all</strong> the <em>Order Status Exclusions</em> into a single column, choose <b>Yes</b>.  Choose <b>No</b> to display every "Order Status" value in a separate column.<br /><br />Default: <strong>No</strong>.', 'sort_order' => 35, 'use_function' => 'NULL', 'set_function' => 'zen_cfg_select_option(array(\'Yes\', \'No\'),'), /*v2.4.0a*/
+    array ( 'version' => '2.4.0', 'title' => 'Combine Exclusions on Referrers Page?', 'key' => 'SNAP_AFFILIATE_COMBINE_EXCLUSIONS', 'value' => 'No', 'description' => 'If your store has a number of <em>Order Status Exclusions</em>, the display on a <em>Customers-&gt;Referrers</em> details page can get overloaded. To combine the "Order Total" and "Commission Total" values associated with <strong>all</strong> the <em>Order Status Exclusions</em> into a single column, choose <b>Yes</b>.  Choose <b>No</b> to display every "Order Status" value in a separate column.<br /><br />Default: <strong>No</strong>.', 'sort_order' => 36, 'use_function' => 'NULL', 'set_function' => 'zen_cfg_select_option(array(\'Yes\', \'No\'),'), /*v2.4.0a*/
+    array ( 'version' => '3.0.0', 'title' => 'Enable PayPal&reg; Commission Payment Method?', 'key' => 'SNAP_ENABLE_PAYMENT_CHOICE_PAYPAL', 'value' => 'No', 'description' => 'Do you want to enable your referrers to choose to receive their commission payments via PayPal? If set to <em>Yes</em>, a referrer will be prompted to enter their PayPal account email address upon making that selection.<br /><br /><b>Note:</b> PayPal payments are <em>not</em> paid automatically.  You must sign into your PayPal account to send money to your referrers\' accounts.<br /><br />Default: <strong>No</strong>.', 'sort_order' => 50, 'use_function' => 'NULL', 'set_function' => 'zen_cfg_select_option(array(\'Yes\', \'No\'),'),
   );
 
   $installedVersion = (defined('SNAP_MODULE_VERSION')) ? SNAP_MODULE_VERSION : '0';  /*v2.1.2c*/

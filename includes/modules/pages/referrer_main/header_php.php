@@ -1,14 +1,14 @@
 <?php
-// +----------------------------------------------------------------------+
-// |Snap Affiliates for Zen Cart                                          |
-// +----------------------------------------------------------------------+
-// | Copyright (c) 2013, Vinos de Frutas Tropicales (lat9) for ZC 1.5.0+  |
-// |                                                                      |
-// | Original: Copyright (c) 2009 Michael Burke                           |
-// | http://www.filterswept.com                                           |
-// |                                                                      |
-// | This source file is subject to version 2.0 of the GPL license.       |
-// +----------------------------------------------------------------------+
+// +---------------------------------------------------------------------------+
+// |Snap Affiliates for Zen Cart                                               |
+// +---------------------------------------------------------------------------+
+// | Copyright (c) 2013-2015, Vinos de Frutas Tropicales (lat9) for ZC 1.5.0+  |
+// |                                                                           |
+// | Original: Copyright (c) 2009 Michael Burke                                |
+// | http://www.filterswept.com                                                |
+// |                                                                           |
+// | This source file is subject to version 2.0 of the GPL license.            |
+// +---------------------------------------------------------------------------+
 
 require(DIR_WS_MODULES . zen_get_module_directory('require_languages.php'));
 
@@ -97,13 +97,13 @@ if (!$is_logged_in) {
 
       $no_status_exclusions = (sizeof($status_exclude_array) == 1 && $status_exclude_array[0] == '') ? true : false;  /*v2.5.1a*/
       
-      $query = "SELECT o.orders_id, o.date_purchased, o.order_total, c.commission_paid, c.commission_rate, o.orders_status, c.commission_paid_amount
+      $query = "SELECT o.orders_id, o.date_purchased, o.order_total, c.commission_paid, c.commission_rate, o.orders_status, c.commission_paid_amount, c.commission_payment_type, c.commission_payment_type_detail
 	                FROM ". TABLE_ORDERS ." o, " . TABLE_COMMISSION . " c 
                   WHERE c.commission_referrer_key = '" . $referrer->fields['referrer_key'] . "' 
                     AND o.orders_id = c.commission_orders_id"; /*v2.1.0c*/
 
       $orders = $db->Execute($query);      
- 
+      $payment_types = $snap_order_observer->get_snap_payment_types ();
       while (!$orders->EOF) {
         $commission = floatval($orders->fields['commission_rate']);
         $purchase_date = strtotime($orders->fields['date_purchased']);
@@ -156,8 +156,13 @@ if (!$is_logged_in) {
           if ($activity_begin < $current_date && $current_date < $activity_end) {  /*v2.5.0c*/
             $activity_total += $current_amount;
             $activity_commission += $commission_paid;
-
-            array_push( $activity, array('amount' => $current_amount, 'date' => $purchase_date, 'paid' => $current_date, 'commission' => $commission, 'commission_calculated' => $commission_calculated, 'commission_paid' => $commission_paid) );
+            $commission_payment_type = (isset ($payment_types[$orders->fields['commission_payment_type']])) ? $payment_types[$orders->fields['commission_payment_type']]['text'] : TEXT_UNKNOWN;
+            $commission_payment_type_detail = '';
+            if ($commission_payment_type != TEXT_UNKNOWN && zen_not_null ($orders->fields['commission_payment_type_detail'])) {
+              $commission_payment_type_detail = ' (' . $orders->fields['commission_payment_type_detail'] . ')';
+              
+            }
+            array_push( $activity, array('amount' => $current_amount, 'date' => $purchase_date, 'paid' => $current_date, 'commission' => $commission, 'commission_calculated' => $commission_calculated, 'commission_paid' => $commission_paid, 'payment_type' => $commission_payment_type, 'payment_type_detail' => $commission_payment_type_detail) );
           }
           
         }  /*v2.5.0a*/

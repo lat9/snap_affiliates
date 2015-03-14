@@ -14,7 +14,6 @@ h1 { font-size: 20px; }
 h2 { font-size: 16px; background-color: #bcbcbc; padding: 10px; }
 h3 { font-size: 14px; background-color: #dcdcdc; padding: 5px; }
 h4 { font-size: 12px; border-top: 1px solid #ababab; }
-code { padding-left: 25px; }
 dt { font-weight: bold; margin-bottom: 0; }
 dd { margin-top: 0; padding-left: 40px; }
 img { margin-left: 20px; width: 95%; max-width: 95%; }
@@ -38,7 +37,7 @@ ul li ul { padding-left: 0; }
 <body>
 <a name="top" id="top"></a>
 <h1>Snap Affiliates for Zen Cart 1.5.0 through 1.5.4</h1>
-<h3>Version 2.8.2 by lat9</h3>
+<h3>Version 3.0.0 by lat9</h3>
 <p>Copyright &copy; 2013-2015 Vinos de Frutas Tropicales</p>
 <p>Current support thread at Zen Cart Forums: <a href="http://www.zen-cart.com/showthread.php?206579-Snap-Affiliates-v2-0-for-Zen-Cart-v1-5-0-and-later" target="_blank">www.zen-cart.com/showthread.php?206579-Snap-Affiliates-v2-0-for-Zen-Cart-v1-5-0-and-later</a>.  This software is provided for your use under the GNU General Public License v2.0.</p>
 
@@ -52,7 +51,8 @@ ul li ul { padding-left: 0; }
 <h2>What it does</h2>
 <p>This plugin enables your store to have an &quot;Affiliate Program&quot; where an authorized affiliate can receive a commission for any sales that they "drive" to your store. To become an authorized affiliate, the affiliate must create an account with your store and then submit to you (via the link to the <em>referrer_signup</em> page at either <em>My Account-&gt;Sign Me Up Today</em> or the link provided by the <a href="#sidebox">Information Sidebox</a>) the website from which they intend to promote your store. You'll receive an email informing you of the signup and you can authorize the affiliate using an admin-level <a href="#acr">tool</a>.</p>
 <p>Once authorized, the affiliate can access your site's <em>referrer_tools</em> and <em>referrer_main</em> pages via links from their <em>account</em> page &mdash; <em>My Account-&gt;Affiliate Marketing Tools</em> and <em>My Account-&gt;Orders and Payments</em>, respectively &mdash; to view a snapshot of their current commission history and access the information necessary to include their <em>affiliate key</em> in links from their store to yours.  The affiliate links include a variable named <em>referrer</em> that identifies the affiliate's <em>affiliate key</em> which is created once you approve the affiliate's sign-up.</p>
-<p>When one of your store's affiliates' customers clicks on an affiliate link, your store's customization detects the <em>referrer</em> variable and creates a cookie named <em>referrer_key</em> that contains the affiliate's key value.  The cookie's lifetime is 1 year (31536000 seconds); you can change this value by editing the SNAP_COOKIE_LIFETIME value present in the file /includes/init_includes/init_snap.php for versions prior to v2.2.0; starting with v2.2.0, this value can be modified via an admin <a href="#lifetime">configuration</a>.  Each time a customer comes to your store with the <em>referrer</em> variable in the link, the <em>referrer_key</em> cookie is overwritten.  So long as the cookie's lifetime has not expired, the customer has not cleared their browser cache and/or cookies and the affiliate is still in "good standing" (i.e. has not been banned), any purchase that the customer makes on your website results in an earned commission for that affiliate. Starting with v2.3.0, you can limit the number of customer purchases for which an affiliate receives a commission; see <a href="#purchases">Purchases Per Cookie</a> for more information.</p>
+<p>When one of your store's affiliates' customers clicks on an affiliate link, your store's customization detects the <em>referrer</em> variable and creates a cookie named <em>referrer_key</em> that contains the affiliate's key value.  The cookie's lifetime is 1 year (31536000 seconds); you can change this value via an admin <a href="#lifetime">configuration</a>.  Each time a customer comes to your store with the <em>referrer</em> variable in the link, the <em>referrer_key</em> cookie is overwritten.  So long as the cookie's lifetime has not expired, the customer has not cleared their browser cache and/or cookies and the affiliate is still in "good standing" (i.e. has not been banned), any purchase that the customer makes on your website results in an earned commission for that affiliate. Starting with v2.3.0, you can limit the number of customer purchases for which an affiliate receives a commission; see <a href="#purchases">Purchases Per Cookie</a> for more information.</p>
+<p>Starting with v3.0.0, your affiliates can choose their method of commission-payment, either <em>Check/Money Order</em> or (optionally) via PayPal&reg; to their PayPal account email address.  Refer to <a href="#payment">Commission Payment Types</a> for more information.</p>
 
 <h3>Customer Interfaces</h3>
 <h4 id="sidebox">Information Sidebox</h4>
@@ -110,7 +110,8 @@ ul li ul { padding-left: 0; }
       <li><strong>2.3.0</strong>. Added <em>Purchases Per Cookie</em>. Updated <em>Customers-&gt;Referrers</em> to include links to commissioned orders and <em>Customers-&gt;Orders</em> to include a link to the commissioned referrer if the order resulted in a commission payment.</li>
       <li><strong>2.5.0</strong>. Added <em>Combine Exclusions on Referrers Page?</em> and added the <em>updated_by</em> column to the <em>orders_status_history</em> table.</li>
       <li><strong>2.6.1</strong>. Changed the default for <em>Include in Information Sidebox</em> from &quot;true&quot; to &quot;false&quot;.</li>
-      <li><strong>2.7.0</strong>. Added fields to the <em>commission</em> table.</li>
+      <li><strong>2.7.0</strong>. Added fields to the <code>commission</code> table.</li>
+      <li><strong>3.0.0</strong>. Added <em>Enable PayPal&reg; Commission Payment Method?</em> and fields to the <code>commission</code> and <code>referrers</code> tables.</li>
     </ul>
   </dd>
   
@@ -149,6 +150,9 @@ ul li ul { padding-left: 0; }
    
   <dt id="combine">Combine Exclusions on Referrers Page?</dt>
   <dd>If your store has a number of <em>Order Status Exclusions</em>, the display on a <em>Customers-&gt;Referrers</em> details page can get overwhelming. To combine the "Order Total" and "Commission Total" values associated with <strong>all</strong> the <em>Order Status Exclusions</em> into a single column, choose <b>Yes</b>.  Choose <b>No</b> to display every "Order Status" value in a separate column. (Default: No)</dd>
+ 
+  <dt id="enable_pp">Enable PayPal&reg; Commission Payment Method?</dt>
+  <dd>Starting with v3.0.0, you can allow your affiliate customers to choose their method of payment.  Since not all Zen Cart shops use PayPal (and might not have a PayPal account), this commission payment-method must be enabled to show to your customers.  Refer to <a href="#payment">Commission Payment Methods</a> for more details.  (Default: No)</dd>
   
 </dl>
 
@@ -163,10 +167,16 @@ ul li ul { padding-left: 0; }
   <li><em>Ban</em> or <em>Unban</em> the affiliate. When an affiliate is banned, they neither have access to their affiliate-account pages nor do they collect commissions during the 'banned' period. When you click the "Ban" button, an email is sent to the affiliate to let them know the status change.</li>
   <li><em>Pay</em> the affiliate any accrued commission.  This button is active only if there is a non-0 commission to be paid. Note that clicking this button doesn't actually result in the affiliate being paid, only that the commissionable orders that have not yet been paid are marked as paid. An email is sent to the affiliate to let them know of the payment and an <em>orders_status_history</em> record is generated for each payment.</li>
   <li><em>Update</em> the commission percentage for the affiliate.  The commission value is entered as a whole number between 0 and 100 and the new commission value applies to any commissionable orders placed after the update.</li>
+  <li><em>Update Payment Type</em>.  Use this button to update the commission payment-type for the referrer.  This value defaults to &quot;Check/Money-order&quot; and can be changed if you've set <a href="#enable_pp">Enable PayPal&reg; Commission Payment Method?</a> to <b>Yes</b>.</li>
 </ul>
 <p>Starting with v2.3.0, each item in the "Order History" group includes the ID value associated with a commissioned order, with a link to the associated order's details.  Similarly, each commissioned order within the admin's <em>Customers-&gt;Orders</em> is identified by an icon with a link-back to the referrer's details page.</p>
 <p>Beginning with v2.7.0, the following screen is shown when you click the <em>Pay</em> button from the affiliate's details screen.  You can select, from the currently unpaid but commissionable orders, which commissions to pay and, if needed by your business practices, modify the commission amount paid from the calculated default.</p>
 <img src="referrers_pay.jpg" title="Customers / Referrers Pay" alt="Customers / Referrers Pay" />
+
+<h3 id="payment">Commission Payment Types</h3>
+<p>Starting with v3.0.0 of the plugin, your referrers can choose their method of payment type.  The <em>Check/Money-order</em> type is enabled automatically and, if your store has a PayPal&reg; account, you can <a href="#enable_pp">enable</a> your customers to choose to be paid via PayPal, too!</p>
+<p>You can change a customer's commission payment-type within their &quot;details&quot; page from the <em>Customers-&gt;Referrers</em> tool and the customer can also change their payment-type via link from their <code>referrer_main</code> page.  Each commission payment made now includes an indication of the commission payment-type.</p>
+<p><strong>Note:</strong> The PayPal payment type is <strong>not</strong> an automatic method of payment!  You'll need to sign into your PayPal account and &quot;Send Money&quot; to each of your referrers who have chosen to be paid via PayPal.</p> 
 
 <h2 id="install">Installation</h2>
 <p>Starting with v2.3.0, there are <span class="corefile">core-file overwrites</span> in this plugin; you should <strong>always</strong> backup your cart&rsquo;s database and files prior to making any changes. The files identified using <span class="osh">this</span> color are part of the "Common Orders-Status Update" interface and are subject to separate change!</p>
@@ -208,6 +218,8 @@ ul li ul { padding-left: 0; }
 	  <li>/includes/languages/english/YOUR_TEMPLATE/referral_tools.php</li>
     <li>/includes/modules/pages/account/header_php_referrals.php</li>
     <li>/includes/modules/pages/referrer_edit/header_php.php</li>
+    <li>/includes/modules/pages/referrer_edit/jscript_show_hide.php</li>
+    <li>/includes/modules/pages/referrer_edit/on_load_main.js</li>
     <li>/includes/modules/pages/referral_main/header_php.php</li>
     <li>/includes/modules/pages/referral_signup/header_php.php</li>
     <li>/includes/modules/pages/referral_tools/header_php.php</li>
@@ -346,6 +358,9 @@ ul li ul { padding-left: 0; }
   </ul></li>
   <li>v2.8.2, 2015-02-26:<ul>
     <li>BUGFIX: Navigation &quot;issues&quot; occurred when split-page is active.</li>
+  </ul></li>
+  <li>v3.0.0, 2015-03-14:<ul>
+    <li>CHANGE: Add the capability for a referrer to choose their payment method, either <em>Check/Money-order</em> or (optionally) <em>PayPal&reg;</em>.</li>
   </ul></li>
 </ul>
 
@@ -579,6 +594,32 @@ ul li ul { padding-left: 0; }
       <li>/YOUR_ADMIN/includes/functions/extra_functions/init_referrers.php</li>
     </ol></td>
     <td class="c3"><p>None</p></td>
+  </tr>
+  
+  <tr class="3">
+    <td class="c1">v3.0.0</td>
+    <td><ol>
+      <li>/includes/classes/observers/class.snap_order_observer.php</li>
+      <li>/includes/languages/english/extra_definitions/YOUR_TEMPLATE/snap_affiliates.php</li>
+      <li>/includes/languages/english/YOUR_TEMPLATE/referrer_edit.php</li>
+      <li>/includes/languages/english/YOUR_TEMPLATE/referrer_main.php</li>
+      <li>/includes/modules/pages/referrer_edit/header_php.php</li>
+      <li><span class="added">/includes/modules/pages/referrer_edit/jscript_show_hide.php</span></li>
+      <li><span class="added">/includes/modules/pages/referrer_edit/on_load_main.js</span></li>
+      <li>/includes/modules/pages/referrer_main/header_php.php</li>
+      <li>/includes/modules/pages/referrer_tools/header_php.php</li>
+      <li>/includes/templates/YOUR_TEMPLATE/templates/tpl_referrer_edit_default.php</li>
+      <li>/includes/templates/YOUR_TEMPLATE/templates/tpl_referrer_main_default.php</li>
+      <li>/YOUR_ADMIN/referrers.php</li>
+      <li>/YOUR_ADMIN/includes/functions/extra_functions/init_referrers.php</li>
+      <li>/YOUR_ADMIN/includes/languages/english/referrers.php</li>
+    </ol></td>
+    <td class="c3"><ol>
+      <li><em>Module Version</em> updated to v3.0.0.</li>
+      <li>Added configuration setting <em>Enable PayPal&reg; Commission Payment Method?</em>.</li>
+      <li>Columns <em>commission_payment_type</em> and <em>commission_payment_type_detail</em> added to the <b>commissions</b> table.</li>
+      <li>Columns <em>referrer_payment_type</em> and <em>referrer_payment_type_detail</em> added to the <b>referrers</b> table.</li>
+    </ol></td>
   </tr>
   
 </table>

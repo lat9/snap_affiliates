@@ -2,7 +2,7 @@
 // +----------------------------------------------------------------------+
 // | Snap Affiliates for Zen Cart v1.5.0+                                 |
 // +----------------------------------------------------------------------+
-// | Copyright (c) 2013-2014, Vinos de Frutas Tropicales (lat9)           |
+// | Copyright (c) 2013-2015, Vinos de Frutas Tropicales (lat9)           |
 // |                                                                      |
 // | Original: Copyright (c) 2009 Michael Burke                           |
 // | http://www.filterswept.com                                           |
@@ -25,6 +25,11 @@ define('HEADING_BANNED', 'Banned');
 define('HEADING_UNPAID_TOTAL', 'Unpaid Total');
 define('HEADING_COMMISSION_RATE', 'Commission Rate');
 define('HEADING_EMAIL', 'Email Address');
+define('HEADING_PAYMENT_TYPE', 'Payment Type');
+  define('PAYMENT_TYPE_CHECK_MONEYORDER', 'Check/Money-order');
+  define('PAYMENT_TYPE_PAYPAL', 'PayPal');
+    define('PAYMENT_TYPE_PAYPAL_DETAILS', 'PayPal Account Email:');
+  define('PAYMENT_TYPE_UNKNOWN', 'Unknown');
 
 define('LABEL_REFERRER_ID', 'Referrer ID:');
 define('LABEL_HOME_PAGE_LINK', 'Home-page Link:');  //-v2.7.3
@@ -38,6 +43,7 @@ define('LABEL_BANNED', HEADING_BANNED . ':');
 define('TEXT_UNPAID', 'Unpaid');
 define('LABEL_UNPAID', TEXT_UNPAID . ':');
 define('LABEL_ADDRESS', 'Address:');
+define('LABEL_PAYMENT_TYPE', HEADING_PAYMENT_TYPE . ':');
 define('LABEL_UNPAID_COMMISSION', 'Unpaid Commission:');
 define('LABEL_CURRENT_COMMISSION_RATE', 'Current Commission Rate:');
 
@@ -46,13 +52,12 @@ define('TEXT_STATUS', 'Status');
 define('TEXT_ORDER_HISTORY', 'Order History');
 define('TEXT_TO', 'To:');
 define('TEXT_FROM', 'From:');
-define('TEXT_YES', 'Yes');
-define('TEXT_NO', 'No');
 define('TEXT_APPROVE', 'Approve'); /*v2.1.0a*/
 define('TEXT_BAN', 'Ban');
 define('TEXT_UNBAN', 'Unban');
 define('TEXT_PAY', 'Pay'); /*v2.1.0a*/
 define('TEXT_UPDATE', 'Update'); /*v2.1.0a*/
+define('TEXT_UPDATE_PAYMENT_TYPE', 'Update Payment Type');
 define('TEXT_DISPLAY_SPLIT', 'Displaying %1$u to %2$u (of %3$u referrers)');
 
 //-bof-v2.7.0a
@@ -65,15 +70,16 @@ define('ERROR_COMMISSION_CANT_BE_ZERO', 'A commission payment must be greater th
 define('ERROR_CHOOSE_COMMISSION_TO_PAY', 'Please choose at least one commission to be paid.');
 define('SUCCESS_PAYMENT_MADE', 'Your commission payment of %1$s to %2$s %3$s has been recorded.');
 //-eof-v2.7.0a
+define('ERROR_PAYMENT_DETAILS_MISSING', 'The field <em>%s</em> is required and cannot be blank.  Please re-enter.');
 
 define('TEXT_NONCOMMISSIONABLE', ' (Non-Commissionable)');  /*v2.5.0a*/
 
 define('HEADING_ORDER_ID', 'Order ID'); /*v2.3.0a*/
 define('HEADING_ORDER_DATE', 'Order Date');
 define('HEADING_ORDER_TOTAL', 'Order Total');
-define('HEADING_COMMISSION_RATE', 'Commission Rate');
 define('HEADING_COMMISSION_TOTAL', 'Commission Total');
 define('HEADING_COMMISSION_PAY_DATE', 'Commission Paid On');
+define('HEADING_COMMISSION_PAID_VIA', 'Commission Paid Via');
 define('HEADING_TOTALS', 'Totals');
 
 /* ----
@@ -106,7 +112,12 @@ define('EMAIL_MESSAGE_PAID_TEXT', 'A commission payment was recently made for yo
 
 /* ----
 ** The orders_status_history comment created when an affiliate is paid.
+**
+** %1$s - The commission payment amount
+** %2$s - The referrer's first name
+** %3$s - The referrer's last name
+** %4$s - The commission payment type information
 */
 //-bof-a-v2.5.0
-define('TEXT_ORDERS_STATUS_PAID', 'Commission payment of %1$s paid to %2$s.');
+define('TEXT_ORDERS_STATUS_PAID', 'Commission payment of %1$s paid to %2$s %3$s via %4$s.');
 //-eof-a-v2.5.0

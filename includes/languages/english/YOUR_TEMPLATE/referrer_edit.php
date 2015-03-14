@@ -10,13 +10,8 @@ define('NAVBAR_TITLE', 'Affiliate Information &mdash; Edit');
 define('HEADING_TITLE', 'Edit Referrer Information');
 
 define('TEXT_MY_WEBSITE', 'My Website:');
+define('TEXT_MY_PAYMENT_METHOD', 'My Payment Method:');
 
-define('SUCCESS_HOMEPAGE_UPDATED', 'Your website has been updated.');
+define('SUCCESS_HOMEPAGE_UPDATED', 'Your referrer information has been updated.');
 define('ERROR_NO_HOMEPAGE', 'Please enter the name of your website.');
-/* For later ...
-define('TEXT_MY_PAYMENT_METHOD', 'Commissions Paid By:');
-define('TEXT_MY_PAYMENT_CHECK', 'Check/Money Order');
-define('TEXT_MY_PAYMENT_CHECK_ADDRESS', 'Send Commission Check/Money Order To:');
-define('TEXT_MY_PAYMENT_PAYPAL', 'PayPal');
-define('TEXT_MY_PAYMENT_PAYPAL_EMAIL', 'PayPal Account Email Address:');
-*/
+define('ERROR_PAYMENT_DETAILS_MISSING', 'The field <em>%s</em> is required and cannot be blank.  Please re-enter.');

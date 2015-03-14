@@ -1,15 +1,15 @@
 <?php
-// +----------------------------------------------------------------------+
-// |Snap Affiliates for Zen Cart                                          |
-// +----------------------------------------------------------------------+
-// | Copyright (c) 2013, Vinos de Frutas Tropicales (lat9) for ZC 1.5.0+  |
-// |                                                                      |
-// | Original: Copyright (c) 2009 Michael Burke                           |
-// | http://www.filterswept.com                                           |
-// |                                                                      |
-// +----------------------------------------------------------------------+
-// | This source file is subject to version 2.0 of the GPL license.       |
-// +----------------------------------------------------------------------+
+// +---------------------------------------------------------------------------+
+// |Snap Affiliates for Zen Cart                                               |
+// +---------------------------------------------------------------------------+
+// | Copyright (c) 2013-2015, Vinos de Frutas Tropicales (lat9) for ZC 1.5.0+  |
+// |                                                                           |
+// | Original: Copyright (c) 2009 Michael Burke                                |
+// | http://www.filterswept.com                                                |
+// |                                                                           |
+// +---------------------------------------------------------------------------+
+// | This source file is subject to version 2.0 of the GPL license.            |
+// +---------------------------------------------------------------------------+
 ?>
 <div class="centerColumn" id="referrerMainDefault">
 <?php
@@ -37,6 +37,7 @@ if (!$is_logged_in) {
   <p><?php echo sprintf(TEXT_REFERRAL_BANNED, zen_href_link(FILENAME_CONTACT_US, '', 'NONSSL')); ?></p>
 <?php
       } else {
+        $payment_types = $snap_order_observer->get_snap_payment_types ();
         echo zen_draw_form('referral_main', zen_href_link(FILENAME_REFERRER_MAIN, '', 'SSL'), 'get', ''); /*v2.4.0-c*/
 ?>
   <input type="hidden" name="main_page" value="<?php echo FILENAME_REFERRER_MAIN; ?>" />
@@ -52,9 +53,13 @@ if (!$is_logged_in) {
 <?php //-bof-v2.2.0a ?>
     <div class="item_outer">
       <div class="item c1"><?php echo TEXT_MY_WEBSITE; ?></div>
-      <div class="item c2"><?php echo $referrer->fields['referrer_homepage'] . '<a href="' . /*-bof-c-v2.4.0*/ zen_href_link(FILENAME_REFERRER_EDIT, '', 'SSL') /*-eof-c-v2.4.0*/ . '">&nbsp;&nbsp;' . zen_image_button(BUTTON_IMAGE_EDIT_SMALL, BUTTON_EDIT_SMALL_ALT) . '</a>';; ?></div>
+      <div class="item c2"><?php echo $referrer->fields['referrer_homepage'] . '<a href="' . /*-bof-c-v2.4.0*/ zen_href_link(FILENAME_REFERRER_EDIT, '', 'SSL') /*-eof-c-v2.4.0*/ . '">&nbsp;&nbsp;' . zen_image_button(BUTTON_IMAGE_EDIT_SMALL, BUTTON_EDIT_SMALL_ALT) . '</a>'; ?></div>
     </div>
 <?php //-eof-v2.2.0a ?>
+    <div class="item_outer">
+      <div class="item c1"><?php echo TEXT_MY_PAYMENT_TYPE; ?></div>
+      <div class="item c2"><?php echo $payment_types[$referrer->fields['referrer_payment_type']]['text'] . (($referrer->fields['referrer_payment_type_detail'] != '') ? (' (' . $referrer->fields['referrer_payment_type_detail'] . ')') : '') . '<a href="' . /*-bof-c-v2.4.0*/ zen_href_link(FILENAME_REFERRER_EDIT, '', 'SSL') /*-eof-c-v2.4.0*/ . '">&nbsp;&nbsp;' . zen_image_button(BUTTON_IMAGE_EDIT_SMALL, BUTTON_EDIT_SMALL_ALT) . '</a>'; ?></div>
+    </div>
     <div class="item_outer">
       <div class="item c1"><?php echo TEXT_LAST_PAYMENT_MADE; ?></div>
       <div class="item c2"><?php echo ($last_payout == 0) ? TEXT_NO_PAYMENTS : date("F j, Y", $last_payout); /*v2.5.0c*/ ?></div>
@@ -143,6 +148,7 @@ if (!$is_logged_in) {
       <div class="thead c2"><?php echo HEADING_COMMISSION_CALCULATED; ?></div>
       <div class="thead c2"><?php echo HEADING_COMMISSION_PAID; ?></div>
       <div class="thead c1"><?php echo HEADING_COMMISSION_PAY_DATE; ?></div>
+      <div class="thead"><?php echo HEADING_COMMISSION_PAY_TYPE; ?></div>
     </div>
 
 <?php
@@ -158,6 +164,7 @@ if (!$is_logged_in) {
       <div class="item c4"><?php echo $currencies->format($entry['commission_calculated']); ?></div>
       <div class="item c4a"><?php echo $currencies->format($entry['commission_paid']); ?></div>
       <div class="item c5"><?php echo $nice_date; ?></div>
+      <div class="item c6"><?php echo $entry['payment_type'] . ' ' . $entry['payment_type_detail']; ?></div>
     </div>   
 <?php
     $toggle = !$toggle;
@@ -166,10 +173,11 @@ if (!$is_logged_in) {
     <div class="item_outer totals">
       <div class="item c1"><?php echo HEADING_TOTALS; ?></div>
       <div class="item c2"><?php echo $currencies->format($activity_total); ?></div>
-      <div class="item c3"><?php echo '&nbsp;'; ?></div>
-      <div class="item c3a"><?php echo '&nbsp;'; ?></div>
+      <div class="item c3">&nbsp;</div>
+      <div class="item c3a">&nbsp;</div>
       <div class="item c4"><?php echo $currencies->format($activity_commission); ?></div>
-      <div class="item c5"><?php echo '&nbsp;'; ?></div>
+      <div class="item c5">&nbsp;</div>
+      <div class="item c6">&nbsp;</div>
     </div>
   </div>
   </form>

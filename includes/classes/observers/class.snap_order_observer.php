@@ -1,20 +1,22 @@
 <?php
-// +----------------------------------------------------------------------+
-// |Snap Affiliates for Zen Cart                                          |
-// +----------------------------------------------------------------------+
-// | Copyright (c) 2013, Vinos de Frutas Tropicales (lat9) for ZC 1.5.0+  |
-// +----------------------------------------------------------------------+
-// | This source file is subject to version 2.0 of the GPL license.       |
-// +----------------------------------------------------------------------+
+// +---------------------------------------------------------------------------+
+// |Snap Affiliates for Zen Cart                                               |
+// +---------------------------------------------------------------------------+
+// | Copyright (c) 2013-2015, Vinos de Frutas Tropicales (lat9) for ZC 1.5.0+  |
+// +---------------------------------------------------------------------------+
+// | This source file is subject to version 2.0 of the GPL license.            |
+// +---------------------------------------------------------------------------+
 
-if (!defined('IS_ADMIN_FLAG')) {
+if (!defined('IS_ADMIN_FLAG') || IS_ADMIN_FLAG !== false) {
   die('Illegal Access');
 }
 
 class snap_order_observer extends base {
+  var $payment_types;
 
   function snap_order_observer() {
     $this->attach($this, array('NOTIFY_ORDER_DURING_CREATE_ADDED_ORDER_HEADER'));
+    
   }
   
   function update(&$class, $eventID, $paramsArray) {
@@ -61,5 +63,15 @@ class snap_order_observer extends base {
 
     }
   }
- 
+
+  function get_snap_payment_types () {
+    $this->payment_types = array ( 'CM' => array ( 'text' => SNAP_PAYMENT_TYPE_CHECK_MONEYORDER, 'text_details' => '' ) );
+    if (SNAP_ENABLE_PAYMENT_CHOICE_PAYPAL == 'Yes') {
+      $this->payment_types['PP'] = array ( 'text' => SNAP_PAYMENT_TYPE_PAYPAL, 'text_details' => SNAP_PAYMENT_TYPE_DETAILS_PAYPAL );
+      
+    }
+    $this->notify ('SNAP_GET_PAYMENT_TYPE_DESCRIPTION');
+    return $this->payment_types;
+    
+  }
 }

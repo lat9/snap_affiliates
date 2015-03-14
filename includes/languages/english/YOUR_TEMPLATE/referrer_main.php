@@ -26,6 +26,7 @@ define('TEXT_MY_WEBSITE', 'My Website:'); /*v2.2.0a*/
 define('TEXT_LAST_PAYMENT_MADE', 'Last Payment Made On:');
 define('TEXT_NO_PAYMENTS', 'No payments have been made yet');
 define('TEXT_COMMISSION_RATE', 'My Commission Rate:');
+define('TEXT_MY_PAYMENT_TYPE', 'My Payment Type:');
 
 define('TEXT_SALES_SUMMARY', 'Sales Summary');
 define('TEXT_CURRENT_SALES', 'Current Sales:');
@@ -43,6 +44,8 @@ define('HEADING_COMMISSION_RATE', 'Commission Rate');
 define('HEADING_COMMISSION_CALCULATED', 'Calculated Commission');
 define('HEADING_COMMISSION_PAID', '<sup>*</sup>Commission Paid');
 define('HEADING_COMMISSION_PAY_DATE', 'Commission Paid On');
+define('HEADING_COMMISSION_PAY_TYPE', 'Commission Paid Via');
+  define ('TEXT_UNKNOWN', 'Unknown');
 define('HEADING_TOTALS', 'Totals');
 
 define('TEXT_COMMISSION_PAID', '<strong><sup>*</sup>Commission Paid</strong> amounts include any refunds or returns that have being deducted from the final commission amount. For more information on how
