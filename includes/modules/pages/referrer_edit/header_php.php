@@ -40,9 +40,9 @@ if (!isset($_SESSION['customer_id'])) {
           $messageStack->add ('referrer_edit', sprintf (ERROR_PAYMENT_DETAILS_MISSING, $payment_types[$_POST['payment_method']]['text_details']), 'error');
           
         } else {
-          $url = zen_db_input($_POST['url']);
+          $url = zen_db_input (zen_db_prepare_input($_POST['url']));  //-v3.0.1c
           $payment_method = $_POST['payment_method'];
-          $payment_method_details = ($payment_types[$payment_method]['text_details']) == '' ? '' : zen_db_prepare_input ($_POST['payment_method_details']);
+          $payment_method_details = ($payment_types[$payment_method]['text_details']) == '' ? '' : zen_db_input (zen_db_prepare_input ($_POST['payment_method_details']));  //-v3.0.1c
           $db->Execute( 'UPDATE ' . TABLE_REFERRERS . " SET referrer_homepage = '$url', referrer_payment_type = '$payment_method', referrer_payment_type_detail = '$payment_method_details' WHERE referrer_customers_id = " . (int)$_SESSION['customer_id'] );
           $messageStack->add_session('referrer_main', SUCCESS_HOMEPAGE_UPDATED, 'success');
           zen_redirect(zen_href_link(FILENAME_REFERRER_MAIN), '', 'SSL');
@@ -56,7 +56,7 @@ if (!isset($_SESSION['customer_id'])) {
       
     }
     $selected_payment_method = (isset ($_POST['payment_method'])) ? $_POST['payment_method'] : $referrer->fields['referrer_payment_type'];
-    $payment_method_details = (isset ($_POST['payment_method_details'])) ? $_POST['payment_method_details'] : $referrer->fields['referrer_payment_type_detail'];
+    $payment_method_details = (isset ($_POST['payment_method_details'])) ? zen_db_input (zen_db_prepare_input ($_POST['payment_method_details'])) : $referrer->fields['referrer_payment_type_detail'];  //-v3.0.1c
 
   }
 }

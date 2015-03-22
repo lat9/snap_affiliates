@@ -1,15 +1,15 @@
 <?php
-// +----------------------------------------------------------------------+
-// | Snap Affiliates for Zen Cart                                         |
-// +----------------------------------------------------------------------+
-// | Copyright (c) 2013, Vinos de Frutas Tropicales (lat9) for ZC 1.5.0+  |
-// |                                                                      |
-// | Original: Copyright (c) 2009 Michael Burke                           |
-// | http://www.filterswept.com                                           |
-// |                                                                      |
-// +----------------------------------------------------------------------+
-// | This source file is subject to version 2.0 of the GPL license.       |
-// +----------------------------------------------------------------------+
+// +---------------------------------------------------------------------------+
+// | Snap Affiliates for Zen Cart                                              |
+// +---------------------------------------------------------------------------+
+// | Copyright (c) 2013-2015, Vinos de Frutas Tropicales (lat9) for ZC 1.5.0+  |
+// |                                                                           |
+// | Original: Copyright (c) 2009 Michael Burke                                |
+// | http://www.filterswept.com                                                |
+// |                                                                           |
+// +---------------------------------------------------------------------------+
+// | This source file is subject to version 2.0 of the GPL license.            |
+// +---------------------------------------------------------------------------+
 
 require(DIR_WS_MODULES . zen_get_module_directory('require_languages.php'));
 
@@ -50,7 +50,7 @@ if ($is_logged_in) {
       $error = ERROR_NO_URL;
       
     } else {
-      $url = zen_db_input($url);
+      $url = zen_db_input (zen_db_prepare_input($url));  //-v3.0.1c
       $tag = SNAP_KEY_PREFIX . $_SESSION['customer_id'] . time();
       $commission = SNAP_DEFAULT_COMMISSION;
 

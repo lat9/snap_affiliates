@@ -263,7 +263,7 @@ switch($mode) {
     } else {
       $commissions = array ();
       foreach ($_POST['payList'] as $commission_id => $value) {
-        if (!isset ($_POST['commission'][$commission_id]) || $_POST['commission'][$commission_id] <= 0) {
+        if (!isset ($_POST['commission'][$commission_id]) || (int)$_POST['commission'][$commission_id] <= 0) {  //-v3.0.1c
           $pay_message = ERROR_COMMISSION_CANT_BE_ZERO;
           $mode = TEXT_PAY;
           
@@ -288,9 +288,10 @@ switch($mode) {
       
       $now = date("Y-m-d H:i:s", time());
       $total_paid = 0;
+      $commission_payment_type_detail_input = zen_sanitize_string ($db->prepare_input ($commission_payment_type_detail));  //-v3.0.1a
       foreach ($commissions as $commission_id => &$commission) {
         $commission_manual = ($commission['calculated'] == $commission['paid']) ? 0 : 1;
-        $db->Execute ("UPDATE " . TABLE_COMMISSION . " SET commission_paid = '$now', commission_paid_amount = '" . $commission['paid'] . "', commission_manual = $commission_manual, commission_payment_type = '$commission_payment_type', commission_payment_type_detail = '$commission_payment_type_detail' WHERE commission_id = $commission_id LIMIT 1");
+        $db->Execute ("UPDATE " . TABLE_COMMISSION . " SET commission_paid = '$now', commission_paid_amount = '" . zen_db_prepare_input ($commission['paid']) . "', commission_manual = $commission_manual, commission_payment_type = '$commission_payment_type', commission_payment_type_detail = '$commission_payment_type_detail_input' WHERE commission_id = $commission_id LIMIT 1");  //-v3.0.1c
          foreach ($referrers[$selected]['orders'] as $current_order) {
           if ($current_order['commission_id'] == $commission_id) {
             $total_paid += $commission['paid'];
@@ -349,7 +350,7 @@ switch($mode) {
   case TEXT_UPDATE_PAYMENT_TYPE:
     $error = false;
     if ($payment_types[$_POST['referrer_payment_type']]['text_details'] != '') {
-      $payment_details = zen_db_prepare_input ($_POST['referrer_payment_type_detail']);
+      $payment_details = zen_sanitize_string ($db->prepare_input ($_POST['referrer_payment_type_detail']));  //-v3.0.1c
       if (!zen_not_null ($payment_details)) {
         $mode = 'details';
         $messageStack->add (sprintf (ERROR_PAYMENT_DETAILS_MISSING, $payment_types[$_POST['referrer_payment_type']]['text_details']), 'error');
