@@ -24,9 +24,11 @@
 //    - Allow email message to be updated by observer prior to processing.
 //  20131005 - 1.1.0
 //    - Allow admin-only messages to be sent.
+//  20150528 - 1.2.1
+//    - Need zen_db_prepare_output around order-status comments to properly convert the CRLF combinations.
 //
-define('OSH_UPDATED_BY_VERSION', '1.1.0');
-define('OSH_UPDATED_BY_DATE', '2013-11-29');
+define('OSH_UPDATED_BY_VERSION', '1.2.1');
+define('OSH_UPDATED_BY_DATE', '2015-05-28');
 
 // -----
 // 1) Add the updated_by column to the orders_status_history table, if it doesn't already exist.
@@ -88,16 +90,14 @@ if (!function_exists('zen_update_orders_history')) {
       
 //-bof-c-v1.0.1
     } else {
+      $osh_additional_comments = '';
       if (IS_ADMIN_FLAG === true && $email_include_message === true) {
-        $osh_additional_comments = '';
         $zco_notifier->notify('ZEN_UPDATE_ORDERS_HISTORY_PRE_EMAIL', array( 'message' => $message ) );
         if ($osh_additional_comments != '') {
           if (zen_not_null($message)) {
-            $message .= "\n\n";
+            $osh_additional_comments = "\n\n" . $osh_additional_comments;
           }
-          $message .= $osh_additional_comments;
         }
-        unset($osh_additional_comments);
       }
   
       if (($orders_status != -1 && $osh_info->fields['orders_status'] != $orders_status) || zen_not_null($message)) {
@@ -116,7 +116,7 @@ if (!function_exists('zen_update_orders_history')) {
         if (IS_ADMIN_FLAG === true && ($notify_customer == 1 || $notify_customer == -2)) {
           $status_name = $db->Execute("SELECT orders_status_name FROM " . TABLE_ORDERS_STATUS . " WHERE orders_status_id = " . (int)$orders_status . " AND language_id = " . (int)$_SESSION['languages_id']);
           $orders_status_name = ($status_name->EOF) ? 'N/A' : $status_name->fields['orders_status_name'];
-          $email_comments = (zen_not_null($message) && $email_include_message === true) ? (OSH_EMAIL_TEXT_COMMENTS_UPDATE . $message . "\n\n") : '';
+          $email_comments = ((zen_not_null($message) || zen_not_null ($osh_additional_comments)) && $email_include_message === true) ? (OSH_EMAIL_TEXT_COMMENTS_UPDATE . $message . $osh_additional_comments . "\n\n") : '';
 
 //-bof-a-v1.0.0
           if ($orders_status != $osh_info->fields['orders_status']) {
@@ -186,7 +186,7 @@ if (!function_exists('zen_update_orders_history')) {
                            'orders_status_id' => zen_db_input($orders_status),
                            'date_added' => 'now()',
                            'customer_notified' => zen_db_input($notify_customer),
-                           'comments' => zen_db_input($message),
+                           'comments' => zen_db_input (zen_db_prepare_input ($message)),
                            'updated_by' => zen_db_input($updated_by)
                            );
                            
