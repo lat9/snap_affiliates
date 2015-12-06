@@ -14,7 +14,7 @@ if (!defined('IS_ADMIN_FLAG') || IS_ADMIN_FLAG !== false) {
 class snap_order_observer extends base {
   var $payment_types;
 
-  function snap_order_observer() {
+  function __construct () {
     $this->attach($this, array('NOTIFY_ORDER_DURING_CREATE_ADDED_ORDER_HEADER'));
     
   }

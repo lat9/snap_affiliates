@@ -2,6 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<meta name="viewport" content="initial-scale=1" />
 <title>Snap Affiliates for Zen-Cart&reg;</title>
 
 <style type="text/css">
@@ -38,7 +39,7 @@ ul li ul { padding-left: 0; }
 <body>
 <a name="top" id="top"></a>
 <h1>Snap Affiliates for Zen Cart 1.5.0 through 1.5.4</h1>
-<h3>Version 3.0.2 by lat9</h3>
+<h3>Version 3.0.3 by lat9</h3>
 <p>Copyright &copy; 2013-2015 Vinos de Frutas Tropicales</p>
 <p>Current support thread at Zen Cart Forums: <a href="http://www.zen-cart.com/showthread.php?206579-Snap-Affiliates-v2-0-for-Zen-Cart-v1-5-0-and-later" target="_blank">www.zen-cart.com/showthread.php?206579-Snap-Affiliates-v2-0-for-Zen-Cart-v1-5-0-and-later</a>.  This software is provided for your use under the GNU General Public License v2.0.</p>
 
@@ -369,6 +370,9 @@ ul li ul { padding-left: 0; }
   <li>v3.0.2, 2015-05-28:<ul>
     <li>BUGFIX: Update orders-status-history processing to properly convert CRLF characters in the status-update message.</li>
   </ul></li>
+  <li>v3.0.3, 2015-12-06:<ul>
+    <li>CHANGE: Update class-constructor function names for PHP 7 compliance.</li>
+  </ul></li>
 </ul>
 
 <h2 id="ufapv">Upgrading from a Previous Version</h2>
@@ -639,10 +643,18 @@ ul li ul { padding-left: 0; }
     <td class="c3"><p>None</p></td>
   </tr>
   
-  <tr class="3">
+  <tr class="e">
     <td class="c1">v3.0.2</td>
     <td><ol>
       <li>/includes/functions/extra_functions/osh_updated_by_functions.php</li>
+    </ol></td>
+    <td class="c3"><p>None</p></td>
+  </tr>
+  
+  <tr class="o">
+    <td class="c1">v3.0.3</td>
+    <td><ol>
+      <li>/includes/classes/observers/class.snap_order_observer.php</li>
     </ol></td>
     <td class="c3"><p>None</p></td>
   </tr>
