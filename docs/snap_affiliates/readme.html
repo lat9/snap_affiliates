@@ -182,13 +182,11 @@ ul li ul { padding-left: 0; }
 <p><strong>Note:</strong> The PayPal payment type is <strong>not</strong> an automatic method of payment!  You'll need to sign into your PayPal account and &quot;Send Money&quot; to each of your referrers who have chosen to be paid via PayPal.</p> 
 
 <h2 id="install">Installation</h2>
-<p>Starting with v2.3.0, there are <span class="corefile">core-file overwrites</span> in this plugin; you should <strong>always</strong> backup your cart&rsquo;s database and files prior to making any changes. The files identified using <span class="osh">this</span> color are part of the "Common Orders-Status Update" interface and are subject to separate change!</p>
+<p>Starting with v2.3.0, there are <span class="corefile">core-file overwrites</span> in this plugin; you should <strong>always</strong> backup your cart&rsquo;s database and files prior to making any changes.  In all cases, Zen Cart 1.5.4 is used as the change-basis for any <span class="corefile">core-file</span> or <span class="template">template-override</span> changes.</p>
 <ol type="A">
   <li>Backup both your Zen Cart installation and database &mdash; this plugin will will modify both.</li>
   <li><strong>Double-check the backup you just created</strong>.  Better safe than sorry!</li>
-  <li>Unzip the plugin's distribution zip-file into a temporary directory.  Rename the &quot;YOUR_TEMPLATE&quot; directories (<b>5 of them</b>) to match your custom template&rsquo;s name:<ol>
-    <li>/includes/languages/english/extra_definitions/YOUR_TEMPLATE</li>
-    <li>/includes/languages/english/html_includes/YOUR_TEMPLATE</li>
+  <li>Unzip the plugin's distribution zip-file into a temporary directory.  Rename the &quot;YOUR_TEMPLATE&quot; directories (<b>3 of them</b>) to match your custom template&rsquo;s name:<ol>
     <li>/includes/languages/english/YOUR_TEMPLATE</li>
     <li>/includes/modules/sideboxes/YOUR_TEMPLATE</li>
     <li>/includes/templates/YOUR_TEMPLATE</li>
@@ -196,9 +194,8 @@ ul li ul { padding-left: 0; }
   <li>Your best approach for installing <strong>any</strong> new software is to use a local copy for your testing before deploying the changes to your live store. If you must install this directly on your live store, put your store into Maintenance Mode using your admin's Configuration-&gt;Maintenance Mode-&gt;Down for Maintenance setting, first.  You'll then either copy the files to your local installation or use your FTP/SFTP program to copy the files to your hosted store.</li>
   <li>Check to see if your installation has made previous changes to each of these <span class="corefile">core-files</span>.  If not, copy the file; otherwise, use file-merging software (like WinMerge or Beyond Compare) to merge this plugin's changes into the file prior to copying:<ol>
     <li><span class="corefile">/YOUR_ADMIN/orders.php</span> &mdash; changed/added lines are marked with comments that include the phrase <b>snap_affiliates</b>.</li>
-    <li><span class="corefile">/YOUR_ADMIN/includes/languages/english/orders.php</span> &mdash; added lines are marked with comments that include the phrase <b>snap_affiliates</b>.</li>
   </ol></li>
-  <li>Check to see if your installation already has the following <span class="template">template-override</span> files.  If a file is not present, copy the file; otherwise, use file-merging software to merge this plugin's changes into the file prior to copying:<ol class="minspacing">
+  <li>Check to see if your installation already has the following <span class="template">template-override</span> files.  If a file is not present, copy the file; otherwise, use file-merging software to merge this plugin's changes into your customized file prior to copying:<ol>
     <li><span class="template">/includes/languages/english/YOUR_TEMPLATE/account.php</span></li>
     <li><span class="template">/includes/modules/sideboxes/YOUR_TEMPLATE/information.php</span></li>
     <li><span class="template">/includes/templates/YOUR_TEMPLATE/templates/tpl_account_default.php</span></li>
@@ -210,15 +207,13 @@ ul li ul { padding-left: 0; }
     <li>/includes/extra_datafiles/snap_file_database_names.php</li>
     <li><span class="osh">/includes/functions/extra_functions/osh_updated_by_functions.php</span></li>
     <li>/includes/init_includes/init_snap.php</li>
-    <li>/includes/languages/english/extra_definitions/YOUR_TEMPLATE/snap_affiliates.php</li>
+    <li>/includes/languages/english/extra_definitions/snap_affiliates.php</li>
     <li>/includes/languages/english/html_includes/define_referral_terms.php</li>
     <li>/includes/languages/english/html_includes/define_referral_tools.php</li>
-    <li>/includes/languages/english/html_includes/YOUR_TEMPLATE/define_referral_terms.php</li>
-    <li>/includes/languages/english/html_includes/YOUR_TEMPLATE/define_referral_tools.php</li>
-    <li>/includes/languages/english/YOUR_TEMPLATE/referral_edit.php</li>
-    <li>/includes/languages/english/YOUR_TEMPLATE/referral_main.php</li>
-	  <li>/includes/languages/english/YOUR_TEMPLATE/referral_signup.php</li>
-	  <li>/includes/languages/english/YOUR_TEMPLATE/referral_tools.php</li>
+    <li>/includes/languages/english/referral_edit.php</li>
+    <li>/includes/languages/english/referral_main.php</li>
+	  <li>/includes/languages/english/referral_signup.php</li>
+	  <li>/includes/languages/english/referral_tools.php</li>
     <li>/includes/modules/pages/account/header_php_referrals.php</li>
     <li>/includes/modules/pages/referrer_edit/header_php.php</li>
     <li>/includes/modules/pages/referrer_edit/jscript_show_hide.php</li>
@@ -227,13 +222,16 @@ ul li ul { padding-left: 0; }
     <li>/includes/modules/pages/referral_signup/header_php.php</li>
     <li>/includes/modules/pages/referral_tools/header_php.php</li>
     <li>/includes/modules/pages/referral_tools/jscript_tools.php</li>
+    <li>/includes/templates/template_default/css/referral_main.css</li>
+    <li>/includes/templates/template_default/css/referral_tools.css</li>
+    <li>/includes/templates/template_default/css/stylesheet_referrers.css</li>
+    <li>/includes/templates/template_default/templates/tp;_referrer_edit_default.php</li>
+    <li>/includes/templates/template_default/templates/tpl_referrer_main_default.php</li>
+    <li>/includes/templates/template_default/templates/tpl_referrer_signup_default.php</li>
+    <li>/includes/templates/template_default/templates/tpl_referrer_tools_default.php</li>
     <li>/includes/templates/YOUR_TEMPLATE/css/referral_main.css</li>
     <li>/includes/templates/YOUR_TEMPLATE/css/referral_tools.css</li>
     <li>/includes/templates/YOUR_TEMPLATE/css/stylesheet_referrers.css</li>
-    <li>/includes/templates/YOUR_TEMPLATE/templates/tp;_referrer_edit_default.php</li>
-    <li>/includes/templates/YOUR_TEMPLATE/templates/tpl_referrer_main_default.php</li>
-    <li>/includes/templates/YOUR_TEMPLATE/templates/tpl_referrer_signup_default.php</li>
-    <li>/includes/templates/YOUR_TEMPLATE/templates/tpl_referrer_tools_default.php</li>
     <li>/YOUR_ADMIN/referrers.php</li>
     <li>/YOUR_ADMIN/images/icons/cash.jpg</li>
     <li>/YOUR_ADMIN/includes/auto_loaders/config.zc154_compatibility.php</li>
@@ -374,16 +372,19 @@ ul li ul { padding-left: 0; }
   <li>v3.0.3, 2015-12-06:<ul>
     <li>CHANGE: Update class-constructor function names for PHP 7 compliance.</li>
   </ul></li>
-  <li>v3.0.4, 2016-04-xx:<ul>
+  <li>v3.0.4, 2016-04-16:<ul>
     <li>CHANGE: Documentation/uninstall restructuring; check the /docs/snap_affiliates folder for these files.</li>
     <li>CHANGE: Remove full incorporation of the &quot;OSH - Updated By&quot; plugin from the admin's <em>Customers-&gt;Orders</em> handling, in preparation for a Zen Cart 1.5.5 plugin update.</li>
+    <li>CHANGE: Properly mark all <span class="template">template-override</span> file changes to identify the <em>SNAP</em> updates.</li>
+    <li>CHANGE: Move all SNAP-specific template files into the <code>template_default</code> folder; allows easier reuse on multiple templates.</li>
+    <li>BUGFIX: Correct misspelling on <code>referrer_main</code> page.</li>
   </ul></li>
 </ul>
 
 <h2 id="ufapv">Upgrading from a Previous Version</h2>
 <p>Following are my suggestions if you are upgrading to this version from a previous version of this plugin:</p>
 <ul>
-  <li>From any version prior to v2.0.0, you're most likely running a clean install of this plugin because the previous version didn't work on Zen Cart versions 1.5.0 and later and this plugin doesn't support Zen Cart versions prior to v1.5.0!</li>
+  <li>From any version prior to v2.0.0, you're most likely running a clean install of this plugin because the previous version didn't work on Zen Cart versions 1.5.0 and later and this plugin doesn't support Zen Cart versions prior to v1.5.0!  If you <b>are</b> upgrading from a &quot;SNAP Affiliates&quot; version prior to v2.0.0, you'll need to uninstall that plugin prior to installing this updated version!</li>
   <li>Upgrading from v2.0.0, you can simply copy the plugin's file structure (after directory renames) into your store's.  The database initialization code has been updated to recognize the version installed and adapt the configuration based on the previously installed version &hellip; so you won't lose any of your existing database settings.</li>
 </ul>
 
@@ -668,7 +669,9 @@ ul li ul { padding-left: 0; }
     <td class="c1">v3.0.4</td>
     <td>This version moves all the template-related files introduced by <em>SNAP</em> into the <code>template_default</code> folder from the <code>YOUR_TEMPLATE</code> folder.  This enables the base <em>SNAP</em> formatting to be more easily reused by multiple templates.  Those movements are <em>not</em> accounted for in this list.<ol>
       <li>/includes/functions/extra_functions/osh_updated_by_functions.php</li>
+      <li>/includes/languages/english/referrer_main.php</li>
       <li><span class="template">/includes/languages/english/YOUR_TEMPLATE/account.php</span></li>
+      <li><span class="template">/includes/modules/sideboxes/YOUR_TEMPLATE/information.php</span></li>
       <li><span class="template">/includes/templates/YOUR_TEMPLATE/tpl_account_default.php</span></li>
       <li><span class="corefile">/YOUR_ADMIN/orders.php</span></li>
       <li>/YOUR_ADMIN/includes/functions/extra_functions/init_referrers.php</li>
