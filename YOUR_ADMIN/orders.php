@@ -117,8 +117,6 @@
         $status = (int)zen_db_prepare_input($_POST['status']);
         if ($status < 1) break;
 
-//-bof-c-snap_affiliates-v2.5.0
-/* ----- Processing now handled by separate function -----
         $order_updated = false;
         $check_status = $db->Execute("select customers_name, customers_email_address, orders_status,
                                       date_purchased from " . TABLE_ORDERS . "
@@ -188,13 +186,6 @@
           $order_updated = true;
           
         }
-*/
-        $check_status = $db->Execute("SELECT orders_status, date_purchased FROM " . TABLE_ORDERS . " WHERE orders_id = '" . (int)$oID . "'");
-        $customer_notified = (isset($_POST['notify']) && ($_POST['notify'] == 1 || $_POST['notify'] == -1)) ? $_POST['notify'] : 0;
-        $osh_record_added = zen_update_orders_history($oID, $comments, null, $status, $customer_notified, (isset($_POST['notify_comments']) && $_POST['notify_comments'] == 'on'));
-        $order_updated = ($osh_record_added == -1) ? false : true;
-
-//-eof-c-snap_affiliates-v2.5.0
 
         // trigger any appropriate updates which should be sent back to the payment gateway:
         $order = new order((int)$oID);
@@ -494,7 +485,7 @@ function couponpopupWindow(url) {
         <td><?php echo zen_draw_separator('pixel_trans.gif', '1', '10'); ?></td>
       </tr>
       <tr>
-        <td class="main"><strong><?php echo /*-bof-a-snap_affiliates*/ snap_affiliates_image($oID) . /*-eof-a-snap_affiliates */ ENTRY_ORDER_ID . $oID; ?></strong></td>
+        <td class="main"><strong><?php echo snap_affiliates_image($oID) . ENTRY_ORDER_ID . $oID; //-snap_affiliates-lat9  *** 1 of 5 *** ?></strong></td>
       </tr>
       <tr>
      <td><table border="0" cellspacing="0" cellpadding="2">
@@ -640,15 +631,19 @@ function couponpopupWindow(url) {
             <td class="smallText" align="center"><strong><?php echo TABLE_HEADING_CUSTOMER_NOTIFIED; ?></strong></td>
             <td class="smallText" align="center"><strong><?php echo TABLE_HEADING_STATUS; ?></strong></td>
             <td class="smallText" align="center"><strong><?php echo TABLE_HEADING_COMMENTS; ?></strong></td>
-<?php //-bof-a-snap_affiliates-v2.5.0 ?>
+<?php 
+//-bof-snap_affiliates-lat9  *** 2 of 5 ***
+?>
             <td class="smallText" align="center"><strong><?php echo TABLE_HEADING_UPDATED_BY; ?></strong></td>
-<?php //-eof-a-snap_affiliates-v2.5.0 ?>
+<?php 
+//-eof-snap_affiliates-lat9  *** 2 of 5 ***
+?>
           </tr>
 <?php
-    $orders_history = $db->Execute("select orders_status_id, date_added, customer_notified, comments" /*-bof-a-snap_affiliates-v2.5.0*/ . ', updated_by ' /*-eof-a-snap_affiliates-v2.5.0*/ . "
+    $orders_history = $db->Execute("select orders_status_id, date_added, customer_notified, comments, updated_by
                                     from " . TABLE_ORDERS_STATUS_HISTORY . "
                                     where orders_id = '" . zen_db_input($oID) . "'
-                                    order by date_added");
+                                    order by date_added");  //-snap_affiliates-lat9  *** 3 of 5 ***
 
     if ($orders_history->RecordCount() > 0) {
       while (!$orders_history->EOF) {
@@ -664,9 +659,6 @@ function couponpopupWindow(url) {
         }
         echo '            <td class="smallText">' . $orders_status_array[$orders_history->fields['orders_status_id']] . '</td>' . "\n";
         echo '            <td class="smallText">' . nl2br(zen_db_output($orders_history->fields['comments'])) . '&nbsp;</td>' . "\n" .
-//-bof-a-snap_affiliates-v2.5.0
-             '            <td class="smallText">' . (zen_not_null($orders_history->fields['updated_by']) ?  $orders_history->fields['updated_by'] : '&nbsp;') . '</td>' . "\n" .
-//-eof-a-snap_affiliates-v2.5.0
              '          </tr>' . "\n";
         $orders_history->MoveNext();
       }
@@ -751,7 +743,7 @@ function couponpopupWindow(url) {
       <tr>
         <td><table border="0" width="100%" cellspacing="0" cellpadding="0">
           <tr>
-            <td class="smallText"><?php echo TEXT_LEGEND . ' ' . zen_image(DIR_WS_IMAGES . 'icon_status_red.gif', TEXT_BILLING_SHIPPING_MISMATCH, 10, 10) . ' ' . TEXT_BILLING_SHIPPING_MISMATCH /*-bof-a-snap_affiliates*/ . snap_affiliates_image() /*-eof-a-snap_affiliates*/; ?>
+            <td class="smallText"><?php echo TEXT_LEGEND . ' ' . zen_image(DIR_WS_IMAGES . 'icon_status_red.gif', TEXT_BILLING_SHIPPING_MISMATCH, 10, 10) . ' ' . TEXT_BILLING_SHIPPING_MISMATCH . snap_affiliates_image();  //-snap_affiliates-lat9  *** 4 of 5 *** ?>
           </td>
           <tr>
             <td valign="top"><table border="0" width="100%" cellspacing="0" cellpadding="2">
@@ -907,7 +899,7 @@ if (($_GET['page'] == '' or $_GET['page'] <= 1) and $_GET['oID'] != '') {
       }
       $show_payment_type = $orders->fields['payment_module_code'] . '<br />' . $orders->fields['shipping_module_code'];
 ?>
-                <td class="dataTableContent" align="right"><?php echo /*-bof-a-snap_affiliates*/ snap_affiliates_image($orders->fields['orders_id']) . /*-eof-a-snap_affiliates*/ $show_difference . $orders->fields['orders_id']; ?></td>
+                <td class="dataTableContent" align="right"><?php echo snap_affiliates_image($orders->fields['orders_id']) . $show_difference . $orders->fields['orders_id']; //-snap_affiliates-lat9  *** 5 of 5 *** ?></td>
                 <td class="dataTableContent" align="left" width="50"><?php echo $show_payment_type; ?></td>
                 <td class="dataTableContent"><?php echo '<a href="' . zen_href_link(FILENAME_CUSTOMERS, 'cID=' . $orders->fields['customers_id'], 'NONSSL') . '">' . zen_image(DIR_WS_ICONS . 'preview.gif', ICON_PREVIEW . ' ' . TABLE_HEADING_CUSTOMERS) . '</a>&nbsp;' . $orders->fields['customers_name'] . ($orders->fields['customers_company'] != '' ? '<br />' . $orders->fields['customers_company'] : ''); ?></td>
                 <td class="dataTableContent" align="right"><?php echo strip_tags($orders->fields['order_total']); ?></td>
@@ -993,7 +985,7 @@ if (($_GET['page'] == '' or $_GET['page'] <= 1) and $_GET['oID'] != '') {
 
       $contents[] = array('text' => '<br />' . zen_image(DIR_WS_IMAGES . 'pixel_black.gif','','100%','3'));
       $order = new order($oInfo->orders_id);
-      $contents[] = array('text' => 'Products Ordered: ' . sizeof($order->products) );
+      $contents[] = array('text' => TABLE_HEADING_PRODUCTS . ': ' . sizeof($order->products) );
       for ($i=0; $i<sizeof($order->products); $i++) {
         $contents[] = array('text' => $order->products[$i]['qty'] . '&nbsp;x&nbsp;' . $order->products[$i]['name']);
 
