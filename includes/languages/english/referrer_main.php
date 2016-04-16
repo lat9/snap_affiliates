@@ -14,7 +14,7 @@ define('TEXT_ORDERS_PAYMENTS', 'Orders and Payments');
 define('TEXT_MARKETING_TOOLS', 'Marketing Tools');
 define('TEXT_REFERRER_TERMS', 'Referrer Terms');
 
-define('TEXT_REFERRAL_SUBMITTED', 'Thanks for you interest in our referrer program.  Your application is under consideration.  As soon as we\'ve looked it over and made a decision, we\'ll contact you via email.');
+define('TEXT_REFERRAL_SUBMITTED', 'Thanks for your interest in our referrer program.  Your application is under consideration.  As soon as we\'ve looked it over and made a decision, we\'ll contact you via email.');
 define('TEXT_REFERRAL_BANNED', '<em>Your referrer account has been suspended.</em>  If you believe this to be an error, please <a href="%s">contact us</a>.');
 
 define('TEXT_PLEASE_LOGIN', 'Please <a href="%s">login</a> to access your referral statistics.');
