@@ -82,6 +82,9 @@
 
 <?php } // endif don't show unsubscribe or notification ?>
 
+<?php
+//-bof-snap_affiliates-lat9  *** 1 of 1 ***
+?>
 <h2><?php echo REFERRER_MAIN_TITLE; ?></h2>
 <ul id="myAffiliateAccount" class="list">
 <?php
@@ -101,6 +104,10 @@ if (!is_object($referrer) || $referrer->EOF) {
 }
 ?>
 </ul>
+<?php
+//-eof-snap_affiliates-lat9  *** 1 of 1 ***
+?>
+
 </div>
 
 <?php
