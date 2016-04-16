@@ -10,10 +10,13 @@
  */
 
   unset($information);
-
+  
+//-bof-snap_affiliates-lat9  *** 1 of 1 ***
   if (SNAP_INFORMATION_SIDEBOX === 'true') {
     $information[] = '<a href="' . zen_href_link(FILENAME_REFERRER_SIGNUP, '', 'SSL'). '">' . BOX_INFORMATION_REFERRER_TERMS . '</a>';
   }
+//-eof-snap_affiliates-lat9  *** 1 of 1 ***
+
   if (DEFINE_SHIPPINGINFO_STATUS <= 1) {
     $information[] = '<a href="' . zen_href_link(FILENAME_SHIPPING) . '">' . BOX_INFORMATION_SHIPPING . '</a>';
   }
