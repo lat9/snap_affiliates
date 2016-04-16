@@ -1,0 +1,13 @@
+.table { display: table; margin: 0; }
+.head_outer, .item_outer { display: table-row; }
+.thead, .item { display: table-cell; padding: 5px 5px 0;}
+.head_outer { font-weight: bold; }
+.thead { border-bottom: 1px dashed grey; }
+.c1 { font-weight: bold; }
+.c2 {}
+.c3 {}
+.c4 {}
+.c5 {}
+.even { background-color: #d2d2d2; }
+.odd { background-color: transparent; }
+.totals  > .item { border-top: 1px dashed grey; font-weight: bold; }
