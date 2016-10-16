@@ -263,7 +263,7 @@ switch($mode) {
     } else {
       $commissions = array ();
       foreach ($_POST['payList'] as $commission_id => $value) {
-        if (!isset ($_POST['commission'][$commission_id]) || (int)$_POST['commission'][$commission_id] <= 0) {  //-v3.0.1c
+        if (!isset ($_POST['commission'][$commission_id]) || (float)$_POST['commission'][$commission_id] <= 0) {  //-v3.0.1c
           $pay_message = ERROR_COMMISSION_CANT_BE_ZERO;
           $mode = TEXT_PAY;
           
