@@ -2,7 +2,7 @@
 // +----------------------------------------------------------------------+
 // |Snap Affiliates for Zen Cart                                          |
 // +----------------------------------------------------------------------+
-// | Copyright (c) 2013-2016, Vinos de Frutas Tropicales (lat9)           |
+// | Copyright (c) 2013-2017, Vinos de Frutas Tropicales (lat9)           |
 // +----------------------------------------------------------------------+
 // | This source file is subject to version 2.0 of the GPL license.       |
 // +----------------------------------------------------------------------+
@@ -10,8 +10,8 @@
 if (!defined('IS_ADMIN_FLAG')) {
     die('Illegal Access');
 }
-define('SNAP_MODULE_CURRENT_VERSION', '4.0.0-beta1');
-define('SNAP_MODULE_UPDATE_DATE', '2016-11-xx');
+define('SNAP_MODULE_CURRENT_VERSION', '4.0.0');
+define('SNAP_MODULE_UPDATE_DATE', '2016-07-30');
 
 //----
 // Create each of the database tables for the referrers plugin, if they don't already exist.
