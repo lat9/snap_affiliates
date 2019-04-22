@@ -2,7 +2,7 @@
 // +---------------------------------------------------------------------------+
 // |Snap Affiliates for Zen Cart                                               |
 // +---------------------------------------------------------------------------+
-// | Copyright (c) 2013-2015, Vinos de Frutas Tropicales (lat9) for ZC 1.5.0+  |
+// | Copyright (c) 2013-2019, Vinos de Frutas Tropicales (lat9) for ZC 1.5.0+  |
 // |                                                                           |
 // | Original: Copyright (c) 2009 Michael Burke                                |
 // | http://www.filterswept.com                                                |
@@ -127,7 +127,7 @@ if (!$is_logged_in) {
           $current_amount = 0;
         }
 
-        if ($current_date != "0000-00-00 00:00:00") {
+        if ($current_date != "0001-01-01 00:00:00") {
           $current_date = strtotime($current_date);
         } else {
           $current_date = 0;

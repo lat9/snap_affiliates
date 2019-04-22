@@ -2,7 +2,7 @@
 // +----------------------------------------------------------------------+
 // | Snap Affiliates for Zen Cart v1.5.0 and later                        |
 // +----------------------------------------------------------------------+
-// | Copyright (c) 2013-2015, Vinos de Frutas Tropicales (lat9)           |
+// | Copyright (c) 2013-2019, Vinos de Frutas Tropicales (lat9)           |
 // |                                                                      |
 // | Original: Copyright (c) 2009 Michael Burke                           |
 // | http://www.filterswept.com                                           |
@@ -164,7 +164,7 @@ while (!$referrerResults->EOF) {
   // ... processing each of the referrer's order information.
   //
   while (!$orderResults->EOF) {
-    $isCommissionPaid = ($orderResults->fields['commission_paid'] == '0000-00-00 00:00:00') ? false : true;  /*v2.5.0a*/
+    $isCommissionPaid = ($orderResults->fields['commission_paid'] == '0001-01-01 00:00:00') ? false : true;  /*v2.5.0a*/
     $orderResults->fields['ispaid'] = $isCommissionPaid;  /*v2.5.0a*/
     $ordersTotal = $ordersCommission = $ordersUnpaid = 0; /*v2.1.0c*/
     $orders_status = (int)$orderResults->fields['orders_status']; /*v2.1.0a*/
@@ -776,7 +776,7 @@ foreach($orders_status_names as $current_orders_status => $status_name) {
 //-eof-v2.1.0a
   $commission_payment_type_detail = '';
   $commission_payment_type = '&nbsp;';
-  if ($order['commission_paid'] == '0000-00-00 00:00:00') {
+  if ($order['commission_paid'] == '0001-01-01 00:00:00') {
     $commission_paid = TEXT_UNPAID;
     
   } else {

@@ -2,7 +2,7 @@
 // +---------------------------------------------------------------------------+
 // |Snap Affiliates for Zen Cart                                               |
 // +---------------------------------------------------------------------------+
-// | Copyright (c) 2013-2015, Vinos de Frutas Tropicales (lat9) for ZC 1.5.0+  |
+// | Copyright (c) 2013-2019, Vinos de Frutas Tropicales (lat9) for ZC 1.5.0+  |
 // +---------------------------------------------------------------------------+
 // | This source file is subject to version 2.0 of the GPL license.            |
 // +---------------------------------------------------------------------------+
@@ -48,7 +48,9 @@ class snap_order_observer extends base {
       $sql_data_array = array('commission_orders_id' => $paramsArray['orders_id'],
                               'commission_referrer_key' => $_SESSION['referrer_key'],
                               'commission_rate' => $commission,
-                              'commission_paid' => 0);
+                              'commission_paid' => '0001-01-01 00:00:00',
+                              'commission_paid_amount' => 0.0
+                              );
 
       zen_db_perform(TABLE_COMMISSION, $sql_data_array);
       
