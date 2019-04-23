@@ -250,11 +250,13 @@ ul li ul { padding-left: 0; }
 <ul>
   <li>v4.1.0, 2019-04-xx:<ul>
     <li>CHANGE: <b>Major</b> restructuring to support Zen Cart 1.5.6 and future PHP/MySQL versions.</li>
+    <li>CHANGE: Clarify the description of the <em>Order Status Exclusions</em> configuration setting.</li>
     <li>The <em>majority</em> of the plugin's files were changed for this release, so consider that <b>all</b> files have been changed!  Notably, the following files were added or removed from the plugin's distribution:<ol>
       <li><span class="added">/includes/functions/snap_functions.php</span></li>
       <li><span class="added">/includes/templates/template_default/templates/tpl_modules_account_referrers.php</span></li>
       <li><span class="corefile removed">/YOUR_ADMIN/orders.php</span> <span class="smaller">(No longer distributed; using zc156-supplied notifications)</span></li>
       <li><span class="added">/YOUR_ADMIN/includes/classes/observers/SnapAdminObserver.php</span></li>
+      <li>/YOUR_ADMIN/includes/init_includes/init_snap_admin.php</li>
       <li><span class="corefile">/zc155/YOUR_ADMIN/orders.php</span> <span class="smaller">(This is the zc155f version of the file, updated with zc156 notifications)</span></li>
     </ol></li>
     <li>Database changes:<ol>

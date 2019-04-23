@@ -9,8 +9,8 @@
 if (!defined('IS_ADMIN_FLAG') || IS_ADMIN_FLAG !== true) {
     die('Illegal Access');
 }
-define('SNAP_MODULE_CURRENT_VERSION', '4.1.0-beta1');
-define('SNAP_MODULE_UPDATE_DATE', '2019-04-21');
+define('SNAP_MODULE_CURRENT_VERSION', '4.1.0-beta2');
+define('SNAP_MODULE_UPDATE_DATE', '2019-04-23');
 
 // -----
 // Wait until an admin is logged in to perform any operations, so that any generated
@@ -215,6 +215,12 @@ if (SNAP_MODULE_VERSION != SNAP_MODULE_CURRENT_VERSION) {
                     (configuration_title, configuration_key, configuration_value, configuration_description, configuration_group_id, sort_order, date_added, use_function, set_function) 
                  VALUES
                     ('Enable Storefront Processing?', 'SNAP_ENABLED', '$snap_default', 'Should the affiliates\' handling be enabled for the storefront?<br /><br />', $cgi, 11, now(), NULL, 'zen_cfg_select_option(array(\'true\', \'false\'),')"
+            );
+            $db->Execute(
+                "UPDATE " . TABLE_CONFIGURATION . "
+                    SET configuration_description = 'Exclude orders with the following <em>Order Status</em> <b>values</b> from affiliate commissions. Specify the values as a comma-separated list (intervening blanks are OK), e.g. <code>1, 5</code>.<br />'
+                  WHERE configuration_key = 'SNAP_ORDER_STATUS_EXCLUSIONS'
+                  LIMIT 1"
             );
             
         default:                                                    //-Fall-through from above ...
