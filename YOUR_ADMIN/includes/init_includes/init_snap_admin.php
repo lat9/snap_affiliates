@@ -9,7 +9,7 @@
 if (!defined('IS_ADMIN_FLAG') || IS_ADMIN_FLAG !== true) {
     die('Illegal Access');
 }
-define('SNAP_MODULE_CURRENT_VERSION', '4.1.0-beta2');
+define('SNAP_MODULE_CURRENT_VERSION', '4.1.0-beta3');
 define('SNAP_MODULE_UPDATE_DATE', '2019-04-23');
 
 // -----
@@ -222,6 +222,27 @@ if (SNAP_MODULE_VERSION != SNAP_MODULE_CURRENT_VERSION) {
                   WHERE configuration_key = 'SNAP_ORDER_STATUS_EXCLUSIONS'
                   LIMIT 1"
             );
+            $snap_query = $db->Execute(
+                "SELECT *
+                   FROM " . TABLE_QUERY_BUILDER . "
+                  WHERE query_name = 'All Affiliates'
+                  LIMIT 1"
+            );
+            if ($snap_query->EOF) {
+                $snap_qb_query = 
+                    'SELECT c.customers_email_address, c.customers_lastname, c.customers_firstname ' .
+                      'FROM TABLE_REFERRERS r ' .
+                           'INNER JOIN TABLE_CUSTOMERS c ' .
+                                'ON referrer_customers_id = c.customers_id ' .
+                     'WHERE referrer_approved = 1 ' .
+                       'AND referrer_banned = 0';
+                $db->Execute(
+                    "INSERT INTO " . TABLE_QUERY_BUILDER . "
+                        (query_category, query_name, query_description, query_string, query_keys_list)
+                     VALUES
+                        ('email,newsletters', 'All Affiliates', 'For sending emails or newsletters to currently-subscribed SNAP Affiliates that have been approved and not banned.', '$snap_qb_query', '')"
+                );
+            }
             
         default:                                                    //-Fall-through from above ...
             break;

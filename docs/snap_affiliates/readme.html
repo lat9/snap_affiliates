@@ -57,8 +57,8 @@ ul li ul { padding-left: 0; }
 <p>When one of your store's affiliates' customers clicks on an affiliate link, your store's customization detects the <em>referrer</em> variable and creates a cookie named <em>referrer_key</em> that contains the affiliate's key value.  The cookie's lifetime is 1 year (31536000 seconds); you can change this value via an admin <a href="#lifetime">configuration</a>.  Each time a customer comes to your store with the <em>referrer</em> variable in the link, the <em>referrer_key</em> cookie is overwritten.  So long as the cookie's lifetime has not expired, the customer has not cleared their browser cache and/or cookies and the affiliate is still in "good standing" (i.e. has not been banned), any purchase that the customer makes on your website results in an earned commission for that affiliate. Starting with v2.3.0, you can limit the number of customer purchases for which an affiliate receives a commission; see <a href="#purchases">Purchases Per Cookie</a> for more information.</p>
 <p>Starting with v3.0.0, your affiliates can choose their method of commission-payment, either <em>Check/Money Order</em> or (optionally) via PayPal&reg; to their PayPal account email address.  Refer to <a href="#payment">Commission Payment Types</a> for more information.</p>
 
-<h3>Customer Interfaces</h3>
-<h4 id="sidebox">Information Sidebox</h4>
+<h2>Customer Interfaces</h2>
+<h3 id="sidebox">Information Sidebox</h3>
 <p>An <em>Affiliate Program</em> link is added to the <em>Information</em> sidebox to point people to the <a href="#p_signup">referrer_signup</a> page, if <a href="#info_box">enabled</a> by the plugin's configuration settings.</p>
 <p><strong>Note:</strong> If your store doesn't use the information sidebox, you can add PHP code to your alternate menu structure to create the "Referrer Signup" link.  Here's the code used in the sidebox to add the link; you'll need to change the <em>$information[]</em> variable to match your menu's structure:</p>
 <pre>
@@ -67,7 +67,7 @@ ul li ul { padding-left: 0; }
   }
 </pre>
 
-<h4>My Account Information Page: <em>account</em></h4>
+<h3>My Account Information Page: <em>account</em></h3>
 <p>A new group (Referral Program) is added with the following links:</p>
 <ol>
   <li><strong>Sign Me Up Today</strong>. This link is displayed <em>only</em> if the customer has not yet enrolled in your affiliate program and provides a link to the <a href="#p_signup">referrer_signup</a> page.</li>
@@ -75,10 +75,10 @@ ul li ul { padding-left: 0; }
   <li><strong>Affiliate Marketing Tools</strong>. This link is displayed <em>only</em> if the customer has enrolled in, been approved for and is not currently banned from your affiliate program, providing a link to the <a href="#p_tools">referrer_tools</a> page.</li>
 </ol>
 
-<h4 id="p_signup">Affiliate Signup Page: <em>referrer_signup</em></h4>
+<h3 id="p_signup">Affiliate Signup Page: <em>referrer_signup</em></h3>
 <p>This page operates differently based on whether or not the customer has previously signed up for your program.  If the customer has not signed up, a form is presented allowing the customer to enter the website address from which they intend to link to your site with their affiliate key followed by your affiliate program's terms and conditions. Otherwise, if the page is invoked with the <strong>terms</strong> variable (e.g. www.mysite.com/index.php?main_page=referrer_signup&amp;terms) your affiliate program's terms and conditions will be displayed; otherwise, the page redirects to <a href="#p_main">referrer_main</a> page.</p>
 
-<h4 id="p_main">Affiliate Main Page: <em>referrer_main</em></h4>
+<h3 id="p_main">Affiliate Main Page: <em>referrer_main</em></h3>
 <p>This page operates differently based on whether the customer has previously signed up for your program and, if so, their current approval/banned status. If the customer has not signed up, this page redirects to the <a href="#p_signup">referrer_signup</a> page. Otherwise, if either the customer is not yet approved or has been banned from the program, this page displays a message indicating that their submission is in the approval process.  Finally, if the customer has signed up, is approved and is not banned, this page displays three sections:</p>
 <ol>
   <li><strong>My Referrer Information</strong>.  Displays the customer's affiliate key, last payment date and current commission rate.</li>
@@ -87,7 +87,7 @@ ul li ul { padding-left: 0; }
 </ol>
 <p><strong>Note:</strong> Affiliate sales and associated commissions are not shown for orders with an "Orders Status" value that falls in the list of <a href="#exclusions"><em>Orders Status Exclusions</em></a> specified by your admin.</p>
 
-<h4 id="p_tools">Affiliate Marketing Tools: <em>referrer_tools</em></h4>
+<h3 id="p_tools">Affiliate Marketing Tools: <em>referrer_tools</em></h3>
 <p>This page only displays if a customer is signed in (redirecting to the <em>login</em> page otherwise), has applied (redirects to <a href="#p_signup">referrer_signup</a> if not) and been approved for an affiliate account and is not currently banned, redirecting to <a href="#p_main">referrer_main</a> for either of these conditions. If the page displays, it shows either two or three sections:</p>
 <ol>
   <li><strong>Site Link</strong>. Displays a text-area box that includes an HTML anchor link to your home page that includes the affiliate's key value. The affiliate can copy this HTML to include on their page that links back to you.</li>
@@ -95,10 +95,10 @@ ul li ul { padding-left: 0; }
   <li><strong>Banners</strong>. If you have created and configured some <a href="#config_api">Affiliate Program Images</a>, this section displays each of those images along with a textarea box that includes a home-page link to your store using that image and the affiliate's key.</li>
 </ol>
 
-<h3>Zen Cart Admin Interfaces</h3>
+<h2>Zen Cart Admin Interfaces</h2>
 <p>The first time you start your Zen Cart admin after copying this plugins files to your installation, the plugin's initialization file runs.  That file creates the database tables named <em>commission</em> and <em>referrers</em>, including your DB_PREFIX value, creates the settings for the plugin's <a href="#acs">configuration</a> and creates the database settings to allow the display of <em>Configuration-&gt;Affiliate Program</em> and <a href="#acr"><em>Customers-&gt;Referrers</em></a>.</p>
 
-<h4 id="acs">Configuration-&gt;Affiliate Program</h4>
+<h3 id="acs">Configuration-&gt;Affiliate Program</h3>
 <p>As installed, the configuration screen for your affiliate program looks like the following.</p>
 <img src="referrers_configuration.jpg" title="Configuration screenshot" alt="Configuration screenshot" />
 <p>The following configuration values allow you to customize your affiliate program:</p>
@@ -150,7 +150,7 @@ ul li ul { padding-left: 0; }
   
 </dl>
 
-<h4 id="acr">Customers-&gt;Referrers</h4>
+<h3 id="acr">Customers-&gt;Referrers</h3>
 <p>This tool allows you to administer your affiliate program participants.</p>
 <img src="referrers_admin_main.jpg" title="Customers / Referrers Main Screen" alt="Customers / Referrers Main Screen" />
 <p>The first screen (see above) shows a summary of participants (the number per page is controlled by a configuration <a href="#config_adc">switch</a>) and, clicking on the "Details" button, will show (within the "Order History" group) a list of orders in your store that are associated with the selected affiliate.</p>
@@ -166,6 +166,10 @@ ul li ul { padding-left: 0; }
 <p>Starting with v2.3.0, each item in the "Order History" group includes the ID value associated with a commissioned order, with a link to the associated order's details.  Similarly, each commissioned order within the admin's <em>Customers-&gt;Orders</em> is identified by an icon with a link-back to the referrer's details page.</p>
 <p>Beginning with v2.7.0, the following screen is shown when you click the <em>Pay</em> button from the affiliate's details screen.  You can select, from the currently unpaid but commissionable orders, which commissions to pay and, if needed by your business practices, modify the commission amount paid from the calculated default.</p>
 <img src="referrers_pay.jpg" title="Customers / Referrers Pay" alt="Customers / Referrers Pay" />
+
+<h3>Tools-&gt;Newsletter and Product Notifications Manager</h3>
+<p>Starting with v4.1.0 of the plugin, you can send your approved and unbanned referrers targeted emails and/or newsletters by selecting the <b>All Affiliates</b> audience:</p>
+<img src="newsletter.jpg" alt="Select Affiliates for Emails" title="Select Affiliates for Emails" />
 
 <h3 id="payment">Commission Payment Types</h3>
 <p>Starting with v3.0.0 of the plugin, your referrers can choose their method of payment type.  The <em>Check/Money-order</em> type is enabled automatically and, if your store has a PayPal&reg; account, you can <a href="#enable_pp">enable</a> your customers to choose to be paid via PayPal, too!</p>
@@ -251,6 +255,7 @@ ul li ul { padding-left: 0; }
   <li>v4.1.0, 2019-04-xx:<ul>
     <li>CHANGE: <b>Major</b> restructuring to support Zen Cart 1.5.6 and future PHP/MySQL versions.</li>
     <li>CHANGE: Clarify the description of the <em>Order Status Exclusions</em> configuration setting.</li>
+    <li>CHANGE: Update the store's database to enable emails and/or newsletters to be sent to all approved (and not banned) affiliates.</li>
     <li>The <em>majority</em> of the plugin's files were changed for this release, so consider that <b>all</b> files have been changed!  Notably, the following files were added or removed from the plugin's distribution:<ol>
       <li><span class="added">/includes/functions/snap_functions.php</span></li>
       <li><span class="added">/includes/templates/template_default/templates/tpl_modules_account_referrers.php</span></li>
