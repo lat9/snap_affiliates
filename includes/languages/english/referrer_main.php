@@ -1,12 +1,10 @@
 <?php
-/**
- * @package languageDefines
- * @copyright Copyright 2003-2006 Zen Cart Development Team
- * @copyright Portions Copyright 2003 osCommerce
- * @license http://www.zen-cart.com/license/2_0.txt GNU Public License V2.0
- * @version $Id: account.php 3595 2006-05-07 06:39:23Z drbyte $
- */
-
+// -----
+// Part of the SNAP Affiliates plugin for Zen Carts v155 and later.
+//
+// Copyright (c) 2013-2019, Vinos de Frutas Tropicales (lat9)
+// Original: Copyright (c) 2009, Michael Burke (http://www.filterswept.com)
+//
 define('NAVBAR_TITLE', 'Affiliate Main');
 define('HEADING_TITLE', 'My Affiliate Statistics');
 
@@ -19,10 +17,11 @@ define('TEXT_REFERRAL_BANNED', '<em>Your referrer account has been suspended.</e
 
 define('TEXT_PLEASE_LOGIN', 'Please <a href="%s">login</a> to access your referral statistics.');
 define('TEXT_REFERRER_SIGNUP', 'If you don\'t have a referral account and would like to open one, please proceed to our <a href="%s">signup page</a>.');
+define('TEXT_CHOOSE', 'Choose');
 
 define('HEADING_REFERRER_INFO', 'My Referrer Information');
 define('TEXT_REFERRER_ID', 'My Referrer ID:');
-define('TEXT_MY_WEBSITE', 'My Website:'); /*v2.2.0a*/
+define('TEXT_MY_WEBSITE', 'My Website:');
 define('TEXT_LAST_PAYMENT_MADE', 'Last Payment Made On:');
 define('TEXT_NO_PAYMENTS', 'No payments have been made yet');
 define('TEXT_COMMISSION_RATE', 'My Commission Rate:');
@@ -34,9 +33,10 @@ define('TEXT_UNPAID_COMMISSION', 'Unpaid Commission:');
 define('TEXT_YTD_SALES', 'Year-to-date Sales:');
 define('TEXT_YTD_COMMISSION', 'Year-to-date Commission:');
 
-define('TEXT_ACTIVITY', 'Commission-Payment Activity');  /*v2.5.1c*/
-define('TEXT_TO', 'To:');
-define('TEXT_FROM', 'From:');
+define('TEXT_ACTIVITY', 'Commission-Payment Activity');
+define('TEXT_NO_ACTIVITY', 'No commissionable orders were received during the requested period.');
+define('TEXT_TO', 'To: ');
+define('TEXT_FROM', 'From: ');
 define('TEXT_UNPAID', 'Unpaid');
 define('HEADING_PURCHASE_DATE', 'Date of Purchase');
 define('HEADING_AMOUNT', 'Amount');
@@ -49,4 +49,4 @@ define('HEADING_COMMISSION_PAY_TYPE', 'Commission Paid Via');
 define('HEADING_TOTALS', 'Totals');
 
 define('TEXT_COMMISSION_PAID', '<strong><sup>*</sup>Commission Paid</strong> amounts include any refunds or returns that have being deducted from the final commission amount. For more information on how
-commissions are calculated please visit our <a href="' . zen_href_link (FILENAME_REFERRER_SIGNUP, 'terms', 'SSL') . '">Referrer Terms and Conditions</a>.');
+commissions are calculated please visit our <a href="' . zen_href_link(FILENAME_REFERRER_SIGNUP, 'terms', 'SSL') . '">Referrer Terms and Conditions</a>.');

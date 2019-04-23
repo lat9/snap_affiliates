@@ -9,8 +9,8 @@
 if (!defined('IS_ADMIN_FLAG') || IS_ADMIN_FLAG !== true) {
     die('Illegal Access');
 }
-define('SNAP_MODULE_CURRENT_VERSION', '4.0.1-beta1');
-define('SNAP_MODULE_UPDATE_DATE', '2019-04-22');
+define('SNAP_MODULE_CURRENT_VERSION', '4.1.0-beta1');
+define('SNAP_MODULE_UPDATE_DATE', '2019-04-21');
 
 // -----
 // Wait until an admin is logged in to perform any operations, so that any generated
@@ -208,6 +208,15 @@ if (SNAP_MODULE_VERSION != SNAP_MODULE_CURRENT_VERSION) {
                 zen_record_admin_activity('One or more entries in SNAP Affiliates\' ' . TABLE_COMMISSIONS . ' table were updated for more recent versions of MySql.', 'warning');
             }
             
+        case version_compare(SNAP_MODULE_VERSION, '4.1.0', '<'):    //-Fall-through from above ...
+            $snap_default = (SNAP_MODULE_VERSION == '0.0.0') ? 'false' : 'true';
+            $db->Execute(
+                "INSERT IGNORE INTO " . TABLE_CONFIGURATION . "
+                    (configuration_title, configuration_key, configuration_value, configuration_description, configuration_group_id, sort_order, date_added, use_function, set_function) 
+                 VALUES
+                    ('Enable Storefront Processing?', 'SNAP_ENABLED', '$snap_default', 'Should the affiliates\' handling be enabled for the storefront?<br /><br />', $cgi, 11, now(), NULL, 'zen_cfg_select_option(array(\'true\', \'false\'),')"
+            );
+            
         default:                                                    //-Fall-through from above ...
             break;
     }
@@ -230,6 +239,7 @@ if (SNAP_MODULE_VERSION != SNAP_MODULE_CURRENT_VERSION) {
         $snap_message = sprintf(TEXT_SNAP_UPDATED, SNAP_MODULE_VERSION, SNAP_MODULE_CURRENT_VERSION);
     }
     $messageStack->add($snap_message, 'success');
+    zen_record_admin_activity($snap_message, 'warning');
 }
 
 //----

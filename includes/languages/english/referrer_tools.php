@@ -1,11 +1,10 @@
 <?php
-/**
- * @package languageDefines
- * @copyright Copyright 2003-2006 Zen Cart Development Team
- * @copyright Portions Copyright 2003 osCommerce
- * @license http://www.zen-cart.com/license/2_0.txt GNU Public License V2.0
- * @version $Id: account.php 3595 2006-05-07 06:39:23Z drbyte $
- */
+// -----
+// Part of the SNAP Affiliates plugin for Zen Carts v155 and later.
+//
+// Copyright (c) 2013-2019, Vinos de Frutas Tropicales (lat9)
+// Original: Copyright (c) 2009, Michael Burke (http://www.filterswept.com)
+//
 define('NAVBAR_TITLE', 'Affiliate Tools');
 define('HEADING_TITLE', 'Affiliate Marketing Tools');
 
@@ -26,3 +25,5 @@ define('TEXT_X_BY_Y_PIXELS', '%u by %u pixels');
 
 define('HEADING_BANNERS', 'Banners');
 define('TEXT_BANNERS', 'Select from the following banners and buttons to promote us on your website. Copy and paste the HTML code following each image into your blog or web page to link to us.');
+
+define('BUTTON_TRANSFORM', 'Transform');

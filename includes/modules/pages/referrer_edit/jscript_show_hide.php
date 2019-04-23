@@ -8,12 +8,11 @@
 // +---------------------------------------------------------------------------+
 $details = $details_text = '';
 foreach ($payment_types as $type_id => $type_info) {
-  $details .= ", $type_id: '" . $type_info['text_details'] . "'";
-   
+    $details .= ", $type_id: '" . $type_info['text_details'] . "'";
 }
 ?>
 <script type="text/javascript">
-  var detailsInfo = {<?php echo substr ($details, 1); ?>};
+  var detailsInfo = {<?php echo substr($details, 1); ?>};
   function showHideDetails () {
     var e = document.getElementById('payment-type');
     if (detailsInfo[e.options[e.selectedIndex].value] == '') {

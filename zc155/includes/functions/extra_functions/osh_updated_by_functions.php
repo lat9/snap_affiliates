@@ -2,31 +2,8 @@
 // -----
 // Provide the staging for addition of the 'updated_by' field in the orders_status_history table
 //
-//  CHANGE HISTORY:
-//  20130730 - 0.0.3:
-//    - Modified parameter input order for zen_update_orders_history (moved $message to parm 2).
-//    - Made $osh_sql global, to allow admin notifier-observers (pre ZC v1.6.0) to modify the inputs (like Ty Package Tracker).
-//    - Added verification of the $customer_notified variable, so the callers don't have to.
-//    - Modified the return values to make a distinction between "not updated" and "no order found".
-//    - Updated orders_status name always returned "N/A"
-//  20130805 - 0.0.4:
-//    - Pass the order_id value on the old/new orders status notification
-//    - Added ZEN_UPDATE_ORDERS_HISTORY_PRE_EMAIL notifier to allow plugins to add to the email message to be sent to the customer.
-//    - "unset" the global variables created by the zen_update_orders_history function
-//  20130902 - 1.0.0
-//    - Add an optional input to allow an override of the orders-status update email's subject line.
-//    - Add an optional input to allow an override of the admin email-copy address.
-//    - BUGFIX: Orders-status emails indicated a status change event if the status hasn't changed.
-//    - BUGFIX: Orders-status change notifier happened before orders status adjusted.
-//    - Added an OSH_ prefix to all language constants used, to make sure that those associated with this plugin are used.
-//  20130907 - 1.0.1
-//    - BUGFIX: Incorrect variable referenced after email comment notification
-//    - Allow email message to be updated by observer prior to processing.
-//  20131005 - 1.1.0
-//    - Allow admin-only messages to be sent.
-//
-define('OSH_UPDATED_BY_VERSION', '1.3.0');
-define('OSH_UPDATED_BY_DATE', '2016-01-06');
+define('OSH_UPDATED_BY_VERSION', '2.0.0');
+define('OSH_UPDATED_BY_DATE', '2016-08-08');
 
 // -----
 // 1) Add the updated_by column to the orders_status_history table, if it doesn't already exist.
@@ -108,6 +85,7 @@ if (!function_exists('zen_update_orders_history')) {
       $osh_id = -2;
       
     } else {
+      $message = stripslashes ($message);
       if (IS_ADMIN_FLAG === true && $email_include_message === true) {
         $osh_additional_comments = '';
         $zco_notifier->notify('ZEN_UPDATE_ORDERS_HISTORY_PRE_EMAIL', array( 'message' => $message ) );
@@ -198,11 +176,11 @@ if (!function_exists('zen_update_orders_history')) {
         }
         
         $osh_sql = array ( 'orders_id' => $orders_id,
-                           'orders_status_id' => zen_db_input($orders_status),
+                           'orders_status_id' => (int)$orders_status,
                            'date_added' => 'now()',
-                           'customer_notified' => zen_db_input($notify_customer),
+                           'customer_notified' => (int)$notify_customer,
                            'comments' => $message,
-                           'updated_by' => zen_db_input($updated_by)
+                           'updated_by' => $updated_by
                            );
                            
         $zco_notifier->notify('ZEN_UPDATE_ORDERS_HISTORY_BEFORE_INSERT');

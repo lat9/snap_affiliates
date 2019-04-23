@@ -33,6 +33,7 @@ ul li ul { padding-left: 0; }
 .c1 { text-align: center; font-weight: bold; vertical-align: top; }
 .c3 { vertical-align: top; }
 .o { background-color: #ebebeb; }
+.osh { color: #555577; }
 -->
 </style>
 </head>
@@ -40,7 +41,7 @@ ul li ul { padding-left: 0; }
 <body>
 <a name="top" id="top"></a>
 <h1>Snap Affiliates for Zen Cart 1.5.5a and later</h1>
-<h3>Version 4.0.1 by lat9</h3>
+<h3>Version 4.1.0 by lat9</h3>
 <p>Copyright &copy; 2013-2019 Vinos de Frutas Tropicales</p>
 <p>Current support thread at Zen Cart Forums: <a href="http://www.zen-cart.com/showthread.php?206579-Snap-Affiliates-v2-0-for-Zen-Cart-v1-5-0-and-later" target="_blank">www.zen-cart.com/showthread.php?206579-Snap-Affiliates-v2-0-for-Zen-Cart-v1-5-0-and-later</a>.  This software is provided for your use under the GNU General Public License v2.0.</p>
 
@@ -61,7 +62,7 @@ ul li ul { padding-left: 0; }
 <p>An <em>Affiliate Program</em> link is added to the <em>Information</em> sidebox to point people to the <a href="#p_signup">referrer_signup</a> page, if <a href="#info_box">enabled</a> by the plugin's configuration settings.</p>
 <p><strong>Note:</strong> If your store doesn't use the information sidebox, you can add PHP code to your alternate menu structure to create the "Referrer Signup" link.  Here's the code used in the sidebox to add the link; you'll need to change the <em>$information[]</em> variable to match your menu's structure:</p>
 <pre>
-  if (SNAP_INFORMATION_SIDEBOX === 'true') {
+  if (defined('SNAP_INFORMATION_SIDEBOX') && SNAP_INFORMATION_SIDEBOX === 'true') {
     $information[] = '&lt;a href="' . zen_href_link(FILENAME_REFERRER_SIGNUP, '', 'SSL'). '"&gt;' . BOX_INFORMATION_REFERRER_TERMS . '&lt;/a&gt;';
   }
 </pre>
@@ -104,6 +105,9 @@ ul li ul { padding-left: 0; }
 <dl>
   <dt>Module Version</dt>
   <dd>Displays the currently-installed version of the plugin</dd>
+  
+  <dt>Enable Storefront Processing?</dt>
+  <dd>Identifies whether (true) or not the plugin's storefront processing should be enabled.  The value defaults to <b>false</b> on initial installations; to <b>true</b> on upgrades from a <em>SNAP Affiliates</em> version prior to v4.1.0.</dd>
   
   <dt>Default Commission</dt>
   <dd>Contains the default commission rate for your affiliates.  The value is specified as a floating-point value in the range 0.0 to 1.0 and represents the percentage that an affiliate will receive if a customer makes a purchase from your store using their referral code. (Default: 0.1 &mdash; 10%)</dd>
@@ -169,38 +173,40 @@ ul li ul { padding-left: 0; }
 <p><strong>Note:</strong> The PayPal payment type is <strong>not</strong> an automatic method of payment!  You'll need to sign into your PayPal account and &quot;Send Money&quot; to each of your referrers who have chosen to be paid via PayPal.</p> 
 
 <h2 id="install">Installation</h2>
-<p>There are <span class="corefile">core-file overwrites</span> in this plugin; you should <strong>always</strong> backup your cart&rsquo;s database and files prior to making any changes.  In all cases, Zen Cart 1.5.5b is used as the change-basis for the <span class="corefile">core-file</span> or <span class="template">template-override</span> changes.</p>
+<p>There are <span class="template">template-overrides</span> required by this plugin; you should <strong>always</strong> backup your cart&rsquo;s database and files prior to making any changes.  Unless otherwise noted, Zen Cart 1.5.6a is used as the change-basis for the <span class="template">template-override</span> changes.</p>
 <ol type="A">
   <li>Backup both your Zen Cart installation and database &mdash; this plugin will will modify both.</li>
   <li><strong>Double-check the backup you just created</strong>.  Better safe than sorry!</li>
-  <li>Unzip the plugin's distribution zip-file into a temporary directory.  Rename the &quot;YOUR_TEMPLATE&quot; directories (<b>3 of them</b>) to match your custom template&rsquo;s name:<ol>
-    <li>/includes/languages/english/YOUR_TEMPLATE</li>
+  <li>Unzip the plugin's distribution zip-file into a temporary directory.  Rename the &quot;YOUR_TEMPLATE&quot; directories (<b>2 of them</b>) to match your custom template&rsquo;s name:<ol>
     <li>/includes/modules/sideboxes/YOUR_TEMPLATE</li>
     <li>/includes/templates/YOUR_TEMPLATE</li>
   </ol> and the &quot;YOUR_ADMIN&quot; directory to match your renamed admin folder.</li>
   <li>Your best approach for installing <strong>any</strong> new software is to use a local copy for your testing before deploying the changes to your live store. If you must install this directly on your live store, put your store into Maintenance Mode using your admin's Configuration-&gt;Maintenance Mode-&gt;Down for Maintenance setting, first.  You'll then either copy the files to your local installation or use your FTP/SFTP program to copy the files to your hosted store.</li>
-  <li>Check to see if your installation has made previous changes to each of these <span class="corefile">core-files</span>.  If not, copy the file; otherwise, use file-merging software (like WinMerge or Beyond Compare) to merge this plugin's changes into the file prior to copying:<ol>
-    <li><span class="corefile">/YOUR_ADMIN/orders.php</span> &mdash; changed/added lines are marked with comments that include the phrase <b>snap_affiliates</b>.</li>
-  </ol></li>
   <li>Check to see if your installation already has the following <span class="template">template-override</span> files.  If a file is not present, copy the file; otherwise, use file-merging software to merge this plugin's changes into your customized file prior to copying:<ol>
-    <li><span class="template">/includes/languages/english/YOUR_TEMPLATE/account.php</span></li>
-    <li><span class="template">/includes/modules/sideboxes/YOUR_TEMPLATE/information.php</span></li>
-    <li><span class="template">/includes/templates/YOUR_TEMPLATE/templates/tpl_account_default.php</span></li>
+    <li><span class="template">/includes/modules/sideboxes/YOUR_TEMPLATE/information.php</span> <span class="smaller">(This is the zc156a <code>template_default</code> version of the file, with one marked change-section)</span></li>
+    <li><span class="template">/includes/templates/YOUR_TEMPLATE/templates/tpl_account_default.php</span> <span class="smaller">(This is the zc156a <code>responsive_classic</code> version of the file, with one marked change-section)</span></li>
+  </ol></li>
+  <li>If your store runs on a Zen Cart 1.5.5 variant, there are additional files to be copied, all present in the <code>/zc155</code> directory of the plugin's zip-file.  Rename the <code>YOUR_ADMIN</code> sub-directory to match your store's admin-directory name, performing the <span class="corefile">core-file</span> merge.  Copy the <em>contents</em> of the <code>zc155</code> directory, not the directory itself!<ol>
+    <li>/includes/functions/extra_functions/osh_updated_by_functions.php</li>
+    <li><span class="corefile">/YOUR_ADMIN/orders.php</span></li>
+    <li>/YOUR_ADMIN/includes/functions/extra_functions/osh_updated_by_admin_functions.php</li>
+    <li>/YOUR_ADMIN/includes/languages/english/osh_updated_by.php</li>
   </ol></li>
   <li>All the remaining files are specific to this plugin and can simply be copied:<ol>
-    <li>/images/referrers</li>
+    <li>/images/referrers/index.html</li>
     <li>/includes/auto_loaders/config.snap.php</li>
     <li>/includes/classes/observers/class.snap_order_observer.php</li>
     <li>/includes/extra_datafiles/snap_file_database_names.php</li>
-    <li><span class="osh">/includes/functions/extra_functions/osh_updated_by_functions.php</span></li>
+    <li>/includes/functions/snap_functions.php <span class="smaller">(Added in v4.1.0)</span></li>
+    <li><span class="removed">/includes/functions/extra_functions/osh_updated_by_functions.php</span> <span class="smaller">(v4.1.0 and later, distributed in the <code>zc155</code> sub-directory)</span></li>
     <li>/includes/init_includes/init_snap.php</li>
     <li>/includes/languages/english/extra_definitions/snap_affiliates.php</li>
     <li>/includes/languages/english/html_includes/define_referral_terms.php</li>
     <li>/includes/languages/english/html_includes/define_referral_tools.php</li>
     <li>/includes/languages/english/referral_edit.php</li>
     <li>/includes/languages/english/referral_main.php</li>
-	  <li>/includes/languages/english/referral_signup.php</li>
-	  <li>/includes/languages/english/referral_tools.php</li>
+    <li>/includes/languages/english/referral_signup.php</li>
+    <li>/includes/languages/english/referral_tools.php</li>
     <li>/includes/modules/pages/account/header_php_referrals.php</li>
     <li>/includes/modules/pages/referrer_edit/header_php.php</li>
     <li>/includes/modules/pages/referrer_edit/jscript_show_hide.php</li>
@@ -212,21 +218,26 @@ ul li ul { padding-left: 0; }
     <li>/includes/templates/template_default/css/referral_main.css</li>
     <li>/includes/templates/template_default/css/referral_tools.css</li>
     <li>/includes/templates/template_default/css/stylesheet_referrers.css</li>
-    <li>/includes/templates/template_default/templates/tp;_referrer_edit_default.php</li>
+    <li>/includes/templates/template_default/templates/tpl_modules_account_referrers.php <span class="smaller">(Added in v4.1.0)</span></li>
+    <li>/includes/templates/template_default/templates/tpl_referrer_edit_default.php</li>
     <li>/includes/templates/template_default/templates/tpl_referrer_main_default.php</li>
     <li>/includes/templates/template_default/templates/tpl_referrer_signup_default.php</li>
     <li>/includes/templates/template_default/templates/tpl_referrer_tools_default.php</li>
     <li>/includes/templates/YOUR_TEMPLATE/css/referral_main.css</li>
     <li>/includes/templates/YOUR_TEMPLATE/css/referral_tools.css</li>
     <li>/includes/templates/YOUR_TEMPLATE/css/stylesheet_referrers.css</li>
+    <li><span class="corefile removed">/YOUR_ADMIN/orders.php</span> <span class="smaller">((v4.1.0 and later, distributed in the <code>zc155</code> sub-directory; zc156 includes the required notifications)</span></li>
     <li>/YOUR_ADMIN/referrers.php</li>
-    <li>/YOUR_ADMIN/images/icons/cash.jpg</li>
+    <li>/YOUR_ADMIN/images/icons/cash.jpg <span class="smaller">(No longer used; a font-awesome glyph is used instead)</span></li>
+    <li>/YOUR_ADMIN/includes/auto_loaders/config.snap_admin.php <span class="smaller">(Added in v4.0.1)</span></li>
+    <li>/YOUR_ADMIN/includes/classes/observers/SnapAdminObserver.php <span class="smaller">(Added in v4.1.0)</span></li>
     <li>/YOUR_ADMIN/includes/extra_datafiles/referrers_filenames.php</li>
-    <li>/YOUR_ADMIN/includes/functions/extra_functions/init_referrers.php</li>
-    <li><span class="osh">/YOUR_ADMIN/includes/functions/extra_functions/osh_updated_by_admin_functions.php</span></li>
+    <li><span class="removed">/YOUR_ADMIN/includes/functions/extra_functions/init_referrers.php</span> <span class="smaller">(No longer used, stubbed-out as of v4.0.1)</span></li>
+    <li><span class="removed">/YOUR_ADMIN/includes/functions/extra_functions/osh_updated_by_admin_functions.php</span> <span class="smaller">(v4.1.0 and later, distributed in the <code>zc155</code> sub-directory)</span></li>
     <li>/YOUR_ADMIN/includes/functions/extra_functions/referrers_functions.php</li>
+    <li>/YOUR_ADMIN/includes/init_includes/init_snap_admin.php <span class="smaller">(Added in v4.0.1)</span></li>
     <li>/YOUR_ADMIN/includes/languages/english/referrers.php</li>
-    <li><span class="osh">/YOUR_ADMIN/includes/languages/english/osh_updated_by.php</span></li>
+    <li><span class="removed">/YOUR_ADMIN/includes/languages/english/osh_updated_by.php</span> <span class="smaller">(v4.1.0 and later, distributed in the <code>zc155</code> sub-directory)</span></li>
     <li>/YOUR_ADMIN/includes/languages/english/extra_definitions/referrers_info.php</li>
     <li>/YOUR_ADMIN/includes/languages/english/extra_definitions/referrers_name.php</li>
   </ol></li>
@@ -235,14 +246,45 @@ ul li ul { padding-left: 0; }
 </ol>
 
 <h2>Version History:</h2>
-<p>This plugin is based on v1.0.2.1 of the <a href="http://www.zen-cart.com/downloads.php?do=file&amp;id=898"><em>Snap Affiliates</em></a> add-on developed for the 1.3.x versions of Zen Cart&reg;, but this version (v2.0.0 and later) has been modified for v1.5.0 and later <em>only</em>.</p>
+<p>This plugin is based on v1.0.2.1 of the <a href="https://www.zen-cart.com/downloads.php?do=file&amp;id=898"><em>Snap Affiliates</em></a> add-on developed for the 1.3.x versions of Zen Cart&reg;, but this version (v2.0.0 and later) has been modified for v1.5.0 and later <em>only</em>.</p>
 <ul>
+  <li>v4.1.0, 2019-04-xx:<ul>
+    <li>CHANGE: <b>Major</b> restructuring to support Zen Cart 1.5.6 and future PHP/MySQL versions.</li>
+    <li>The <em>majority</em> of the plugin's files were changed for this release, so consider that <b>all</b> files have been changed!  Notably, the following files were added or removed from the plugin's distribution:<ol>
+      <li><span class="added">/includes/functions/snap_functions.php</span></li>
+      <li><span class="added">/includes/templates/template_default/templates/tpl_modules_account_referrers.php</span></li>
+      <li><span class="corefile removed">/YOUR_ADMIN/orders.php</span> <span class="smaller">(No longer distributed; using zc156-supplied notifications)</span></li>
+      <li><span class="added">/YOUR_ADMIN/includes/classes/observers/SnapAdminObserver.php</span></li>
+      <li><span class="corefile">/zc155/YOUR_ADMIN/orders.php</span> <span class="smaller">(This is the zc155f version of the file, updated with zc156 notifications)</span></li>
+    </ol></li>
+    <li>Database changes:<ol>
+      <li>Added configuration setting <em>Enable Storefront Processing?</em>, defaulting to <b>false</b> for initial installs and <b>true</b> for upgrades.</li>
+    </ol></li>
+  </ul></li>
   <li>v4.0.1, 2019-04-22:<ul>
     <li>BUGFIX: Correct unpaid commission dates throw errors on more recent/strict versions of MySql.</li>
+    <li>The following files were changed:<ol>
+      <li>/includes/classes/observers/class.snap_order_observer.php</li>
+      <li>/includes/modules/pages/referrer_main/header_php.php</li>
+      <li>/YOUR_ADMIN/referrers.php</li>
+      <li><span class="added">/YOUR_ADMIN/includes/auto_loaders/config.snap_admin.php</span></li>
+      <li>/YOUR_ADMIN/includes/functions/extra_functions/init_referrers.php <span class="smaller">(No longer used, stubbed out)</span></li>
+      <li><span class="added">/YOUR_ADMIN/includes/init_includes/init_snap_admin.php</span></li>
+      <li>/YOUR_ADMIN/includes/languages/english/extra_definitions/referrers_info.php</li>
+    </ol></td>
+    </ol></li>
   </ul></li>
   <li>v4.0.0, 2017-07-30:<ul>
     <li>BUGFIX: Commission payments in fractional currency-units were erroneously being disallowed.</li>
     <li>CHANGE: Update all core-/template-file changes to use Zen Cart 1.5.5b as the change-basis; support is dropped for Zen Cart versions <em>prior to</em> Zen Cart 1.5.5a.</li>
+    <li>The following files were changed:<ol>
+      <li><span class="template">/includes/modules/sideboxes/YOUR_TEMPLATE/information.php</span></li>
+      <li><span class="template">/includes/templates/YOUR_TEMPLATE/tpl_account_default.php</span></li>
+      <li><span class="corefile">/YOUR_ADMIN/orders.php</span></li>
+      <li><span class="removed">/YOUR_ADMIN/includes/auto_loaders/config.zc154_compatibility.php</span></li>
+      <li>/YOUR_ADMIN/includes/functions/extra_functions/init_referrers.php</li>
+      <li><span class="removed">/YOUR_ADMIN/includes/init_includes/init_zc154_compatibility.php</span></li>
+    </ol></li>
   </ul></li>
   <li>v3.0.4, 2016-04-16:<ul>
     <li>CHANGE: Documentation/uninstall restructuring; check the /docs/snap_affiliates folder for these files.</li>
@@ -250,55 +292,153 @@ ul li ul { padding-left: 0; }
     <li>CHANGE: Properly mark all <span class="template">template-override</span> file changes to identify the <em>SNAP</em> updates.</li>
     <li>CHANGE: Move all SNAP-specific template files into the <code>template_default</code> folder; allows easier reuse on multiple templates.</li>
     <li>BUGFIX: Correct misspelling on <code>referrer_main</code> page.</li>
+    <li>This version moves all the template-related files introduced by <em>SNAP</em> into the <code>template_default</code> folder from the <code>YOUR_TEMPLATE</code> folder.  This enables the base <em>SNAP</em> formatting to be more easily reused by multiple templates.  Those movements are <em>not</em> accounted for in the following list:<ol>
+      <li>/includes/functions/extra_functions/osh_updated_by_functions.php</li>
+      <li>/includes/languages/english/referrer_main.php</li>
+      <li><span class="template">/includes/languages/english/YOUR_TEMPLATE/account.php</span></li>
+      <li><span class="template">/includes/modules/sideboxes/YOUR_TEMPLATE/information.php</span></li>
+      <li><span class="template">/includes/templates/YOUR_TEMPLATE/tpl_account_default.php</span></li>
+      <li><span class="corefile">/YOUR_ADMIN/orders.php</span></li>
+      <li>/YOUR_ADMIN/includes/functions/extra_functions/init_referrers.php</li>
+    </ol></li>
   </ul></li>
   <li>v3.0.3, 2015-12-06:<ul>
     <li>CHANGE: Update class-constructor function names for PHP 7 compliance.</li>
+    <li>The following files were changed:<ol>
+      <li>/includes/classes/observers/class.snap_order_observer.php</li>
+    </ol></li>
   </ul></li>
   <li>v3.0.2, 2015-05-28:<ul>
     <li>BUGFIX: Update orders-status-history processing to properly convert CRLF characters in the status-update message.</li>
+    <li>The following files were changed:<ol>
+      <li>/includes/functions/extra_functions/osh_updated_by_functions.php</li>
+    </ol></li>
   </ul></li>
   <li>v3.0.1, 2015-03-22:<ul>
     <li>BUGFIX: Security update, refer to the following section for affected modules.  Lines changed in the <em>Snap Affilates</em> modules include a comment <code>//-v3.0.1</code> for the affected lines, making it easier for you to apply the fix to pre-v3.0.0 installations. Thanks to <b>bumba000</b> for the report!</li>
+    <li>The following files were changed:<ol>
+      <li>/includes/modules/pages/referrer_edit/header_php.php</li>
+      <li>/includes/modules/pages/referrer_signup/header_php.php</li>
+      <li>/YOUR_ADMIN/referrers.php</li>
+    </ol></li>
   </ul></li>
   <li>v3.0.0, 2015-03-14:<ul>
     <li>CHANGE: Add the capability for a referrer to choose their payment method, either <em>Check/Money-order</em> or (optionally) <em>PayPal&reg;</em>.</li>
+    <li>The following files were changed:<ol>
+      <li>/includes/classes/observers/class.snap_order_observer.php</li>
+      <li>/includes/languages/english/extra_definitions/YOUR_TEMPLATE/snap_affiliates.php</li>
+      <li>/includes/languages/english/YOUR_TEMPLATE/referrer_edit.php</li>
+      <li>/includes/languages/english/YOUR_TEMPLATE/referrer_main.php</li>
+      <li>/includes/modules/pages/referrer_edit/header_php.php</li>
+      <li><span class="added">/includes/modules/pages/referrer_edit/jscript_show_hide.php</span></li>
+      <li><span class="added">/includes/modules/pages/referrer_edit/on_load_main.js</span></li>
+      <li>/includes/modules/pages/referrer_main/header_php.php</li>
+      <li>/includes/modules/pages/referrer_tools/header_php.php</li>
+      <li>/includes/templates/YOUR_TEMPLATE/templates/tpl_referrer_edit_default.php</li>
+      <li>/includes/templates/YOUR_TEMPLATE/templates/tpl_referrer_main_default.php</li>
+      <li>/YOUR_ADMIN/referrers.php</li>
+      <li>/YOUR_ADMIN/includes/functions/extra_functions/init_referrers.php</li>
+      <li>/YOUR_ADMIN/includes/languages/english/referrers.php</li>
+    </ol></li>
+    <li>Database changes:<ol>
+      <li>Added configuration setting <em>Enable PayPal&reg; Commission Payment Method?</em>.</li>
+      <li>Columns <em>commission_payment_type</em> and <em>commission_payment_type_detail</em> added to the <b>commissions</b> table.</li>
+      <li>Columns <em>referrer_payment_type</em> and <em>referrer_payment_type_detail</em> added to the <b>referrers</b> table.</li>
+    </ol></li>
   </ul></li>
   <li>v2.8.2, 2015-02-26:<ul>
     <li>BUGFIX: Navigation &quot;issues&quot; occurred when split-page is active.</li>
+    <li>The following files were changed:<ol>
+      <li>/YOUR_ADMIN/referrers.php</li>
+      <li>/YOUR_ADMIN/includes/functions/extra_functions/init_referrers.php</li>
+    </ol></li>
   </ul></li>
   <li>v2.8.1, 2015-02-04:<ul>
     <li>CHANGE: Support multiple affiliate banner images of the same file type and dimensions.</li>
+    <li>The following files were changed:<ol>
+      <li>/includes/pages/referrer_tools/header_php.php</li>
+    </ol></li>
   </ul></li>
   <li>v2.8.0, 2014-12-21:<ul>
     <li>CHANGE: Use Zen Cart v1.5.4 as the base for any core-file modifications.</li>
+    <li>The following files were changed:<ol>
+      <li><span class="corefile">/YOUR_ADMIN/orders.php</span></li>
+      <li><span class="added">/YOUR_ADMIN/includes/auto_loaders/config.zc154_compatibility.php</span></li>
+      <li>/YOUR_ADMIN/includes/functions/extra_functions/init_referrers.php</li>
+      <li><span class="added">/YOUR_ADMIN/includes/init_includes/init_zc154_compatibility.php</span></li>
+    </ol></li>
   </ul></li>
   <li>v2.7.3, 2014-12-07:<ul>
     <li>Add the <em>Home-page link</em> to <a href="#acr">Customers-&gt;Referrers</a>.</li>
+    <li>The following files were changed:<ol>
+      <li>/YOUR_ADMIN/referrers.php</li>
+      <li>/YOUR_ADMIN/includes/functions/extra_functions/init_referrers.php</li>
+      <li>/YOUR_ADMIN/includes/languages/english/referrers.php</li>
+    </ol></li>
   </ul></li>
   <li>v2.7.2, 2014-10-08:<ul>
     <li>BUGFIX: The /images/referrers directory was missing from the plugin's distribution; I've included an &quot;empty&quot; index.html file to ensure that the structure is included!</li>
     <li>BUGFIX: The referrers_main page didn't account for manually-updated commission payments.  Thanks to <em>mvstudio</em> for the report and the suggested code to correct!  Please note that sideboxes are now disabled when the referrers_main page is displayed.  If you want your sideboxes to remain, edit /includes/modules/pages/referrers_main/header_php.php and remove (or comment-out) the last line in that file.</li>
+    <li>The following files were changed:<ol>
+      <li>/images/referrers/index.html</li>
+      <li>/includes/languages/english/YOUR_TEMPLATE/referrer_main.php</li>
+      <li>/includes/modules/pages/referrer_main/header_php.php</li>
+      <li>/includes/templates/YOUR_TEMPLATE/tpl_referrer_main_default.php</li>
+    </ol></li>
   </ul></li>
   <li>v2.7.1, 2014-07-13:<ul>
     <li>Include previously-missed change to the account-page template (downwardly-compatible) for Zen Cart v1.5.2 and v1.5.3.</li>
     <li>Add email address to admin-level <em>Customers-&gt;Referrers</em> display.</li>
+    <li>The following files were changed:<ol>
+      <li>/includes/templates/YOUR_TEMPLATE/templates/tpl_account_default.php</li>
+      <li>/YOUR_ADMIN/referrers.php</li>
+      <li>/YOUR_ADMIN/includes/languages/english/referrers.php</li>
+    </ol></li>
   </ul></li>
   <li>v2.7.0, 2014-05-01:<ul>
     <li>Allow store-owners to more control the commission paid to their affiliates and to selectively pay payable commissions.</li>
+    <li>The following files were changed:<ol>
+      <li>/YOUR_ADMIN/referrers.php</li>
+      <li>/YOUR_ADMIN/includes/functions/extra_functions/init_referrers.php</li>
+      <li>/YOUR_ADMIN/includes/languages/english/referrers.php</li>
+    </ol></li>
+    <li>Database changes:<ol>
+      <li>Columns <em>commission_id</em>, <em>commission_payment_amount</em> and <em>commission_manual</em> added to the <b>commissions</b> table.</li>
+      <li>The primary key for this table was changed from <em>commission_orders_id</em> to <em>commission_id</em>.</li>
+      <li>The <em>commission_manual</em> value is set to 1 if the calculated value of the <em>commission_payment_amount</em> was manually changed during the commission-payment process.</li>
+    </ol></li>
   </ul></li>
   <li>v2.6.1, 2014-03-20:<ul>
     <li>Corrected the code display in the <a href="#sidebox">Information Sidebox</a> section of this readme.</li>
     <li>Changed the default value on initial installation of the <em>Include in Information Sidebox</em> setting from <b>true</b> to <b>false</b>.</li>
     <li>Include updates to the <em>Orders Status History &mdash; Updated By</em> plugin (v1.1.0).</li>
+    <li>The following files were changed:<ol>
+      <li><span class="osh">/includes/functions/extra_functions/osh_updated_by_functions.php</span></li>
+      <li>/YOUR_ADMIN/includes/functions/extra_functions/init_referrers.php</li>
+      <li><span class="osh">/YOUR_ADMIN/includes/languages/extra_definitions/osh_updated_by.php</span></li>
+    </ol></li>
+    <li>Database changes:<ol>
+      <li>Default value for <em>Include in Information Sidebox?</em> changed from true to false.</li>
+    </ol></li>
   </ul></li>
   <li>v2.6.0, 2013-11-30:<ul>
     <li>Updated to v1.1.0 of the "Common Orders Status History" framework, to pull in downwardly-compatible changes for Zen Cart v1.5.2.</li>
     <li>Update information sidebox to use SSL on the <em>contact_us</em> page (as changed in Zen Cart v1.5.2.).</li>
+    <li>The following files were changed:<ol>
+      <li><span class="osh">/includes/functions/extra_functions/osh_updated_by_functions.php</span></li>
+      <li><span class="template">/includes/modules/sideboxes/YOUR_TEMPLATE/information.php</span></li>
+      <li><span class="corefile">/YOUR_ADMIN/orders.php</span></li>
+    </ol></li>
   </ul></li>
   <li>v2.5.1, 2013-09-08:<ul>
     <li>BUGFIX: Introduced in v2.5.0, no order details were displayed on <em>referrers_main</em> if the configuration contained <b>no</b> orders-status exclusions.</li>
     <li>Updated language file for <em>referrers_main</em> page to make it more obvious that the activity report is based on commission payments.</li>
     <li>BUGFIX: Banner images displayed using HTTP_SERVER on SSL pages, resulting in mixed-content warnings from the browser.</li>
+    <li>The following files were changed:<ol>
+      <li>/includes/modules/pages/referrer_main/header_php.php</li>
+      <li>/includes/languages/english/YOUR_TEMPLATE/referrer_main.php</li>
+      <li>/includes/templates/YOUR_TEMPLATE/templates/tpl_referrer_tools_default.php</li>
+    </ol></li>
   </ul></li>
   <li>v2.5.0, 2013-08-03:<ul>
     <li><strong>Note:</strong> Admin configuration version updated to v2.5.0.</li>
@@ -309,39 +449,93 @@ ul li ul { padding-left: 0; }
     <li>When a commission is paid to one of your store's affiliate-marketers, an <em>orders_status_history</em> record is created for the associated order(s) to note that event (along with the admin name/id of the person who clicked the "Pay" button).</li>
     <li>BUGFIX: Commission-paid dates on the <em>referrers_main</em> page were formatted incorrectly.</li>
     <li>BUGFIX: Activity date-range on the <em>referrers_main</em> page should find commission-payments in the range, not referred-customer purchases.</li>
+    <li>The following files were changed:<ol>
+      <li><span class="added">/includes/functions/extra_functions/osh_updated_by_functions.php</span></li>
+      <li>/includes/modules/pages/referrer_main/header_php.php</li>
+      <li>/includes/templates/YOUR_TEMPLATE/templates/tpl_referrer_main_default.php</li>
+      <li><span class="corefile">/YOUR_ADMIN/orders.php</span></li>
+      <li>/YOUR_ADMIN/referrers.php</li>
+      <li>/YOUR_ADMIN/includes/functions/extra_functions/init_referrers.php</li>
+      <li><span class="added">/includes/functions/extra_functions/osh_updated_by_admin_functions.php</span></li>
+      <li>/YOUR_ADMIN/includes/functions/extra_functions/referrers_functions.php</li>
+      <li><span class="corefile">/YOUR_ADMIN/includes/languages/english/orders.php</span> <span class="added">(added)</span></li>
+      <li>/YOUR_ADMIN/includes/languages/english/referrers.php</li>
+      <li><span class="added">/YOUR_ADMIN/includes/languages/english/extra_definitions/osh_updated_by.php</span></li>
+    </ol></li>
+    <li>Database changes:<ol>
+      <li>Added <em>Combine Exclusions on Referrers Page?</em> configuration setting.</li>
+      <li>Column <em>updated_by</em> added to the <em>orders_status_history</em> table.</li>
+    </ol></li>
   </ul></li>
   <li>v2.4.1, 2013-07-19:<ul>
     <li>BUGFIX: Referrer website link was relative instead of absolute on admin's <em>Customers-&gt;Referrers</em>.</li>
     <li>BUGFIX: Link on <em>Customers-&gt;Orders</em> takes you to the customer, not the referrer.</li>
+    <li>The following files were changed:<ol>
+      <li>/YOUR_ADMIN/referrers.php</li>
+      <li>/YOUR_ADMIN/includes/functions/extra_functions/referrers_functions.php</li>
+      <li>/YOUR_ADMIN/includes/languages/english/referrers.php</li>
+    </ol></li>
   </ul></li>
   <li>v2.4.0, 2013-06-14:<ul>
     <li><strong>Note:</strong> Admin configuration version is unchanged from v2.3.0!</li>
     <li>BUGFIX: Didn't include the updated version of /includes/classes/observers/class.snap_order_observer.php in the v2.3.0 distribution!</li>
     <li>BUGFIX: Corrected files changed for this version to properly reflect the template file that was changed.</li>
     <li>BUGFIX: Completed partially-completed referrer_edit page processing.</li>
+    <li>The following files were changed:<ol>
+      <li>/includes/classes/observers/class.snap_order_observer.php</li>
+      <li><span class="added">/includes/languages/english/YOUR_TEMPLATE/referrer_edit.php</span></li>
+      <li><span class="added">/includes/modules/pages/referrer_edit/header_php.php</span></li>
+      <li><span class="added">/includes/templates/YOUR_TEMPLATE/tpl_referrer_edit_default.php</span></li>
+      <li>/includes/templates/YOUR_TEMPLATE/templates/tpl_referrer_main_default.php</li>
+    </ol></li>
   </ul></li>
   <li>v2.3.0, 2013-06-12:<ul>
     <li><strong>Notes:</strong><ol>
       <li>Starting with this version, there is one <span class="corefile">core-file overwrite</span>.</li> 
-      <li>Admin configuration version updated to v2.3.0</li>
     </ol></li>
     <li>Added an <em>Order ID</em> column to the detailed view in the admin's <em>Customers-&gt;Referrers</em> page, to allow the store administrator to have an easy way to see the order for which the commission was paid.</li>
     <li>Added an indicator to the admin's <em>Customers-&gt;Orders</em> page, to allow the store administrator to quickly see that the order was based on a commission.  A link-back to the referrer's details is also included</li>
     <li>BUGFIX: When using the affiliate banners, the image-link produced was relative instead of absolute so it didn't reference the actual store.</li>
-    <li>Added <a href="#purchases">Purchases Per Cookie</a> configuration variable</li>
+    <li>The following files were changed:<ol>
+      <li>/includes/classes/observers/class.snap_order_observer.php</li>
+      <li>/includes/templates/YOUR_TEMPLATE/templates/tpl_referrer_tools_default.php</li>
+      <li><span class="corefile">/YOUR_ADMIN/orders.php</span><span class="added"> (added)</span></li>
+      <li>/YOUR_ADMIN/referrers.php</li>
+      <li><span class="added">/YOUR_ADMIN/images/icons/cash.jpg</span></li>
+      <li>/YOUR_ADMIN/includes/functions/extra_functions/init_referrers.php</li>
+      <li><span class="added">/YOUR_ADMIN/includes/functions/extra_functions/referrers_functions.php</span></li>
+      <li>/YOUR_ADMIN/includes/languages/english/referrers.php</li>
+      <li><span class="added">/YOUR_ADMIN/includes/languages/english/extra_definitions/referrers_info.php</span></li>
+      <li>/YOUR_ADMIN/includes/languages/english/extra_definitions/referrers_name.php</li>
+    </ol></li>
+    <li>Database changes:<ol>
+      <li>Added <a href="#purchases">Purchases Per Cookie</a> configuration setting.</li>
+    </ol></li>
   </ul></li>
   <li>v2.2.0, 2013-06-02:<ul>
-    <li><strong>Note:</strong> Admin configuration version updated to 2.2.0</li>
-    <li>Added <a href="#lifetime">Cookie Lifetime</a> configuration variable.</li>
+    <li>Added <a href="#lifetime">Cookie Lifetime</a> configuration setting.</li>
     <li>Beefed up the <a href="#install">Installation</a> section of the readme to identify specifically the plethora of YOUR_TEMPLATE directories that need to be renamed.</li>
+    <li>The following files were changed:<ol>
+      <li>/YOUR_ADMIN/includes/functions/extra_functions/init_referrers.php</li>
+    </ol></li>
+    <li>Database changes:<ol>
+      <li>Added <em>Cookie Lifetime</em> configuration setting.</li>
+    </ol></li>
   </ul></li>
   <li>v2.1.2a, 2013-04-09:<ul>
-    <li><strong>Note:</strong> Admin configuration version updated to 2.1.2a</li>
     <li>BUGFIX: Configuration version was not being written on new installs, resulting in a new configuration_group_id being created each time you ran your admin.</li>
     <li>Moved the affiliate cookie lifetime value into a defined value, in preparation for that value to become an admin customization.</li>
+    <li>The following files were changed:<ol>
+      <li>/includes/init_includes/init_snap.php</li>
+      <li>/YOUR_ADMIN/includes/functions/extra_functions/init_referrers.php</li>
+    </ol></li>
   </ul></li>
   <li>v2.1.1, 2013-04-01:<ul>
-    <li>Modifications to referrer_tools page to provide more support for sites that use rewritten URLs.  Changed files are /includes/modules/pages/referrer_tools/jscript_tools.php and /includes/templates/YOUR_TEMPLATE/templates/tpl_referrer_tools_default.php. There are no database changes for this release.</li>
+    <li>Modifications to referrer_tools page to provide more support for sites that use rewritten URLs.</li>
+    <li>The following files were changed:<ol>
+      <li>/includes/modules/pages/referrer_tools/jscript_tools.php</li>
+      <li>/includes/templates/YOUR_TEMPLATE/templates/tpl_referrer_tools_default.php</li>
+    </ol></li>
   </ul></li>
   <li>v2.1.0a, 2013-03-12, Added <a href="#ufapv">Upgrading from a Previous Version</a>.</li>
   <li>v2.1.0, 2013-03-11:<ul>
@@ -357,6 +551,17 @@ ul li ul { padding-left: 0; }
     <li>Added validation for the commission-rate entry in Customers-&gt;Referrers.</li>
     <li>BUGFIX: Missed a couple of admin-side language values (details buttons values).</li>
     <li>If the affiliate's account is not approved, the "Ban", "Pay" and "Update" buttons are disabled.</li>
+    <li>The following files were changed:<ol>
+      <li>/includes/classes/observers/class.snap_order_observer.php</li>
+      <li>/includes/modules/pages/referral_main/header_php.php</li>
+      <li>/YOUR_ADMIN/referrers.php</li>
+      <li>/YOUR_ADMIN/includes/extra_datafiles/referrers_filenames.php</li>
+      <li>/YOUR_ADMIN/includes/functions/extra_functions/init_referrers.php</li>
+      <li>/YOUR_ADMIN/includes/languages/english/referrers.php</li>
+    </ol></li>
+    <li>Datebase changes:<ol>
+      <li>Added <em>Affiliate Display Count</em>, <em>Allow Self-Commissions</em> and <em>Orders Status Exclusions</em> settings.</li>
+    </ol></li>
   </ul></li>
   <li>v2.0.0, 2013-03-05, Initial release.<ul>
     <li><strong>No</strong> core-file overwrites &hellip; <strong>until v2.3.0!</strong></li>
@@ -380,326 +585,8 @@ ul li ul { padding-left: 0; }
   <li>Upgrading from v2.0.0, you can simply copy the plugin's file structure (after directory renames) into your store's.  The database initialization code has been updated to recognize the version installed and adapt the configuration based on the previously installed version &hellip; so you won't lose any of your existing database settings.</li>
 </ul>
 
-<h3>File/Database Changes by Version</h3>
-<p>Legend for the <b>File Changes</b>: Changed &mdash; <span class="added">Added</span> &mdash; <span class="removed">Removed</span></p>
-<table>
-  <tr class="o">
-    <th width="5%" class="c1">Version</th>
-    <th width="50%">Files Changes</th>
-    <th width="45%">Database Changes</th>
-  </tr>
-  
-  <tr class="e">
-    <td class="c1">v4.0.1</td>
-    <td><ol>
-      <li>/includes/classes/observers/class.snap_order_observer.php</li>
-      <li>/includes/modules/pages/referrer_main/header_php.php</li>
-      <li>/YOUR_ADMIN/referrers.php</li>
-      <li><span class="added">/YOUR_ADMIN/includes/auto_loaders/config.snap_admin.php</span></li>
-      <li>/YOUR_ADMIN/includes/functions/extra_functions/init_referrers.php <span class="smaller">(No longer used, stubbed out)</span></li>
-      <li><span class="added">/YOUR_ADMIN/includes/init_includes/init_snap_admin.php</span></li>
-      <li>/YOUR_ADMIN/includes/languages/english/extra_definitions/referrers_info.php</li>
-    </ol></td>
-    <td class="c3"><p>None</p></td>
-  </tr>
-  
-  <tr class="o">
-    <td class="c1">v4.0.0</td>
-    <td><ol>
-      <li><span class="template">/includes/modules/sideboxes/YOUR_TEMPLATE/information.php</span></li>
-      <li><span class="template">/includes/templates/YOUR_TEMPLATE/tpl_account_default.php</span></li>
-      <li><span class="corefile">/YOUR_ADMIN/orders.php</span></li>
-      <li><span class="removed">/YOUR_ADMIN/includes/auto_loaders/config.zc154_compatibility.php</span></li>
-      <li>/YOUR_ADMIN/includes/functions/extra_functions/init_referrers.php</li>
-      <li><span class="removed">/YOUR_ADMIN/includes/init_includes/init_zc154_compatibility.php</span></li>
-    </ol></td>
-    <td class="c3"><p>None</p></td>
-  </tr>
-  
-  <tr class="e">
-    <td class="c1">v3.0.4</td>
-    <td>This version moves all the template-related files introduced by <em>SNAP</em> into the <code>template_default</code> folder from the <code>YOUR_TEMPLATE</code> folder.  This enables the base <em>SNAP</em> formatting to be more easily reused by multiple templates.  Those movements are <em>not</em> accounted for in this list.<ol>
-      <li>/includes/functions/extra_functions/osh_updated_by_functions.php</li>
-      <li>/includes/languages/english/referrer_main.php</li>
-      <li><span class="template">/includes/languages/english/YOUR_TEMPLATE/account.php</span></li>
-      <li><span class="template">/includes/modules/sideboxes/YOUR_TEMPLATE/information.php</span></li>
-      <li><span class="template">/includes/templates/YOUR_TEMPLATE/tpl_account_default.php</span></li>
-      <li><span class="corefile">/YOUR_ADMIN/orders.php</span></li>
-      <li>/YOUR_ADMIN/includes/functions/extra_functions/init_referrers.php</li>
-    </ol></td>
-    <td class="c3"><p>None</p></td>
-
-  <tr class="o">
-    <td class="c1">v3.0.3</td>
-    <td><ol>
-      <li>/includes/classes/observers/class.snap_order_observer.php</li>
-    </ol></td>
-    <td class="c3"><p>None</p></td>
-  </tr>
-  
-  <tr class="e">
-    <td class="c1">v3.0.2</td>
-    <td><ol>
-      <li>/includes/functions/extra_functions/osh_updated_by_functions.php</li>
-    </ol></td>
-    <td class="c3"><p>None</p></td>
-  </tr>
-    
-  <tr class="o">
-    <td class="c1">v3.0.1</td>
-    <td><ol>
-      <li>/includes/modules/pages/referrer_edit/header_php.php</li>
-      <li>/includes/modules/pages/referrer_signup/header_php.php</li>
-      <li>/YOUR_ADMIN/referrers.php</li>
-    </ol></td>
-    <td class="c3"><p>None</p></td>
-  </tr>
-  
-  <tr class="e">
-    <td class="c1">v3.0.0</td>
-    <td><ol>
-      <li>/includes/classes/observers/class.snap_order_observer.php</li>
-      <li>/includes/languages/english/extra_definitions/YOUR_TEMPLATE/snap_affiliates.php</li>
-      <li>/includes/languages/english/YOUR_TEMPLATE/referrer_edit.php</li>
-      <li>/includes/languages/english/YOUR_TEMPLATE/referrer_main.php</li>
-      <li>/includes/modules/pages/referrer_edit/header_php.php</li>
-      <li><span class="added">/includes/modules/pages/referrer_edit/jscript_show_hide.php</span></li>
-      <li><span class="added">/includes/modules/pages/referrer_edit/on_load_main.js</span></li>
-      <li>/includes/modules/pages/referrer_main/header_php.php</li>
-      <li>/includes/modules/pages/referrer_tools/header_php.php</li>
-      <li>/includes/templates/YOUR_TEMPLATE/templates/tpl_referrer_edit_default.php</li>
-      <li>/includes/templates/YOUR_TEMPLATE/templates/tpl_referrer_main_default.php</li>
-      <li>/YOUR_ADMIN/referrers.php</li>
-      <li>/YOUR_ADMIN/includes/functions/extra_functions/init_referrers.php</li>
-      <li>/YOUR_ADMIN/includes/languages/english/referrers.php</li>
-    </ol></td>
-    <td class="c3"><ol>
-      <li><em>Module Version</em> updated to v3.0.0.</li>
-      <li>Added configuration setting <em>Enable PayPal&reg; Commission Payment Method?</em>.</li>
-      <li>Columns <em>commission_payment_type</em> and <em>commission_payment_type_detail</em> added to the <b>commissions</b> table.</li>
-      <li>Columns <em>referrer_payment_type</em> and <em>referrer_payment_type_detail</em> added to the <b>referrers</b> table.</li>
-    </ol></td>
-  </tr>
-  
-  <tr class="o">
-    <td class="c1">v2.8.2</td>
-    <td><ol>
-      <li>/YOUR_ADMIN/referrers.php</li>
-      <li>/YOUR_ADMIN/includes/functions/extra_functions/init_referrers.php</li>
-    </ol></td>
-    <td class="c3"><p>None</p></td>
-  </tr>
-  
-  <tr class="e">
-    <td class="c1">v2.8.1</td>
-    <td><ol>
-      <li>/includes/pages/referrer_tools/header_php.php</li>
-    </ol></td>
-    <td class="c3"><p>None</p></td>
-  </tr>
-  
-  <tr class="o">
-    <td class="c1">v2.8.0</td>
-    <td><ol>
-      <li><span class="corefile">/YOUR_ADMIN/orders.php</span></li>
-      <li><span class="added">/YOUR_ADMIN/includes/auto_loaders/config.zc154_compatibility.php</span></li>
-      <li>/YOUR_ADMIN/includes/functions/extra_functions/init_referrers.php</li>
-      <li><span class="added">/YOUR_ADMIN/includes/init_includes/init_zc154_compatibility.php</span></li>
-    </ol></td>
-    <td class="c3"><p>None</p></td>
-  </tr>
-  <tr>
-    <td class="c1">v2.7.3</td>
-    <td><ol>
-      <li>/YOUR_ADMIN/referrers.php</li>
-      <li>/YOUR_ADMIN/includes/functions/extra_functions/init_referrers.php</li>
-      <li>/YOUR_ADMIN/includes/languages/english/referrers.php</li>
-    </ol></td>
-    <td class="c3"><p>None</p></td>
-  </tr>
-  
-  <tr class="o">
-    <td class="c1">v2.7.2</td>
-    <td><ol>
-      <li>/images/referrers/index.html</li>
-      <li>/includes/languages/english/YOUR_TEMPLATE/referrer_main.php</li>
-      <li>/includes/modules/pages/referrer_main/header_php.php</li>
-      <li>/includes/templates/YOUR_TEMPLATE/tpl_referrer_main_default.php</li>
-    </ol></td>
-    <td class="c3"><p>None</p></td>
-  </tr>
-    
-  <tr>
-    <td class="c1">v2.7.1</td>
-    <td><ol>
-      <li>/includes/templates/YOUR_TEMPLATE/templates/tpl_account_default.php</li>
-      <li>/YOUR_ADMIN/referrers.php</li>
-      <li>/YOUR_ADMIN/includes/languages/english/referrers.php</li>
-    </ol></td>
-    <td class="c3"><p>None</p></td>
-  </tr> 
-   
-  <tr class="o">
-    <td class="c1">v2.7.0</td>
-    <td><ol>
-      <li>/YOUR_ADMIN/referrers.php</li>
-      <li>/YOUR_ADMIN/includes/functions/extra_functions/init_referrers.php</li>
-      <li>/YOUR_ADMIN/includes/languages/english/referrers.php</li>
-    </ol></td>
-    <td class="c3"><ol>
-      <li><em>Module Version</em> updated to v2.7.0.</li>
-      <li>Columns <em>commission_id</em>, <em>commission_payment_amount</em> and <em>commission_manual</em> added to the <b>commissions</b> table.</li>
-      <li>The primary key for this table was changed from <em>commission_orders_id</em> to <em>commission_id</em>.</li>
-      <li>The <em>commission_manual</em> value is set to 1 if the calculated value of the <em>commission_payment_amount</em> was manually changed during the commission-payment process.</li>
-    </ol></td>
-  </tr>
-  
-  <tr>
-    <td class="c1">v2.6.1</td>
-    <td><ol>
-      <li><span class="osh">/includes/functions/extra_functions/osh_updated_by_functions.php</span></li>
-      <li>/YOUR_ADMIN/includes/functions/extra_functions/init_referrers.php</li>
-      <li><span class="osh">/YOUR_ADMIN/includes/languages/extra_definitions/osh_updated_by.php</span></li>
-    </ol></td>
-    <td class="c3"><ol>
-      <li><em>Module Version</em> updated to v2.6.1.</li>
-      <li>Default value for <em>Include in Information Sidebox?</em> changed from true to false.</li>
-    </ol></td>
-  </tr>
- 
-  <tr class="o">
-    <td class="c1">v2.6.0</td>
-    <td><ol>
-      <li><span class="osh">/includes/functions/extra_functions/osh_updated_by_functions.php</span></li>
-      <li><span class="template">/includes/modules/sideboxes/YOUR_TEMPLATE/information.php</span></li>
-      <li><span class="corefile">/YOUR_ADMIN/orders.php</span></li>
-    </ol></td>
-    <td class="c3"><p>None</p></td>
-  </tr>  
- 
-  <tr>
-    <td class="c1">v2.5.1</td>
-    <td><ol>
-      <li>/includes/modules/pages/referrer_main/header_php.php</li>
-      <li>/includes/languages/english/YOUR_TEMPLATE/referrer_main.php</li>
-      <li>/includes/templates/YOUR_TEMPLATE/templates/tpl_referrer_tools_default.php</li>
-    </ol></td>
-    <td class="c3"><p>None</p></td>
-  </tr>
- 
-  <tr class="o">
-    <td class="c1">v2.5.0</td>
-    <td><ol>
-      <li><span class="added">/includes/functions/extra_functions/osh_updated_by_functions.php</span></li>
-      <li>/includes/modules/pages/referrer_main/header_php.php</li>
-      <li>/includes/templates/YOUR_TEMPLATE/templates/tpl_referrer_main_default.php</li>
-      <li><span class="corefile">/YOUR_ADMIN/orders.php</span></li>
-      <li>/YOUR_ADMIN/referrers.php</li>
-      <li>/YOUR_ADMIN/includes/functions/extra_functions/init_referrers.php</li>
-      <li><span class="added">/includes/functions/extra_functions/osh_updated_by_admin_functions.php</span></li>
-      <li>/YOUR_ADMIN/includes/functions/extra_functions/referrers_functions.php</li>
-      <li><span class="corefile">/YOUR_ADMIN/includes/languages/english/orders.php</span> <span class="added">(added)</span></li>
-      <li>/YOUR_ADMIN/includes/languages/english/referrers.php</li>
-      <li><span class="added">/YOUR_ADMIN/includes/languages/english/extra_definitions/osh_updated_by.php</span></li>
-    </ol></td>
-    <td class="c3"><ol>
-      <li><em>Module Version</em> updated to v2.5.0.</li>
-      <li>Added <em>Combine Exclusions on Referrers Page?</em> configuration setting.</li>
-      <li>Column <em>updated_by</em> added to the <em>orders_status_history</em> table.</li>
-    </ol></td>
-  </tr>
- 
-  <tr>
-    <td class="c1">v2.4.1</td>
-    <td><ol>
-      <li>/YOUR_ADMIN/referrers.php</li>
-      <li>/YOUR_ADMIN/includes/functions/extra_functions/referrers_functions.php</li>
-      <li>/YOUR_ADMIN/includes/languages/english/referrers.php</li>
-    </ol></td>
-    <td class="c3"><p>None</p></td>
-  </tr>
-  
-  <tr class="o">
-    <td class="c1">v2.4.0</td>
-    <td><ol>
-      <li>/includes/classes/observers/class.snap_order_observer.php</li>
-      <li><span class="added">/includes/languages/english/YOUR_TEMPLATE/referrer_edit.php</span></li>
-      <li><span class="added">/includes/modules/pages/referrer_edit/header_php.php</span></li>
-      <li><span class="added">/includes/templates/YOUR_TEMPLATE/tpl_referrer_edit_default.php</span></li>
-      <li>/includes/templates/YOUR_TEMPLATE/templates/tpl_referrer_main_default.php</li>
-    </ol></td>
-    <td class="c3"><p>None</p></td>
-  </tr>
-    
-  <tr>
-    <td class="c1">v2.3.0</td>
-    <td><ol>
-      <li>/includes/classes/observers/class.snap_order_observer.php</li>
-      <li>/includes/templates/YOUR_TEMPLATE/templates/tpl_referrer_tools_default.php</li>
-      <li><span class="corefile">/YOUR_ADMIN/orders.php</span><span class="added"> (added)</span></li>
-      <li>/YOUR_ADMIN/referrers.php</li>
-      <li><span class="added">/YOUR_ADMIN/images/icons/cash.jpg</span></li>
-      <li>/YOUR_ADMIN/includes/functions/extra_functions/init_referrers.php</li>
-      <li><span class="added">/YOUR_ADMIN/includes/functions/extra_functions/referrers_functions.php</span></li>
-      <li>/YOUR_ADMIN/includes/languages/english/referrers.php</li>
-      <li><span class="added">/YOUR_ADMIN/includes/languages/english/extra_definitions/referrers_info.php</span></li>
-      <li>/YOUR_ADMIN/includes/languages/english/extra_definitions/referrers_name.php</li>
-    </ol></td>
-    <td class="c3"><ol>
-      <li><em>Module Version</em> updated to v2.3.0.</li>
-      <li>Added <em>Purchases Per Cookie</em> configuration setting.</li>
-    </ol></td>
-  </tr>
-  
-  <tr class="o">
-    <td class="c1">v2.2.0</td>
-    <td><ol>
-      <li>/YOUR_ADMIN/includes/functions/extra_functions/init_referrers.php</li>
-    </ol></td>
-    <td class="c3"><ol>
-      <li>Added <em>Cookie Lifetime</em> configuration setting.</li>
-    </ol></td>
-  </tr>
-  
-  <tr>
-    <td class="c1">v2.1.2a</td>
-    <td><ol>
-      <li>/includes/init_includes/init_snap.php</li>
-      <li>/YOUR_ADMIN/includes/functions/extra_functions/init_referrers.php</li>
-    </ol></td>
-    <td class="c3"><ol>
-      <li>Corrected processing for the admin auto-config.  This version provides the "cleanup" required for the coding error in the previous version.  No new database values were introduced.</li>
-    </ol></td>
-  </tr>
-    
-  <tr class="o">
-    <td class="c1">v2.1.1</td>
-    <td><ol>
-      <li>/includes/modules/pages/referrer_tools/jscript_tools.php</li>
-      <li>/includes/templates/YOUR_TEMPLATE/templates/tpl_referrer_tools_default.php</li>
-    </ol></td>
-    <td class="c3"><p>None</p></td>
-  </tr>
-  
-  <tr>
-    <td class="c1">v2.1.0</td>
-    <td><ol>
-      <li>/includes/classes/observers/class.snap_order_observer.php</li>
-      <li>/includes/modules/pages/referral_main/header_php.php</li>
-      <li>/YOUR_ADMIN/referrers.php</li>
-      <li>/YOUR_ADMIN/includes/extra_datafiles/referrers_filenames.php</li>
-      <li>/YOUR_ADMIN/includes/functions/extra_functions/init_referrers.php</li>
-      <li>/YOUR_ADMIN/includes/languages/english/referrers.php</li>
-    </ol></td>
-    <td class="c3"><ol>
-      <li>Added <em>Affiliate Display Count</em>, <em>Allow Self-Commissions</em> and <em>Orders Status Exclusions</em> settings.</li>
-    </ol></td>
-  </tr>
-  
-</table>
-
 <h2>Un-install</h2>
-<p>Delete the new catalog and admin files that were previously copied and <em>then</em> run the <code>/docs/snap_affiliates/uninstall/uninstall_snap.sql</code> file that comes with this plugin.</p>
+<p>Delete the new storefront and admin files that were previously copied and <em>then</em> run the <code>/docs/snap_affiliates/uninstall/uninstall_snap.sql</code> file that comes with this plugin.</p>
 
 </body>
 </html>

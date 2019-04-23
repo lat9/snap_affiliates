@@ -537,7 +537,7 @@ function couponpopupWindow(url) {
         <td><?php echo zen_draw_separator('pixel_trans.gif', '1', '10'); ?></td>
       </tr>
       <tr>
-        <td class="main"><strong><?php echo snap_affiliates_image($oID) . ENTRY_ORDER_ID . $oID; //-snap_affiliates-lat9  *** 1 of 6 *** ?></strong></td>
+        <td class="main"><strong><?php echo ENTRY_ORDER_ID . $oID; ?></strong></td>
       </tr>
       <tr>
      <td><table border="0" cellspacing="0" cellpadding="2">
@@ -683,19 +683,12 @@ function couponpopupWindow(url) {
             <td class="smallText" align="center"><strong><?php echo TABLE_HEADING_CUSTOMER_NOTIFIED; ?></strong></td>
             <td class="smallText" align="center"><strong><?php echo TABLE_HEADING_STATUS; ?></strong></td>
             <td class="smallText" align="center"><strong><?php echo TABLE_HEADING_COMMENTS; ?></strong></td>
-<?php 
-//-bof-snap_affiliates-lat9  *** 2 of 6 ***
-?>
-            <td class="smallText" align="center"><strong><?php echo TABLE_HEADING_UPDATED_BY; ?></strong></td>
-<?php 
-//-eof-snap_affiliates-lat9  *** 2 of 6 ***
-?>
           </tr>
 <?php
-    $orders_history = $db->Execute("select orders_status_id, date_added, customer_notified, comments, updated_by
+    $orders_history = $db->Execute("select orders_status_id, date_added, customer_notified, comments
                                     from " . TABLE_ORDERS_STATUS_HISTORY . "
                                     where orders_id = '" . zen_db_input($oID) . "'
-                                    order by date_added");  //-snap_affiliates-lat9  *** 3 of 6 ***
+                                    order by date_added");
 
     if ($orders_history->RecordCount() > 0) {
       while (!$orders_history->EOF) {
@@ -711,9 +704,6 @@ function couponpopupWindow(url) {
         }
         echo '            <td class="smallText">' . $orders_status_array[$orders_history->fields['orders_status_id']] . '</td>' . "\n";
         echo '            <td class="smallText">' . nl2br(zen_db_output($orders_history->fields['comments'])) . '&nbsp;</td>' . "\n" .
-//-bof-snap_affiliates-lat9  *** 4 of 6 ***
-             '            <td class="smallText" align="center">' . (zen_not_null($orders_history->fields['updated_by']) ?  $orders_history->fields['updated_by'] : 'n/a') . '</td>' . "\n" .
-//-eof-snap_affiliates-lat9  *** 4 of 6 ***
              '          </tr>' . "\n";
         $orders_history->MoveNext();
       }
@@ -777,7 +767,16 @@ function couponpopupWindow(url) {
       <tr>
         <td><table border="0" width="100%" cellspacing="0" cellpadding="0">
           <tr>
-            <td class="smallText"><?php echo TEXT_LEGEND . ' ' . zen_image(DIR_WS_IMAGES . 'icon_status_red.gif', TEXT_BILLING_SHIPPING_MISMATCH, 10, 10) . ' ' . TEXT_BILLING_SHIPPING_MISMATCH . snap_affiliates_image();  //-snap_affiliates-lat9  *** 5 of 6 *** ?>
+<?php
+//-bof-snap_affiliates-lat9  *** 1 of 3 ***
+    // Additional notification, allowing admin-observers to include additional legend icons
+    $extra_legends = '';
+    $zco_notifier->notify('NOTIFY_ADMIN_ORDERS_MENU_LEGEND', array(), $extra_legends);
+?>
+            <td class="smallText"><?php echo TEXT_LEGEND . ' ' . zen_image(DIR_WS_IMAGES . 'icon_status_red.gif', TEXT_BILLING_SHIPPING_MISMATCH, 10, 10) . ' ' . TEXT_BILLING_SHIPPING_MISMATCH . $extra_legends; ?>
+<?php
+//-eof-snap_affiliates-lat9  *** 1 of 3 ***
+?>
           </td>
           <tr>
             <td valign="top"><table border="0" width="100%" cellspacing="0" cellpadding="2">
@@ -921,8 +920,13 @@ if (($_GET['page'] == '' or $_GET['page'] <= 1) and $_GET['oID'] != '') {
         $show_difference = zen_image(DIR_WS_IMAGES . 'icon_status_red.gif', TEXT_BILLING_SHIPPING_MISMATCH, 10, 10) . '&nbsp;';
       }
       $show_payment_type = $orders->fields['payment_module_code'] . '<br />' . $orders->fields['shipping_module_code'];
+//-bof-snap_affiliates-lat9  *** 2 of 3 ***
+      //-Additional "difference" icons can be added on a per-order basis and/or additional icons to be added to the "action" column.
+      $extra_action_icons = '';
+      $zco_notifier->notify('NOTIFY_ADMIN_ORDERS_SHOW_ORDER_DIFFERENCE', array(), $orders->fields, $show_difference, $extra_action_icons);
+//-eof-snap_affiliates-lat9  *** 2 of 3 ***
 ?>
-                <td class="dataTableContent" align="right"><?php echo snap_affiliates_image($orders->fields['orders_id']) . $show_difference . $orders->fields['orders_id']; //-snap_affiliates-lat9  *** 6 of 6 *** ?></td>
+                <td class="dataTableContent" align="right"><?php echo $show_difference . $orders->fields['orders_id']; ?></td>
                 <td class="dataTableContent" align="left" width="50"><?php echo $show_payment_type; ?></td>
                 <td class="dataTableContent"><?php echo '<a href="' . zen_href_link(FILENAME_CUSTOMERS, 'cID=' . $orders->fields['customers_id'], 'NONSSL') . '">' . zen_image(DIR_WS_ICONS . 'preview.gif', ICON_PREVIEW . ' ' . TABLE_HEADING_CUSTOMERS) . '</a>&nbsp;' . $orders->fields['customers_name'] . ($orders->fields['customers_company'] != '' ? '<br />' . $orders->fields['customers_company'] : ''); ?></td>
                 <td class="dataTableContent" align="right"><?php echo strip_tags($orders->fields['order_total']); ?></td>
@@ -930,7 +934,13 @@ if (($_GET['page'] == '' or $_GET['page'] <= 1) and $_GET['oID'] != '') {
                 <td class="dataTableContent" align="right"><?php echo ($orders->fields['orders_status_name'] != '' ? $orders->fields['orders_status_name'] : TEXT_INVALID_ORDER_STATUS); ?></td>
                 <td class="dataTableContent" align="center"><?php echo (zen_get_orders_comments($orders->fields['orders_id']) == '' ? '' : zen_image(DIR_WS_IMAGES . 'icon_yellow_on.gif', TEXT_COMMENTS_YES, 16, 16)); ?></td>
 
-                <td class="dataTableContent noprint" align="right"><?php echo '<a href="' . zen_href_link(FILENAME_ORDERS, zen_get_all_get_params(array('oID', 'action')) . 'oID=' . $orders->fields['orders_id'] . '&action=edit', 'NONSSL') . '">' . zen_image(DIR_WS_IMAGES . 'icon_edit.gif', ICON_EDIT) . '</a>'; ?><?php if (isset($oInfo) && is_object($oInfo) && ($orders->fields['orders_id'] == $oInfo->orders_id)) { echo zen_image(DIR_WS_IMAGES . 'icon_arrow_right.gif', ''); } else { echo '<a href="' . zen_href_link(FILENAME_ORDERS, zen_get_all_get_params(array('oID')) . 'oID=' . $orders->fields['orders_id'], 'NONSSL') . '">' . zen_image(DIR_WS_IMAGES . 'icon_info.gif', IMAGE_ICON_INFO) . '</a>'; } ?>&nbsp;</td>
+<?php
+//-bof-snap_affiliates-lat9  *** 3 of 3 ***
+?>
+                <td class="dataTableContent noprint" align="right"><?php echo '<a href="' . zen_href_link(FILENAME_ORDERS, zen_get_all_get_params(array('oID', 'action')) . 'oID=' . $orders->fields['orders_id'] . '&action=edit', 'NONSSL') . '">' . zen_image(DIR_WS_IMAGES . 'icon_edit.gif', ICON_EDIT) . '</a>' . $extra_action_icons; ?><?php if (isset($oInfo) && is_object($oInfo) && ($orders->fields['orders_id'] == $oInfo->orders_id)) { echo zen_image(DIR_WS_IMAGES . 'icon_arrow_right.gif', ''); } else { echo '<a href="' . zen_href_link(FILENAME_ORDERS, zen_get_all_get_params(array('oID')) . 'oID=' . $orders->fields['orders_id'], 'NONSSL') . '">' . zen_image(DIR_WS_IMAGES . 'icon_info.gif', IMAGE_ICON_INFO) . '</a>'; } ?>&nbsp;</td>
+<?php
+//-eof-snap_affiliates-lat9  *** 3 of 3 ***
+?>
               </tr>
 <?php
       $orders->MoveNext();
