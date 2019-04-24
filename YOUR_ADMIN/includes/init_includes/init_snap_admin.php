@@ -9,8 +9,8 @@
 if (!defined('IS_ADMIN_FLAG') || IS_ADMIN_FLAG !== true) {
     die('Illegal Access');
 }
-define('SNAP_MODULE_CURRENT_VERSION', '4.1.0-beta3');
-define('SNAP_MODULE_UPDATE_DATE', '2019-04-23');
+define('SNAP_MODULE_CURRENT_VERSION', '4.1.0-beta4');
+define('SNAP_MODULE_UPDATE_DATE', '2019-04-24');
 
 // -----
 // Wait until an admin is logged in to perform any operations, so that any generated
@@ -267,6 +267,17 @@ if (SNAP_MODULE_VERSION != SNAP_MODULE_CURRENT_VERSION) {
     }
     $messageStack->add($snap_message, 'success');
     zen_record_admin_activity($snap_message, 'warning');
+    
+    // -----
+    // Perform a little clean-up, making sure that any 'referrers' table entries that no longer have
+    // a matching 'customers' record are removed.
+    //
+    $db->Execute(
+        "DELETE FROM " . TABLE_REFERRERS . "
+            WHERE referrer_customers_id NOT IN (
+                SELECT customers_id FROM " . TABLE_CUSTOMERS . "
+            )"
+    );
 }
 
 //----

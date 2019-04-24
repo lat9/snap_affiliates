@@ -256,6 +256,7 @@ ul li ul { padding-left: 0; }
     <li>CHANGE: <b>Major</b> restructuring to support Zen Cart 1.5.6 and future PHP/MySQL versions.</li>
     <li>CHANGE: Clarify the description of the <em>Order Status Exclusions</em> configuration setting.</li>
     <li>CHANGE: Update the store's database to enable emails and/or newsletters to be sent to all approved (and not banned) affiliates.</li>
+    <li>BUGFIX: When a customer record is deleted, make sure that the associated <code>referrers</code> record is removed, too.  Note that this processing is zc156-specific, as there's a notification now issued for this condition.  For previous versions of Zen Cart, the &quot;orphaned&quot; <code>referrers</code> records are removed when the plugin is updated.</li>
     <li>The <em>majority</em> of the plugin's files were changed for this release, so consider that <b>all</b> files have been changed!  Notably, the following files were added or removed from the plugin's distribution:<ol>
       <li><span class="added">/includes/functions/snap_functions.php</span></li>
       <li><span class="added">/includes/templates/template_default/templates/tpl_modules_account_referrers.php</span></li>

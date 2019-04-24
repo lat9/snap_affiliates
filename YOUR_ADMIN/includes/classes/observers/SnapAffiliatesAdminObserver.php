@@ -20,6 +20,9 @@ class SnapAffiliatesAdminObserver extends base
                 /* Issued by /admin/orders.php */
                 'NOTIFY_ADMIN_ORDERS_MENU_LEGEND', 
                 'NOTIFY_ADMIN_ORDERS_SHOW_ORDER_DIFFERENCE',
+                
+                /* Issued by /admin/customers.php */
+                'NOTIFIER_ADMIN_ZEN_CUSTOMERS_DELETE_CONFIRM',
             )
         );
     }
@@ -51,6 +54,25 @@ class SnapAffiliatesAdminObserver extends base
             //
             case 'NOTIFY_ADMIN_ORDERS_SHOW_ORDER_DIFFERENCE':
                 $p3 .= snap_affiliates_image($p2['orders_id']);
+                break;
+                
+            // -----
+            // Issued by Customers->Customers when a customer is being deleted.  Gives us the opportunity
+            // to remove any referrers-table record associated with the customer.
+            //
+            // On entry:
+            //
+            // $p1 ... (r/o) An associative array containing the to-be-removed customers_id in a like-named index.
+            //
+            case 'NOTIFIER_ADMIN_ZEN_CUSTOMERS_DELETE_CONFIRM':
+                if (is_array($p1) && !empty($p1['customers_id'])) {
+                    $customers_id = (int)$p1['customers_id'];
+                    $GLOBALS['db']->Execute(
+                        "DELETE FROM " . TABLE_REFERRERS . "
+                          WHERE referrer_customers_id = $customers_id
+                          LIMIT 1"
+                    );
+                }
                 break;
                 
             default:
