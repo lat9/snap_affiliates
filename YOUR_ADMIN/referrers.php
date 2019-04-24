@@ -94,7 +94,7 @@ if (SNAP_ORDER_STATUS_EXCLUSIONS != '') {
     $order_status_exclusions = explode(',', str_replace(' ', '', SNAP_ORDER_STATUS_EXCLUSIONS));  
     for ($i = 0, $n = count($order_status_exclusions); $i < $n; $i++) {
         $current_order_status = (int)$order_status_exclusions[$i];
-        if ($current_order_status != 0 && !isset($orders_status_names[$current_order_status])) {
+        if ($current_order_status > 0 && !isset($orders_status_names[$current_order_status])) {
             $result = $db->Execute(
                 "SELECT orders_status_name 
                    FROM " . TABLE_ORDERS_STATUS . " 
@@ -381,7 +381,7 @@ switch ($mode) {
     case TEXT_UPDATE_PAYMENT_TYPE:
         $error = false;
         if (isset($payment_types[$_POST['referrer_payment_type']]) && $payment_types[$_POST['referrer_payment_type']]['text_details'] != '') {
-            $payment_details = zen_sanitize_string($db->prepare_input($_POST['referrer_payment_type_detail']));  //-v3.0.1c
+            $payment_details = zen_sanitize_string($db->prepare_input($_POST['referrer_payment_type_detail']));
             if (!zen_not_null($payment_details)) {
                 $mode = 'details';
                 $messageStack->add(sprintf(ERROR_PAYMENT_DETAILS_MISSING, $payment_types[$_POST['referrer_payment_type']]['text_details']), 'error');
@@ -656,7 +656,7 @@ if ($mode == '' || $mode == 'summary') {
                         <th><?php echo HEADING_COMMISSION_PAID_VIA; ?></th>
                     </tr>
 <?php
-    foreach( $referrers[$selected]['orders'] as $order ) {
+    foreach ($referrers[$selected]['orders'] as $order) {
         $total = $order['order_total'] - $order['value'];
         $commission = $order['commission_rate'];
         $orders_status = $order['orders_status'];

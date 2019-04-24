@@ -103,7 +103,7 @@ if (!$approved) {
 
 <?php
         foreach ($activity as $entry) {
-            $nice_date = ($entry['paid'] == 0) ? TEXT_UNPAID : $entry['paid']->format('F j, Y');
+            $nice_date = (!is_object($entry['paid'])) ? TEXT_UNPAID : $entry['paid']->format('F j, Y');
 ?>
         <tr>
           <td><?php echo $entry['date']->format('F j, Y'); ?></td>
