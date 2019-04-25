@@ -208,8 +208,8 @@ if ($approved && !$banned) {
                 }
                 $activity[] = array(
                     'amount' => $current_amount, 
-                    'date' => $purchase_date, 
-                    'paid' => $current_date, 
+                    'date' => $purchase_date->getTimestamp(), 
+                    'paid' => $current_timestamp, 
                     'commission' => $commission, 
                     'commission_calculated' => $commission_calculated, 
                     'commission_paid' => $commission_paid, 

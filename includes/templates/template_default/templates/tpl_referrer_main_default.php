@@ -44,7 +44,7 @@ if (!$approved) {
         
         <tr>
             <td><?php echo TEXT_LAST_PAYMENT_MADE; ?></td>
-            <td><?php echo ($last_payout_timestamp == 0) ? TEXT_NO_PAYMENTS : date("F j, Y", $last_payout_timestamp); ?></td>
+            <td><?php echo ($last_payout_timestamp == 0) ? TEXT_NO_PAYMENTS : date('F j, Y', $last_payout_timestamp); ?></td>
         </tr>
         
         <tr>
@@ -103,10 +103,10 @@ if (!$approved) {
 
 <?php
         foreach ($activity as $entry) {
-            $nice_date = (!is_object($entry['paid'])) ? TEXT_UNPAID : $entry['paid']->format('F j, Y');
+            $nice_date = ($entry['paid'] == 0) ? TEXT_UNPAID : date('F j, Y', $entry['paid']);
 ?>
         <tr>
-          <td><?php echo $entry['date']->format('F j, Y'); ?></td>
+          <td><?php echo date('F j, Y', $entry['date']); ?></td>
           <td><?php echo $currencies->format($entry['amount']); ?></td>
           <td><?php echo number_format($entry['commission'] * 100, 0) . '%'; ?></td>
           <td><?php echo $currencies->format($entry['commission_calculated']); ?></td>
