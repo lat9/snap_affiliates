@@ -9,8 +9,8 @@
 if (!defined('IS_ADMIN_FLAG') || IS_ADMIN_FLAG !== true) {
     die('Illegal Access');
 }
-define('SNAP_MODULE_CURRENT_VERSION', '4.0.1-beta1');
-define('SNAP_MODULE_UPDATE_DATE', '2019-04-22');
+define('SNAP_MODULE_CURRENT_VERSION', '4.1.0');
+define('SNAP_MODULE_UPDATE_DATE', '2019-04-25');
 
 // -----
 // Wait until an admin is logged in to perform any operations, so that any generated
@@ -208,6 +208,42 @@ if (SNAP_MODULE_VERSION != SNAP_MODULE_CURRENT_VERSION) {
                 zen_record_admin_activity('One or more entries in SNAP Affiliates\' ' . TABLE_COMMISSIONS . ' table were updated for more recent versions of MySql.', 'warning');
             }
             
+        case version_compare(SNAP_MODULE_VERSION, '4.1.0', '<'):    //-Fall-through from above ...
+            $snap_default = (SNAP_MODULE_VERSION == '0.0.0') ? 'false' : 'true';
+            $db->Execute(
+                "INSERT IGNORE INTO " . TABLE_CONFIGURATION . "
+                    (configuration_title, configuration_key, configuration_value, configuration_description, configuration_group_id, sort_order, date_added, use_function, set_function) 
+                 VALUES
+                    ('Enable Storefront Processing?', 'SNAP_ENABLED', '$snap_default', 'Should the affiliates\' handling be enabled for the storefront?<br /><br />', $cgi, 11, now(), NULL, 'zen_cfg_select_option(array(\'true\', \'false\'),')"
+            );
+            $db->Execute(
+                "UPDATE " . TABLE_CONFIGURATION . "
+                    SET configuration_description = 'Exclude orders with the following <em>Order Status</em> <b>values</b> from affiliate commissions. Specify the values as a comma-separated list (intervening blanks are OK), e.g. <code>1, 5</code>.<br />'
+                  WHERE configuration_key = 'SNAP_ORDER_STATUS_EXCLUSIONS'
+                  LIMIT 1"
+            );
+            $snap_query = $db->Execute(
+                "SELECT *
+                   FROM " . TABLE_QUERY_BUILDER . "
+                  WHERE query_name = 'All Affiliates'
+                  LIMIT 1"
+            );
+            if ($snap_query->EOF) {
+                $snap_qb_query = 
+                    'SELECT c.customers_email_address, c.customers_lastname, c.customers_firstname ' .
+                      'FROM TABLE_REFERRERS r ' .
+                           'INNER JOIN TABLE_CUSTOMERS c ' .
+                                'ON referrer_customers_id = c.customers_id ' .
+                     'WHERE referrer_approved = 1 ' .
+                       'AND referrer_banned = 0';
+                $db->Execute(
+                    "INSERT INTO " . TABLE_QUERY_BUILDER . "
+                        (query_category, query_name, query_description, query_string, query_keys_list)
+                     VALUES
+                        ('email,newsletters', 'All Affiliates', 'For sending emails or newsletters to currently-subscribed SNAP Affiliates that have been approved and not banned.', '$snap_qb_query', '')"
+                );
+            }
+            
         default:                                                    //-Fall-through from above ...
             break;
     }
@@ -230,6 +266,18 @@ if (SNAP_MODULE_VERSION != SNAP_MODULE_CURRENT_VERSION) {
         $snap_message = sprintf(TEXT_SNAP_UPDATED, SNAP_MODULE_VERSION, SNAP_MODULE_CURRENT_VERSION);
     }
     $messageStack->add($snap_message, 'success');
+    zen_record_admin_activity($snap_message, 'warning');
+    
+    // -----
+    // Perform a little clean-up, making sure that any 'referrers' table entries that no longer have
+    // a matching 'customers' record are removed.
+    //
+    $db->Execute(
+        "DELETE FROM " . TABLE_REFERRERS . "
+            WHERE referrer_customers_id NOT IN (
+                SELECT customers_id FROM " . TABLE_CUSTOMERS . "
+            )"
+    );
 }
 
 //----

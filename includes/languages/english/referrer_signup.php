@@ -1,11 +1,10 @@
 <?php
-/**
- * @package languageDefines
- * @copyright Copyright 2003-2006 Zen Cart Development Team
- * @copyright Portions Copyright 2003 osCommerce
- * @license http://www.zen-cart.com/license/2_0.txt GNU Public License V2.0
- * @version $Id: account.php 3595 2006-05-07 06:39:23Z drbyte $
- */
+// -----
+// Part of the SNAP Affiliates plugin for Zen Carts v155 and later.
+//
+// Copyright (c) 2013-2019, Vinos de Frutas Tropicales (lat9)
+// Original: Copyright (c) 2009, Michael Burke (http://www.filterswept.com)
+//
 define('NAVBAR_TITLE', 'Affiliate Signup');
 define('HEADING_TITLE', 'Affiliate Program Signup');
 
@@ -18,7 +17,7 @@ define('TEXT_SIGN_UP', 'Interested in signing up for our referral program?  Ente
 define('TEXT_NOT_LOGGED_IN', 'Interested in signing up for our referral program?  Please begin by <a href="%s">logging in to your account</a>. If you don\'t already have an account, you can create one <a href="%s">here</a>.');
 
 define('TEXT_HOMEPAGE_URL', 'Homepage URL:');
-define('ERROR_NO_URL', 'Please enter your homepage URL (for example, www.mysite.com) to sign up for our referral program.');
+define('ERROR_NO_URL', 'Please enter your homepage URL (for example, https://www.mysite.com) to sign up for our referral program.');
 
 define('EMAIL_SUBJECT', STORE_NAME . ' Referrer Program Signup Request');
 define('EMAIL_BODY', 'The customer named %1$s %2$s (customer ID %3$u) has applied to the ' . STORE_NAME . ' referral program. You can review their submission by using your Zen Cart admin\'s Customers->Referrers page.');

@@ -1,8 +1,2 @@
-#refSignupLinks {
-  text-align: center;
-  font-size: 12px;
-  padding-bottom: 10px;
-}
-.centered {
-  text-align: center;
-}
+#refSignupLinks { text-align: center; padding-bottom: 0.5em; font-size: large; }
+.centered { text-align: center; }
