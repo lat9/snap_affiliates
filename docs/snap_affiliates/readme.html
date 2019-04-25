@@ -192,7 +192,7 @@ ul li ul { padding-left: 0; }
   </ol></li>
   <li>If your store runs on a Zen Cart 1.5.5 variant, there are additional files to be copied, all present in the <code>/zc155</code> directory of the plugin's zip-file.  Rename the <code>YOUR_ADMIN</code> sub-directory to match your store's admin-directory name, performing the <span class="corefile">core-file</span> merge.  Copy the <em>contents</em> of the <code>zc155</code> directory, not the directory itself!<ol>
     <li>/includes/functions/extra_functions/osh_updated_by_functions.php</li>
-    <li><span class="corefile">/YOUR_ADMIN/orders.php</span></li>
+    <li><span class="corefile">/YOUR_ADMIN/orders.php</span> <span class="smaller">(This is the zc155f version of the file, with 3 marked change sections adding required notifications)</span></li>
     <li>/YOUR_ADMIN/includes/functions/extra_functions/osh_updated_by_admin_functions.php</li>
     <li>/YOUR_ADMIN/includes/languages/english/osh_updated_by.php</li>
   </ol></li>
@@ -250,10 +250,10 @@ ul li ul { padding-left: 0; }
 </ol>
 
 <h2>Version History:</h2>
-<p>This plugin is based on v1.0.2.1 of the <a href="https://www.zen-cart.com/downloads.php?do=file&amp;id=898"><em>Snap Affiliates</em></a> add-on developed for the 1.3.x versions of Zen Cart&reg;, but this version (v2.0.0 and later) has been modified for v1.5.0 and later <em>only</em>.</p>
+<p>This plugin is based on v1.0.2.1 of the <a href="https://www.zen-cart.com/downloads.php?do=file&amp;id=898"><em>Snap Affiliates</em></a> add-on developed for the 1.3.x versions of Zen Cart&reg;, but this version (v4.0.0 and later) has been modified for v1.5.5 and later <em>only</em>.</p>
 <ul>
-  <li>v4.1.0, 2019-04-xx:<ul>
-    <li>CHANGE: <b>Major</b> restructuring to support Zen Cart 1.5.6 and future PHP/MySQL versions.</li>
+  <li>v4.1.0, 2019-04-25:<ul>
+    <li>CHANGE: <b>Major</b> restructuring to support Zen Cart 1.5.6 and future PHP/MySQL versions.  If you are upgrading <em>SNAP Affiliates</em> and have made changes to its template files, be sure to merge your changes with those provided in the plugin's <code>/includes/templates/template_default</code> sub-directory for continued operation!</li>
     <li>CHANGE: Clarify the description of the <em>Order Status Exclusions</em> configuration setting.</li>
     <li>CHANGE: Update the store's database to enable emails and/or newsletters to be sent to all approved (and not banned) affiliates.</li>
     <li>BUGFIX: When a customer record is deleted, make sure that the associated <code>referrers</code> record is removed, too.  Note that this processing is zc156-specific, as there's a notification now issued for this condition.  For previous versions of Zen Cart, the &quot;orphaned&quot; <code>referrers</code> records are removed when the plugin is updated.</li>
