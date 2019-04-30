@@ -111,3 +111,15 @@ function snap_submit_button($name, $text, $class = '', $parms = '')
     }
     return $submit_button;
 }
+
+// -----
+// This function, used on the plugin's admin processing page, "adapts" the storefront date dropdown
+// for admin-level use.
+//
+function snap_admin_get_date_dropdown($prefix, $selected_month, $selected_year, $referrer_customer_id)
+{
+    $_SESSION['customer_id'] = $referrer_customer_id;
+    $dropdown = snap_get_date_dropdown($prefix, $selected_month, $selected_year);
+    unset($_SESSION['customer_id']);
+    return $dropdown;
+}

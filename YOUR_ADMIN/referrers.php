@@ -620,7 +620,7 @@ if ($mode == '' || $mode == 'summary') {
                 <table class="table">
                     <tr>
                         <td><h3><?php echo TEXT_ORDER_HISTORY; ?></h3></td>
-                        <td align="right"><?php echo TEXT_FROM . snap_get_date_dropdown('start', $start_mon, $start_year) . TEXT_TO . snap_get_date_dropdown('end', $end_mon, $end_year) . '&nbsp;&nbsp;' . snap_submit_button('choose', TEXT_CHOOSE); ?></td>
+                        <td align="right"><?php echo TEXT_FROM . snap_admin_get_date_dropdown('start', $start_mon, $start_year, $referrers[$selected]['customers_id']) . TEXT_TO . snap_admin_get_date_dropdown('end', $end_mon, $end_year, $referrers[$selected]['customers_id']) . '&nbsp;&nbsp;' . snap_submit_button('choose', TEXT_CHOOSE); ?></td>
                     </tr>
                 </table></form>
             </td>

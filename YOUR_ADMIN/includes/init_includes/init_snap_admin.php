@@ -9,8 +9,8 @@
 if (!defined('IS_ADMIN_FLAG') || IS_ADMIN_FLAG !== true) {
     die('Illegal Access');
 }
-define('SNAP_MODULE_CURRENT_VERSION', '4.1.0');
-define('SNAP_MODULE_UPDATE_DATE', '2019-04-25');
+define('SNAP_MODULE_CURRENT_VERSION', '4.1.1-beta1');
+define('SNAP_MODULE_UPDATE_DATE', '2019-04-30');
 
 // -----
 // Wait until an admin is logged in to perform any operations, so that any generated
