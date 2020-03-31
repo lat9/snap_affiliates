@@ -3,14 +3,14 @@
 // Part of the SNAP Affiliates plugin for Zen Carts v155 and later.  Note, for versions
 // of SNAP prior to v4.1.0, this processing was provided by /admin/includes/functions/extra_functions/init_referrers.php.
 //
-// Copyright (c) 2013-2019, Vinos de Frutas Tropicales (lat9)
+// Copyright (c) 2013-2020, Vinos de Frutas Tropicales (lat9)
 // Original: Copyright (c) 2009, Michael Burke (http://www.filterswept.com)
 //
 if (!defined('IS_ADMIN_FLAG') || IS_ADMIN_FLAG !== true) {
     die('Illegal Access');
 }
-define('SNAP_MODULE_CURRENT_VERSION', '4.1.1');
-define('SNAP_MODULE_UPDATE_DATE', '2019-11-02');
+define('SNAP_MODULE_CURRENT_VERSION', '4.1.2-beta1');
+define('SNAP_MODULE_UPDATE_DATE', '2020-03-31');
 
 // -----
 // Wait until an admin is logged in to perform any operations, so that any generated
@@ -37,7 +37,7 @@ if ($configuration->EOF) {
         "INSERT INTO " . TABLE_CONFIGURATION_GROUP . " 
             (configuration_group_title, configuration_group_description, sort_order, visible) 
          VALUES 
-            ('$configurationGroupTitle', 'Set Affiliate Program Options', '1', '1')"
+            ('$configurationGroupTitle', 'Set Affiliate Program Options', 1, 1)"
     );
     $cgi = $db->Insert_ID();
   
@@ -113,7 +113,7 @@ if (!defined('SNAP_MODULE_VERSION')) {
             commission_rate float not null,
             commission_paid datetime not null,
             commission_paid_amount float not null,
-            commission_manual tinyint(1) NOT NULL default '0'
+            commission_manual tinyint(1) NOT NULL default 0
         )"
     );
     define('SNAP_MODULE_VERSION', '0.0.0');
@@ -134,7 +134,7 @@ if (SNAP_MODULE_VERSION != SNAP_MODULE_CURRENT_VERSION) {
         $db->Execute("ALTER TABLE " . TABLE_COMMISSION . " ADD COLUMN commission_paid_amount float NOT NULL");
     }
     if (!$sniffer->field_exists(TABLE_COMMISSION, 'commission_manual')) {
-        $db->Execute("ALTER TABLE " . TABLE_COMMISSION . " ADD COLUMN commission_manual tinyint(1) NOT NULL default '0'");
+        $db->Execute("ALTER TABLE " . TABLE_COMMISSION . " ADD COLUMN commission_manual tinyint(1) NOT NULL default 0");
     }
     if (!$sniffer->field_exists(TABLE_REFERRERS, 'referrer_payment_type')) {
         $db->Execute("ALTER TABLE " . TABLE_REFERRERS . " ADD COLUMN referrer_payment_type char(2) NOT NULL default 'CM', ADD COLUMN referrer_payment_type_detail varchar(255) NOT NULL default ''");
@@ -202,7 +202,7 @@ if (SNAP_MODULE_VERSION != SNAP_MODULE_CURRENT_VERSION) {
             $db->Execute(
                 "UPDATE " . TABLE_COMMISSION . "
                     SET commission_paid = '0001-01-01 00:00:00'
-                  WHERE commission_paid = '0000-00-00 00:00:00'"
+                  WHERE CAST(commission_paid AS CHAR(20)) = '0000-00-00 00:00:00'"
             );
             if ($db->link->affected_rows != 0) {
                 zen_record_admin_activity('One or more entries in SNAP Affiliates\' ' . TABLE_COMMISSIONS . ' table were updated for more recent versions of MySql.', 'warning');
@@ -288,4 +288,4 @@ if (!zen_page_key_exists('configurationAffiliates')) {
 }
 if (!zen_page_key_exists('customersReferrers')) {
     zen_register_admin_page('customersReferrers', 'BOX_CUSTOMERS_REFERRERS', 'FILENAME_REFERRERS', '', 'customers', 'Y');
-}    
+}
