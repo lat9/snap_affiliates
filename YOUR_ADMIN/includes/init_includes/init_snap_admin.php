@@ -9,7 +9,7 @@
 if (!defined('IS_ADMIN_FLAG') || IS_ADMIN_FLAG !== true) {
     die('Illegal Access');
 }
-define('SNAP_MODULE_CURRENT_VERSION', '4.1.2-beta1');
+define('SNAP_MODULE_CURRENT_VERSION', '4.1.2');
 define('SNAP_MODULE_UPDATE_DATE', '2020-03-31');
 
 // -----
