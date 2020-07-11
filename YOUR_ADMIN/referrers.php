@@ -2,7 +2,7 @@
 // -----
 // Part of the SNAP Affiliates plugin for Zen Carts v155 and later.
 //
-// Copyright (c) 2013-2019, Vinos de Frutas Tropicales (lat9)
+// Copyright (c) 2013-2020, Vinos de Frutas Tropicales (lat9)
 // Original: Copyright (c) 2009, Michael Burke (http://www.filterswept.com)
 //
 require 'includes/application_top.php';
@@ -44,15 +44,33 @@ if (SNAP_ENABLE_PAYMENT_CHOICE_PAYPAL == 'Yes') {
         'payment_details' => '' 
     );
 }
-$zco_notifier->notify ('SNAP_GET_PAYMENT_TYPE_DESCRIPTION');
+$zco_notifier->notify('SNAP_GET_PAYMENT_TYPE_DESCRIPTION');
 
 // -----
 // Determine the starting and ending dates to be used to find any commissions associated with
 // the affiliate's account.
 //
+// If a specific date (month/year) range hasn't been specified, gather information from
+// the store's first order's date until today.
+//
 $today = getdate();
-$start_mon = (isset($_GET['start_mon'])) ? (int)$_GET['start_mon'] : $today['mon'];
-$start_year = (isset($_GET['start_year'])) ? (int)$_GET['start_year'] : $today['year'];
+
+$first_order_date = $db->Execute(
+    "SELECT date_purchased
+       FROM " . TABLE_ORDERS . "
+      ORDER BY date_purchased ASC
+      LIMIT 1"
+);
+if ($first_order_date->EOF) {
+    $start_mon = $today['mon'];
+    $start_year = $today['year'];
+} else {
+    $start_mon = substr($first_order_date->fields['date_purchased'], 5, 2);
+    $start_year = substr($first_order_date->fields['date_purchased'], 0, 4);
+}
+
+$start_mon = (isset($_GET['start_mon'])) ? (int)$_GET['start_mon'] : $start_mon;
+$start_year = (isset($_GET['start_year'])) ? (int)$_GET['start_year'] : $start_year;
 if ($start_mon < 1 || $start_mon > 12 || $start_year < 2000 || $start_year > $today['year'] || ($start_year == $today['year'] && $start_mon > $today['mon'])) {
     $start_mon = $today['mon'];
     $start_year = $today['year'];
@@ -413,13 +431,35 @@ switch ($mode) {
 <script src="includes/menu.js"></script>
 <script src="includes/general.js"></script>
 <style>
-.history { width: 100%; padding: 0.5em; }
-.history td, .history th { text-align: center; }
-.h-r { text-align: right; }
-.historyFooter td { border-top: 1px solid grey; font-weight: bold; }
-.noInput { padding: 2px 0; }
-.center { text-align: center; }
-.error { border: 1px dashed red; padding: 2px; color: red; font-weight: bold; }
+.history { 
+    width: 100%; 
+    padding: 0.5em; 
+}
+.history td, .history th { 
+    text-align: center; 
+}
+.history tr:hover {
+    background-color: #e0e0e0;
+}
+.h-r { 
+    text-align: right; 
+}
+.historyFooter td { 
+    border-top: 1px solid grey; 
+    font-weight: bold; 
+}
+.noInput { 
+    padding: 2px 0; 
+}
+.center { 
+    text-align: center; 
+}
+.error { 
+    border: 1px dashed red; 
+    padding: 2px; 
+    color: red; 
+    font-weight: bold; 
+}
 </style>
 <script>
   function init() {
@@ -503,13 +543,13 @@ if ($mode == '' || $mode == 'summary') {
 <?php
     $home_page_link = zen_catalog_href_link(FILENAME_DEFAULT, 'referrer=' . $referrers[$selected]['referrer_key']);
 ?>
-                    <tr><td class="infoBoxContent"><br /><?php echo LABEL_HOME_PAGE_LINK . ' '; ?><a href="<?php echo $home_page_link; ?>" target="_blank"><?php echo $home_page_link; ?></a></td></tr>
-                    <tr><td class="infoBoxContent"><br /><?php echo LABEL_ORDERS_TOTAL . ' ' . $currencies->format($referrers[$selected]['status_breakdown'][0]['total']); ?></td></tr>
-                    <tr><td class="infoBoxContent"><br /><?php echo LABEL_UNPAID . ' ' . $currencies->format($referrers[$selected]['status_breakdown'][0]['unpaid_commission']); ?></td></tr>
-                    <tr><td class="infoBoxContent"><br /><?php echo sprintf(LABEL_EMAIL, $referrers[$selected]['customers_email_address']); ?></td></tr>
-                    <tr><td class="infoBoxContent"><br /><?php echo sprintf(LABEL_WEBSITE, $referrers[$selected]['referrer_homepage']); ?></td></tr>
-                    <tr><td class="infoBoxContent"><br /><?php echo LABEL_PHONE . ' ' . $referrers[$selected]['customers_telephone']; ?></td></tr>
-                    <tr><td class="infoBoxContent"><br /><?php echo LABEL_PAYMENT_TYPE . ' ' . $payment_types[$referrers[$selected]['referrer_payment_type']]['text'] . (($referrers[$selected]['referrer_payment_type_detail'] == '') ? '' : (' (' . $referrers[$selected]['referrer_payment_type_detail'] . ')')); ?></td></tr>
+                    <tr><td class="infoBoxContent"><br><?php echo LABEL_HOME_PAGE_LINK . ' '; ?><a href="<?php echo $home_page_link; ?>" target="_blank"><?php echo $home_page_link; ?></a></td></tr>
+                    <tr><td class="infoBoxContent"><br><?php echo LABEL_ORDERS_TOTAL . ' ' . $currencies->format($referrers[$selected]['status_breakdown'][0]['total']); ?></td></tr>
+                    <tr><td class="infoBoxContent"><br><?php echo LABEL_UNPAID . ' ' . $currencies->format($referrers[$selected]['status_breakdown'][0]['unpaid_commission']); ?></td></tr>
+                    <tr><td class="infoBoxContent"><br><?php echo sprintf(LABEL_EMAIL, $referrers[$selected]['customers_email_address']); ?></td></tr>
+                    <tr><td class="infoBoxContent"><br><?php echo sprintf(LABEL_WEBSITE, $referrers[$selected]['referrer_homepage']); ?></td></tr>
+                    <tr><td class="infoBoxContent"><br><?php echo LABEL_PHONE . ' ' . $referrers[$selected]['customers_telephone']; ?></td></tr>
+                    <tr><td class="infoBoxContent"><br><?php echo LABEL_PAYMENT_TYPE . ' ' . $payment_types[$referrers[$selected]['referrer_payment_type']]['text'] . (($referrers[$selected]['referrer_payment_type_detail'] == '') ? '' : (' (' . $referrers[$selected]['referrer_payment_type_detail'] . ')')); ?></td></tr>
                     <tr><td class="infoBoxContent center"><?php echo ($referrercount > 0) ? snap_button_link(zen_href_link(FILENAME_REFERRERS, 'referrer=' . $referrers[$selected]['customers_id'] . "&amp;mode=details&amp;page=$snap_page", 'NONSSL'), IMAGE_DETAILS, 'button_details.gif') : '&nbsp;'; ?></td></tr>
                 </table>
             </td>
@@ -560,7 +600,9 @@ if ($mode == '' || $mode == 'summary') {
         $update_disabled = '';
         $pay_disabled = ($commission_to_pay == 0) ? ' disabled="disabled"' : '';
     }
-                echo zen_draw_form('referrers', FILENAME_REFERRERS, '', 'post', '', true) . zen_draw_hidden_field('page', $snap_page) . zen_draw_hidden_field('referrer', $referrers[$selected]['customers_id']);
+                echo zen_draw_form('referrers', FILENAME_REFERRERS, '', 'post', '', true) . 
+                     zen_draw_hidden_field('page', $snap_page) . 
+                     zen_draw_hidden_field('referrer', $referrers[$selected]['customers_id']);
 ?>
                 <table class="table">
                    <tr>
@@ -600,13 +642,13 @@ if ($mode == '' || $mode == 'summary') {
     $referrer_payment_type = (isset($_POST['referrer_payment_type'])) ? $_POST['referrer_payment_type'] : $referrers[$selected]['referrer_payment_type'];
     $referrer_payment_type_detail = (isset($_POST['referrer_payment_type_detail'])) ? $_POST['referrer_payment_type_detail'] : $referrers[$selected]['referrer_payment_type_detail'];
 ?>
-                        <td valign="top"><?php echo zen_draw_pull_down_menu ('referrer_payment_type', $payment_type_selections, $referrer_payment_type, 'id="payment-type" onchange="showHideDetails();"'); ?></td>
+                        <td valign="top"><?php echo zen_draw_pull_down_menu('referrer_payment_type', $payment_type_selections, $referrer_payment_type, 'id="payment-type" onchange="showHideDetails();"'); ?></td>
                         <td><?php echo snap_submit_button('mode', TEXT_UPDATE_PAYMENT_TYPE, 'btn-warning', $update_disabled); ?></td>
                    </tr>
                        
                    <tr id="payment-details">
                         <td valign="top" id="payment-details-name">&nbsp;</td>
-                        <td valign="top"><?php echo zen_draw_input_field ('referrer_payment_type_detail', $referrer_payment_type_detail); ?></td>
+                        <td valign="top"><?php echo zen_draw_input_field('referrer_payment_type_detail', $referrer_payment_type_detail); ?></td>
                         <td>&nbsp;</td>
                    </tr>
                 </table></form>
@@ -670,7 +712,7 @@ if ($mode == '' || $mode == 'summary') {
                         <td><a href="<?php echo zen_href_link(FILENAME_ORDERS, 'oID=' . $order['orders_id'] . '&action=edit', 'NONSSL'); ?>"><?php echo $order['orders_id']; ?></a></td>
                         <td><?php echo $order['date_purchased']; ?></td>
 <?php
-        foreach($orders_status_names as $current_orders_status => $status_name) {
+        foreach ($orders_status_names as $current_orders_status => $status_name) {
             if (SNAP_AFFILIATE_COMBINE_EXCLUSIONS == 'Yes') {
                 if ($current_orders_status != '*' && $current_orders_status != 0) {
                     continue;
@@ -686,7 +728,7 @@ if ($mode == '' || $mode == 'summary') {
 ?>
                         <td><?php echo $commission * 100; ?>%</td>
 <?php
-        foreach($orders_status_names as $current_orders_status => $status_name) {
+        foreach ($orders_status_names as $current_orders_status => $status_name) {
             if (SNAP_AFFILIATE_COMBINE_EXCLUSIONS == 'Yes') {
                 if ($current_orders_status !== 0 && $current_orders_status != '*') {
                     continue;
@@ -715,7 +757,6 @@ if ($mode == '' || $mode == 'summary') {
                 $commission_payment_type = $payment_types[$order['commission_payment_type']]['text'];
                 if (!empty($order['commission_payment_type_detail'])) {
                     $commission_payment_type_detail = ' (' . $order['commission_payment_type_detail'] . ')';
-            
                 }
             }
         }
@@ -730,7 +771,7 @@ if ($mode == '' || $mode == 'summary') {
                     <tr class="historyFooter">
                         <td class="h-r" colspan="2"><?php echo HEADING_TOTALS; ?></td>
 <?php
-    foreach($referrers[$selected]['status_breakdown'] as $order_status => $current_totals) {
+    foreach ($referrers[$selected]['status_breakdown'] as $order_status => $current_totals) {
       if (SNAP_AFFILIATE_COMBINE_EXCLUSIONS == 'Yes' && $order_status !== 0 && $order_status != '*') {
           continue;
       }

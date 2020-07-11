@@ -9,8 +9,8 @@
 if (!defined('IS_ADMIN_FLAG') || IS_ADMIN_FLAG !== true) {
     die('Illegal Access');
 }
-define('SNAP_MODULE_CURRENT_VERSION', '4.1.2');
-define('SNAP_MODULE_UPDATE_DATE', '2020-03-31');
+define('SNAP_MODULE_CURRENT_VERSION', '4.1.3');
+define('SNAP_MODULE_UPDATE_DATE', '2020-07-11');
 
 // -----
 // Wait until an admin is logged in to perform any operations, so that any generated
@@ -278,14 +278,14 @@ if (SNAP_MODULE_VERSION != SNAP_MODULE_CURRENT_VERSION) {
                 SELECT customers_id FROM " . TABLE_CUSTOMERS . "
             )"
     );
-}
 
-//----
-// Register the Affiliate Program configuration and the Referrers tool into the admin menu structure.
-//
-if (!zen_page_key_exists('configurationAffiliates')) {
-    zen_register_admin_page('configurationAffiliates', 'BOX_CONFIGURATION_AFFILIATES', 'FILENAME_CONFIGURATION', "gID=$cgi", 'configuration', 'Y');
-}
-if (!zen_page_key_exists('customersReferrers')) {
-    zen_register_admin_page('customersReferrers', 'BOX_CUSTOMERS_REFERRERS', 'FILENAME_REFERRERS', '', 'customers', 'Y');
+    //----
+    // Register the Affiliate Program configuration and the Referrers tool into the admin menu structure.
+    //
+    if (!zen_page_key_exists('configurationAffiliates')) {
+        zen_register_admin_page('configurationAffiliates', 'BOX_CONFIGURATION_AFFILIATES', 'FILENAME_CONFIGURATION', "gID=$cgi", 'configuration', 'Y');
+    }
+    if (!zen_page_key_exists('customersReferrers')) {
+        zen_register_admin_page('customersReferrers', 'BOX_CUSTOMERS_REFERRERS', 'FILENAME_REFERRERS', '', 'customers', 'Y');
+    }
 }
