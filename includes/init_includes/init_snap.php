@@ -26,7 +26,7 @@ if (isset($_GET['referrer'])) {
         $expiration = time() + (int)SNAP_COOKIE_LIFETIME;
         
         if (PHP_VERSION_ID < 70300) {
-            setcookie('referrer_key', $_GET['referrer'], $expiration, $path . '; samesite=strict', $domain, false, true);
+            setcookie('referrer_key', $_GET['referrer'], $expiration, $path . '; samesite=lax', $domain, false, true);
         } else {
             $cookie_options = array(
                 'expires' => $expiration,
@@ -34,7 +34,7 @@ if (isset($_GET['referrer'])) {
                 'domain' => $domain,
                 'secure' => false,
                 'httponly' => true,
-                'samesite' => 'Strict'
+                'samesite' => 'lax'
             );
             setcookie("referrer_key", $_GET['referrer'], $cookie_options);
         }
