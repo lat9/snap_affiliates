@@ -58,6 +58,7 @@ $today = getdate();
 $first_order_date = $db->Execute(
     "SELECT date_purchased
        FROM " . TABLE_ORDERS . "
+      WHERE date_purchased IS NOT NULL
       ORDER BY date_purchased ASC
       LIMIT 1"
 );
