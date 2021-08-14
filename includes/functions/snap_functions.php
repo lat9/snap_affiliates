@@ -2,7 +2,7 @@
 // -----
 // Part of the SNAP Affiliates plugin for Zen Carts v155 and later.
 //
-// Copyright (c) 2013-2019, Vinos de Frutas Tropicales (lat9)
+// Copyright (c) 2013-2021, Vinos de Frutas Tropicales (lat9)
 // Original: Copyright (c) 2009, Michael Burke (http://www.filterswept.com)
 //
 
@@ -11,12 +11,7 @@
 //
 function snap_is_logged_in()
 {
-    if (function_exists('zen_is_logged_in') && function_exists('zen_in_guest_checkout')) {
-        $is_logged_in = (zen_is_logged_in() && !zen_in_guest_checkout());
-    } else {
-        $is_logged_in = isset($_SESSION['customer_id']);
-    }
-    return $is_logged_in;
+    return (zen_is_logged_in() && !zen_in_guest_checkout());
 }
 
 // -----
@@ -24,9 +19,9 @@ function snap_is_logged_in()
 //
 function snap_get_date_dropdown($prefix, $selected_month, $selected_year)
 {
-    $month_array = array();
+    $month_array = [];
     for ($mon = 1; $mon <= 12; $mon++) {
-        $month_array[] = array('id' => $mon, 'text' => date('F', mktime(0, 0, 0, $mon, 10)));
+        $month_array[] = ['id' => $mon, 'text' => date('F', mktime(0, 0, 0, $mon, 10))];
     }
 
     $today = getdate();
@@ -36,10 +31,10 @@ function snap_get_date_dropdown($prefix, $selected_month, $selected_year)
     }
 
     $min_year = snap_get_min_commission_year($today);
-    $year_array = array();
+    $year_array = [];
     $current_year = $min_year;
     while ($today['year'] >= $current_year) {
-        $year_array[] = array('id' => $current_year, 'text' => $current_year);
+        $year_array[] = ['id' => $current_year, 'text' => $current_year];
         $current_year++;
     }
     $selected_year = (int)$selected_year;
