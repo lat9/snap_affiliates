@@ -544,11 +544,11 @@ if ($mode == '' || $mode == 'summary') {
             <td valign="top" width="25%">
                 <table width="100%" cellspacing="0" cellpadding="2">
                     <tr class="infoBoxHeading"><td class="infoBoxHeading"><?php echo $referrers[$selected]['customers_firstname'] . ' ' . $referrers[$selected]['customers_lastname']; ?></td></tr>
-                    <tr><td class="infoBoxContent"><br /><?php echo LABEL_REFERRER_ID . ' ' . $referrers[$selected]['referrer_key']; ?></td></tr>
+                    <tr><td class="infoBoxContent"><br><?php echo LABEL_REFERRER_ID . ' ' . $referrers[$selected]['referrer_key']; ?></td></tr>
 <?php
     $home_page_link = zen_catalog_href_link(FILENAME_DEFAULT, 'referrer=' . $referrers[$selected]['referrer_key']);
 ?>
-                    <tr><td class="infoBoxContent"><br><?php echo LABEL_HOME_PAGE_LINK . ' '; ?><a href="<?php echo $home_page_link; ?>" target="_blank"><?php echo $home_page_link; ?></a></td></tr>
+                    <tr><td class="infoBoxContent"><br><?php echo LABEL_HOME_PAGE_LINK . ' '; ?><a href="<?php echo $home_page_link; ?>" target="_blank" rel="noopener"><?php echo $home_page_link; ?></a></td></tr>
                     <tr><td class="infoBoxContent"><br><?php echo LABEL_ORDERS_TOTAL . ' ' . $currencies->format($referrers[$selected]['status_breakdown'][0]['total']); ?></td></tr>
                     <tr><td class="infoBoxContent"><br><?php echo LABEL_UNPAID . ' ' . $currencies->format($referrers[$selected]['status_breakdown'][0]['unpaid_commission']); ?></td></tr>
                     <tr><td class="infoBoxContent"><br><?php echo sprintf(LABEL_EMAIL, $referrers[$selected]['customers_email_address']); ?></td></tr>
@@ -563,7 +563,7 @@ if ($mode == '' || $mode == 'summary') {
 <?php
 } elseif ($mode == 'details' || $mode == TEXT_APPROVE || $mode == TEXT_BAN || $mode == TEXT_UNBAN || $mode == TEXT_PAY_SELECTED || $mode == TEXT_UPDATE) {
     $referrer_homepage = $referrers[$selected]['referrer_homepage'];
-    $referrer_homepage = (strpos($referrer_homepage, 'http') === 0) ? $referrer_homepage : ('http://' . $referrer_homepage);
+    $referrer_homepage = (strpos($referrer_homepage, 'http') === 0) ? $referrer_homepage : ('https://' . $referrer_homepage);
 ?>
     <table width="100%">
         <tr><td><h3><?php echo TEXT_REFERRER_INFO; ?></h3></td></tr>
@@ -576,7 +576,7 @@ if ($mode == '' || $mode == 'summary') {
                     </tr>
                     <tr>
                         <td><?php echo HEADING_WEBSITE . ':'; ?></td>
-                        <td><a href="<?php echo $referrer_homepage; ?>" target="_blank"><?php echo $referrers[$selected]['referrer_homepage']; ?></a></td>
+                        <td><a href="<?php echo $referrer_homepage; ?>" target="_blank" rel="noopener noreferrer"><?php echo $referrers[$selected]['referrer_homepage']; ?></a></td>
                     </tr>
                     <tr>
                         <td><?php echo HEADING_EMAIL . ':'; ?></td>
@@ -818,7 +818,7 @@ if ($mode == '' || $mode == 'summary') {
                 </tr>
                 <tr>
                     <td><?php echo HEADING_WEBSITE . ':'; ?></td>
-                    <td><a href="<?php echo 'http://' . $referrers[$selected]['referrer_homepage']; ?>" target="_blank"><?php echo $referrers[$selected]['referrer_homepage']; ?></a></td>
+                    <td><a href="<?php echo 'https://' . $referrers[$selected]['referrer_homepage']; ?>" target="_blank" rel="noopener noreferrer"><?php echo $referrers[$selected]['referrer_homepage']; ?></a></td>
                 </tr>
                 <tr>
                     <td><?php echo HEADING_EMAIL . ':'; ?></td>
