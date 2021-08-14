@@ -3,14 +3,14 @@
 // Part of the SNAP Affiliates plugin for Zen Carts v155 and later.  Note, for versions
 // of SNAP prior to v4.1.0, this processing was provided by /admin/includes/functions/extra_functions/init_referrers.php.
 //
-// Copyright (c) 2013-2020, Vinos de Frutas Tropicales (lat9)
+// Copyright (c) 2013-2021, Vinos de Frutas Tropicales (lat9)
 // Original: Copyright (c) 2009, Michael Burke (http://www.filterswept.com)
 //
 if (!defined('IS_ADMIN_FLAG') || IS_ADMIN_FLAG !== true) {
     die('Illegal Access');
 }
-define('SNAP_MODULE_CURRENT_VERSION', '4.1.4-beta2');
-define('SNAP_MODULE_UPDATE_DATE', '2020-09-16');
+define('SNAP_MODULE_CURRENT_VERSION', '4.2.0-beta1');
+define('SNAP_MODULE_UPDATE_DATE', '2021-08-14');
 
 // -----
 // Wait until an admin is logged in to perform any operations, so that any generated
@@ -25,7 +25,7 @@ if (empty($_SESSION['admin_id'])) {
 //
 $configurationGroupTitle = 'Affiliate Program';
 $currentVersion = SNAP_MODULE_CURRENT_VERSION;
-$currentDescription = SNAP_MODULE_UPDATE_DATE . ', <a href="https://vinosdefrutastropicales.com" target="_blank" rel="noreferrer">Vinos de Frutas Tropicales</a>';
+$currentDescription = SNAP_MODULE_UPDATE_DATE . ', <a href="https://vinosdefrutastropicales.com" target="_blank" rel="noopener noreferrer">Vinos de Frutas Tropicales</a>';
 $configuration = $db->Execute(
     "SELECT configuration_group_id 
        FROM " . TABLE_CONFIGURATION_GROUP . " 

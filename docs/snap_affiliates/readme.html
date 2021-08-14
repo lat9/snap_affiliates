@@ -40,13 +40,14 @@ ul li ul { padding-left: 0; }
 
 <body>
 <a name="top" id="top"></a>
-<h1>Snap Affiliates for Zen Cart 1.5.5a and later</h1>
-<h3>Version 4.1.4 by lat9</h3>
-<p>Copyright &copy; 2013-2020 Vinos de Frutas Tropicales</p>
+<h1>Snap Affiliates for Zen Cart 1.5.7a and later</h1>
+<h3>Version 4.2.0 by lat9</h3>
+<p>Copyright &copy; 2013-2021 Vinos de Frutas Tropicales</p>
 <p>Current support thread at Zen Cart Forums: <a href="https://www.zen-cart.com/showthread.php?206579-Snap-Affiliates-v2-0-for-Zen-Cart-v1-5-0-and-later" target="_blank" rel="noopener">www.zen-cart.com/showthread.php?206579-Snap-Affiliates-v2-0-for-Zen-Cart-v1-5-0-and-later</a>.  This software is provided for your use under the GNU General Public License v2.0.</p>
 
 <h3>Usage Notes</h3>
 <ol>
+  <li>Starting with v4.2.0, this plugin supports <b>only</b> Zen Cart versions 1.5.7a and later; if you are still using an older version of Zen Cart, please use v4.1.3 of this plugin.</li>
   <li>Starting with v4.0.0, this plugin supports <b>only</b> Zen Cart versions 1.5.5a and later; if you are still using an older version of Zen Cart, please use v3.0.4 of this plugin.</li>
   <li>In the United States (and possibly other countries), there are tax implications associated with creating an affiliate program for your website. I am neither a lawyer nor an accountant, but you should perform your own due diligence by performing a web-search for <strong>affiliate marketing 1099</strong>.</li>
 </ol>
@@ -177,7 +178,7 @@ ul li ul { padding-left: 0; }
 <p><strong>Note:</strong> The PayPal payment type is <strong>not</strong> an automatic method of payment!  You'll need to sign into your PayPal account and &quot;Send Money&quot; to each of your referrers who have chosen to be paid via PayPal.</p> 
 
 <h2 id="install">Installation</h2>
-<p>There are <span class="template">template-overrides</span> required by this plugin; you should <strong>always</strong> backup your cart&rsquo;s database and files prior to making any changes.  Unless otherwise noted, Zen Cart 1.5.6c is used as the change-basis for the <span class="template">template-override</span> changes.</p>
+<p>There are <span class="template">template-overrides</span> required by this plugin; you should <strong>always</strong> backup your cart&rsquo;s database and files prior to making any changes.  Unless otherwise noted, Zen Cart 1.5.7c is used as the change-basis for the <span class="template">template-override</span> changes.</p>
 <ol type="A">
   <li>Backup both your Zen Cart installation and database &mdash; this plugin will will modify both.</li>
   <li><strong>Double-check the backup you just created</strong>.  Better safe than sorry!</li>
@@ -187,14 +188,8 @@ ul li ul { padding-left: 0; }
   </ol> and the &quot;YOUR_ADMIN&quot; directory to match your renamed admin folder.</li>
   <li>Your best approach for installing <strong>any</strong> new software is to use a local copy for your testing before deploying the changes to your live store. If you must install this directly on your live store, put your store into Maintenance Mode using your admin's Configuration-&gt;Maintenance Mode-&gt;Down for Maintenance setting, first.  You'll then either copy the files to your local installation or use your FTP/SFTP program to copy the files to your hosted store.</li>
   <li>Check to see if your installation already has the following <span class="template">template-override</span> files.  If a file is not present, copy the file; otherwise, use file-merging software to merge this plugin's changes into your customized file prior to copying:<ol>
-    <li><span class="template">/includes/modules/sideboxes/YOUR_TEMPLATE/information.php</span> <span class="smaller">(This is the zc156c <code>template_default</code> version of the file, with one marked change-section)</span></li>
-    <li><span class="template">/includes/templates/YOUR_TEMPLATE/templates/tpl_account_default.php</span> <span class="smaller">(This is the zc156c <code>template_default</code> version of the file, with one marked change-section)</span></li>
-  </ol></li>
-  <li>If your store runs on a Zen Cart 1.5.5 variant, there are additional files to be copied, all present in the <code>/zc155</code> directory of the plugin's zip-file.  Rename the <code>YOUR_ADMIN</code> sub-directory to match your store's admin-directory name, performing the <span class="corefile">core-file</span> merge.  Copy the <em>contents</em> of the <code>zc155</code> directory, not the directory itself!<ol>
-    <li>/includes/functions/extra_functions/osh_updated_by_functions.php</li>
-    <li><span class="corefile">/YOUR_ADMIN/orders.php</span> <span class="smaller">(This is the zc155f version of the file, with 3 marked change sections adding required notifications)</span></li>
-    <li>/YOUR_ADMIN/includes/functions/extra_functions/osh_updated_by_admin_functions.php</li>
-    <li>/YOUR_ADMIN/includes/languages/english/osh_updated_by.php</li>
+    <li><span class="template">/includes/modules/sideboxes/YOUR_TEMPLATE/information.php</span> <span class="smaller">(This is the zc157c <code>template_default</code> version of the file, with one marked change-section)</span></li>
+    <li><span class="template">/includes/templates/YOUR_TEMPLATE/templates/tpl_account_default.php</span> <span class="smaller">(This is the zc157c <code>template_default</code> version of the file, with one marked change-section)</span></li>
   </ol></li>
   <li>All the remaining files are specific to this plugin and can simply be copied:<ol>
     <li>/images/referrers/index.html</li>
@@ -202,7 +197,7 @@ ul li ul { padding-left: 0; }
     <li>/includes/classes/observers/class.snap_order_observer.php</li>
     <li>/includes/extra_datafiles/snap_file_database_names.php</li>
     <li>/includes/functions/snap_functions.php <span class="smaller">(Added in v4.1.0)</span></li>
-    <li><span class="removed">/includes/functions/extra_functions/osh_updated_by_functions.php</span> <span class="smaller">(v4.1.0 and later, distributed in the <code>zc155</code> sub-directory)</span></li>
+    <li><span class="removed">/includes/functions/extra_functions/osh_updated_by_functions.php</span> <span class="smaller">(v4.1.0 and later, included in the Zen Cart base)</span></li>
     <li>/includes/init_includes/init_snap.php</li>
     <li>/includes/languages/english/extra_definitions/snap_affiliates.php</li>
     <li>/includes/languages/english/html_includes/define_referral_terms.php</li>
@@ -230,18 +225,18 @@ ul li ul { padding-left: 0; }
     <li>/includes/templates/YOUR_TEMPLATE/css/referral_main.css</li>
     <li>/includes/templates/YOUR_TEMPLATE/css/referral_tools.css</li>
     <li>/includes/templates/YOUR_TEMPLATE/css/stylesheet_referrers.css</li>
-    <li><span class="corefile removed">/YOUR_ADMIN/orders.php</span> <span class="smaller">((v4.1.0 and later, distributed in the <code>zc155</code> sub-directory; zc156 includes the required notifications)</span></li>
+    <li><span class="corefile removed">/YOUR_ADMIN/orders.php</span> <span class="smaller">((v4.1.0 and later, included in the Zen Cart base)</span></li>
     <li>/YOUR_ADMIN/referrers.php</li>
     <li>/YOUR_ADMIN/images/icons/cash.jpg <span class="smaller">(No longer used; a font-awesome glyph is used instead)</span></li>
     <li>/YOUR_ADMIN/includes/auto_loaders/config.snap_admin.php <span class="smaller">(Added in v4.0.1)</span></li>
     <li>/YOUR_ADMIN/includes/classes/observers/SnapAdminObserver.php <span class="smaller">(Added in v4.1.0)</span></li>
     <li>/YOUR_ADMIN/includes/extra_datafiles/referrers_filenames.php</li>
     <li><span class="removed">/YOUR_ADMIN/includes/functions/extra_functions/init_referrers.php</span> <span class="smaller">(No longer used, stubbed-out as of v4.0.1)</span></li>
-    <li><span class="removed">/YOUR_ADMIN/includes/functions/extra_functions/osh_updated_by_admin_functions.php</span> <span class="smaller">(v4.1.0 and later, distributed in the <code>zc155</code> sub-directory)</span></li>
+    <li><span class="removed">/YOUR_ADMIN/includes/functions/extra_functions/osh_updated_by_admin_functions.php</span> <span class="smaller">(v4.1.0 and later, included in the Zen Cart base)</span></li>
     <li>/YOUR_ADMIN/includes/functions/extra_functions/referrers_functions.php</li>
     <li>/YOUR_ADMIN/includes/init_includes/init_snap_admin.php <span class="smaller">(Added in v4.0.1)</span></li>
     <li>/YOUR_ADMIN/includes/languages/english/referrers.php</li>
-    <li><span class="removed">/YOUR_ADMIN/includes/languages/english/osh_updated_by.php</span> <span class="smaller">(v4.1.0 and later, distributed in the <code>zc155</code> sub-directory)</span></li>
+    <li><span class="removed">/YOUR_ADMIN/includes/languages/english/osh_updated_by.php</span> <span class="smaller">(v4.1.0 and later, included in the Zen Cart base)</span></li>
     <li>/YOUR_ADMIN/includes/languages/english/extra_definitions/referrers_info.php</li>
     <li>/YOUR_ADMIN/includes/languages/english/extra_definitions/referrers_name.php</li>
   </ol></li>
@@ -250,15 +245,17 @@ ul li ul { padding-left: 0; }
 </ol>
 
 <h2>Version History:</h2>
-<p>This plugin is based on v1.0.2.1 of the <a href="https://www.zen-cart.com/downloads.php?do=file&amp;id=898"><em>Snap Affiliates</em></a> add-on developed for the 1.3.x versions of Zen Cart&reg;, but this version (v4.0.0 and later) has been modified for zc1.5.5 and later <em>only</em>.</p>
+<p>This plugin is based on v1.0.2.1 of the <a href="https://www.zen-cart.com/downloads.php?do=file&amp;id=898"><em>Snap Affiliates</em></a> add-on developed for the 1.3.x versions of Zen Cart&reg;, but this version (v4.2.0 and later) has been modified for zc157a and later <em>only</em>.</p>
 <ul>
-  <li>v4.1.4-beta2, 2020-09-16:<ul>
+  <li>v4.2.0-beta1, 2021-08-14:<ul>
+    <li>CHANGE: Dropping support for Zen Cart versions prior to zc157a; template-overrides now use zc157c as the change-basis.</li>
     <li>BUGFIX: Can't pay affiliates via admin-tool if one or more orders' <code>date_purchased</code> is <code>NULL</code>.</li>
     <li>BUGFIX: Create the affiliate-cookie using &quot;samesite=lax&quot;.</li>
-    <li>The following files were changed:<ol>
+    <li>The following files were changed or <span class="removed">removed</span>:<ol>
       <li>/includes/init_includes/init_snap.php</li>
       <li>/YOUR_ADMIN/referrers.php</li>
       <li>/YOUR_ADMIN/includes/init_includes/init_snap_admin.php</li>
+      <li><span class="removed">/zc155/*.**</span></li>
     </ol></li>
   </ul></li>
   <li>v4.1.3, 2020-07-11:<ul>
