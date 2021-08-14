@@ -2,7 +2,7 @@
 // +----------------------------------------------------------------------+
 // | Snap Affiliates for Zen Cart v1.5.0+                                 |
 // +----------------------------------------------------------------------+
-// | Copyright (c) 2013-2015, Vinos de Frutas Tropicales (lat9)           |
+// | Copyright (c) 2013-2021, Vinos de Frutas Tropicales (lat9)           |
 // |                                                                      |
 // | Original: Copyright (c) 2009 Michael Burke                           |
 // | http://www.filterswept.com                                           |
@@ -30,6 +30,7 @@ define('HEADING_PAYMENT_TYPE', 'Payment Type');
   define('PAYMENT_TYPE_PAYPAL', 'PayPal');
     define('PAYMENT_TYPE_PAYPAL_DETAILS', 'PayPal Account Email:');
   define('PAYMENT_TYPE_UNKNOWN', 'Unknown');
+define('HEADING_ACTION', 'Action');
 
 define('LABEL_REFERRER_ID', 'Referrer ID:');
 define('LABEL_HOME_PAGE_LINK', 'Home-page Link:');

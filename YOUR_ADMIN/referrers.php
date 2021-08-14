@@ -30,19 +30,19 @@ if ($snap_page < 1) {
 // -----
 // Create the array of available commission-payment types.
 //
-$payment_types = array( 
-    'CM' => array( 
+$payment_types = [ 
+    'CM' => [
         'text' => PAYMENT_TYPE_CHECK_MONEYORDER, 
         'text_details' => '', 
         'payment_details' => '' 
-    ) 
-);
+    ] 
+];
 if (SNAP_ENABLE_PAYMENT_CHOICE_PAYPAL == 'Yes') {
-    $payment_types['PP'] = array( 
+    $payment_types['PP'] = [ 
         'text' => PAYMENT_TYPE_PAYPAL, 
         'text_details' => PAYMENT_TYPE_PAYPAL_DETAILS, 
         'payment_details' => '' 
-    );
+    ];
 }
 $zco_notifier->notify('SNAP_GET_PAYMENT_TYPE_DESCRIPTION');
 
@@ -106,9 +106,9 @@ $end_timestamp = $activity_end->getTimestamp();
 if (!defined('SNAP_ORDER_STATUS_EXCLUSIONS')) define('SNAP_ORDER_STATUS_EXCLUSIONS', '');
 if (!defined('SNAP_AFFILIATE_COMBINE_EXCLUSIONS')) define('SNAP_AFFILIATE_COMBINE_EXCLUSIONS', 'No');
 
-$orders_by_status = array();
-$orders_status_names = array();
-$order_status_exclusions = array();
+$orders_by_status = [];
+$orders_status_names = [];
+$order_status_exclusions = [];
 if (SNAP_ORDER_STATUS_EXCLUSIONS != '') {
     $order_status_exclusions = explode(',', str_replace(' ', '', SNAP_ORDER_STATUS_EXCLUSIONS));  
     for ($i = 0, $n = count($order_status_exclusions); $i < $n; $i++) {
@@ -122,29 +122,29 @@ if (SNAP_ORDER_STATUS_EXCLUSIONS != '') {
                   LIMIT 1"
             );
             if (!$result->EOF) {
-                $orders_by_status[$current_order_status] = array( 
+                $orders_by_status[$current_order_status] = [ 
                     'total' => 0, 
                     'commission_total' => 0, 
                     'unpaid_commission' => 0 
-                );
+                ];
                 $orders_status_names[$current_order_status] = ' (' . $result->fields['orders_status_name'] . ')';
             }
         }
     }
     if (SNAP_AFFILIATE_COMBINE_EXCLUSIONS == 'Yes') {
-        $orders_by_status['*'] = array(
+        $orders_by_status['*'] = [
             'total' => 0, 
             'commission_total' => 0, 
             'unpaid_commission' => 0 
-        );
+        ];
         $orders_status_names['*'] = TEXT_NONCOMMISSIONABLE;
     }
 }
-$orders_by_status[0] = array( 
+$orders_by_status[0] = [ 
     'total' => 0, 
     'commission_total' => 0, 
     'unpaid_commission' => 0 
-);
+];
 $orders_status_names[0] = '';
 
 // -----
@@ -157,7 +157,7 @@ if (SNAP_ORDER_TOTALS_EXCLUSIONS != '') {
     $exclude_array = explode(',', str_replace(' ', '', SNAP_ORDER_TOTALS_EXCLUSIONS));
     $totals_exclude_clause = " AND t.class IN ('" . implode("', '", $exclude_array) . "')";
 }
-  
+
 // -----
 // Gather the (possibly paged) list of current affiliates.
 //
@@ -173,7 +173,7 @@ if ($mode == '') {
     $referrer_split = new splitPageResults($snap_page, SNAP_MAX_REFERRER_DISPLAY, $query, $referrer_query_numrows);
 }          
 $results = $db->Execute($query);
-$referrers = array();
+$referrers = [];
 
 // -----
 // Loop through each of the current referrers ...
@@ -186,7 +186,7 @@ while (!$results->EOF) {
     if ($selectedID == $referrers[$idx]['customers_id']) {
         $selected = $idx;
     }
-    
+
     $orderResults = $db->Execute(
         "SELECT o.orders_id, o.date_purchased, o.order_total, o.orders_status, c.*
            FROM " . TABLE_ORDERS . " o
@@ -195,7 +195,7 @@ while (!$results->EOF) {
           WHERE c.commission_referrer_key = '" . $referrers[$idx]['referrer_key'] . "'
           ORDER BY o.orders_id ASC"
     );
-    $orders = array();
+    $orders = [];
 
     // -----
     // ... processing each of the referrer's orders' information.
@@ -229,7 +229,7 @@ while (!$results->EOF) {
         if ($total < 0) {
             $total = 0;
         }
-        
+
         $purchase_date = new DateTime($orderResults->fields['date_purchased']);
         $purchase_date_timestamp = $purchase_date->getTimestamp();
         if ($begin_timestamp <= $purchase_date_timestamp && $purchase_date_timestamp <= $end_timestamp) {
@@ -309,19 +309,19 @@ switch ($mode) {
             $pay_message = ERROR_CHOOSE_COMMISSION_TO_PAY;
             $mode = TEXT_PAY;
         } else {
-            $commissions = array();
+            $commissions = [];
             foreach ($_POST['payList'] as $commission_id => $value) {
                 if (!isset($_POST['commission'][$commission_id]) || (float)$_POST['commission'][$commission_id] <= 0) {
                     $pay_message = ERROR_COMMISSION_CANT_BE_ZERO;
                     $mode = TEXT_PAY;
                 } else {
-                    $commissions[$commission_id] = array( 
+                    $commissions[$commission_id] = [ 
                         'calculated' => $_POST['calculated'][$commission_id], 
                         'paid' => $_POST['commission'][$commission_id] 
-                    );
+                    ];
                 }
             }
-              
+
             if (isset($payment_types[$_POST['commission_payment_type']])) {
                 $commission_payment_type = $_POST['commission_payment_type'];
                 $commission_payment_type_name = $payment_types[$commission_payment_type]['text'];
@@ -332,7 +332,7 @@ switch ($mode) {
                 $commission_payment_type_detail = '';
             }
             $commission_payment_type_message = $commission_payment_type_name . (($commission_payment_type_detail == '') ? '' : (' (' . $commission_payment_type_detail . ')'));
-          
+
             $now = date("Y-m-d H:i:s");
             $total_paid = 0;
             $commission_payment_type_detail_input = zen_sanitize_string($db->prepare_input($commission_payment_type_detail));
@@ -351,7 +351,7 @@ switch ($mode) {
                 foreach ($referrers[$selected]['orders'] as $current_order) {
                     if ($current_order['commission_id'] == $commission_id) {
                         $total_paid += $commission['paid'];
-                
+
                         // -----
                         // Add a comment to the order's status-history table (hidden from the customer) to identify that the commission payment was made.
                         // The order's current status is unchanged.
@@ -368,7 +368,7 @@ switch ($mode) {
                 $total_paid_formatted = $currencies->format($total_paid);
                 //-bof-20150304-lat9-Enable alternate payment method handlers.  Check/money-order is the default.
                 $snap_payment_email_handled = false;
-                $zco_notifier->notify('SNAP_CHECK_ALTERNATE_PAYMENT', array('total_paid' => $total_paid, 'total_paid_formatted' => $total_paid_formatted, 'referrer' => $referrers[$selected]));
+                $zco_notifier->notify('SNAP_CHECK_ALTERNATE_PAYMENT', ['total_paid' => $total_paid, 'total_paid_formatted' => $total_paid_formatted, 'referrer' => $referrers[$selected]]);
                 if (!$snap_payment_email_handled) {
                     snap_send_notification_email (
                         $referrers[$selected], 
@@ -381,7 +381,7 @@ switch ($mode) {
             }
         }
         break;
-    
+
     case TEXT_UPDATE:
         if (!is_numeric($_POST['commission']) || ((int)$_POST['commission'] < 0) || ((int)$_POST['commission'] > 100)) {
             $messageStack->add(ERROR_INVALID_PERCENTAGE, 'error');
@@ -396,7 +396,7 @@ switch ($mode) {
             $referrers[$selected]['referrer_commission'] = $commission;
         }
         break;
-    
+
     case TEXT_UPDATE_PAYMENT_TYPE:
         $error = false;
         if (isset($payment_types[$_POST['referrer_payment_type']]) && $payment_types[$_POST['referrer_payment_type']]['text_details'] != '') {
@@ -405,7 +405,7 @@ switch ($mode) {
                 $mode = 'details';
                 $messageStack->add(sprintf(ERROR_PAYMENT_DETAILS_MISSING, $payment_types[$_POST['referrer_payment_type']]['text_details']), 'error');
                 $error = true;
-            }      
+            }
         } else {
             $payment_details = '';
         }
@@ -442,18 +442,12 @@ switch ($mode) {
 .history tr:hover {
     background-color: #e0e0e0;
 }
-.h-r { 
-    text-align: right; 
-}
 .historyFooter td { 
     border-top: 1px solid grey; 
     font-weight: bold; 
 }
 .noInput { 
     padding: 2px 0; 
-}
-.center { 
-    text-align: center; 
 }
 .error { 
     border: 1px dashed red; 
@@ -502,15 +496,16 @@ if ($mode == '' || $mode == 'summary') {
             <td valign="top" width="75%">
                 <table class="table">
                     <tr class="dataTableHeadingRow">
-                        <td class="dataTableHeadingContent"><?php echo HEADING_LAST_NAME; ?></td>
-                        <td class="dataTableHeadingContent"><?php echo HEADING_FIRST_NAME; ?></td>
-                        <td class="dataTableHeadingContent"><?php echo HEADING_EMAIL_ADDRESS; ?></td>
-                        <td class="dataTableHeadingContent"><?php echo HEADING_WEBSITE; ?></td>
-                        <td class="dataTableHeadingContent"><?php echo HEADING_APPROVED; ?></td>
-                        <td class="dataTableHeadingContent"><?php echo HEADING_BANNED; ?></td>
-                        <td class="dataTableHeadingContent"><?php echo HEADING_UNPAID_TOTAL; ?></td>
-                        <td class="dataTableHeadingContent"><?php echo HEADING_COMMISSION_RATE; ?></td>
-                        <td class="dataTableHeadingContent"><?php echo HEADING_PAYMENT_TYPE; ?></td>
+                        <th class="dataTableHeadingContent"><?php echo HEADING_LAST_NAME; ?></th>
+                        <th class="dataTableHeadingContent"><?php echo HEADING_FIRST_NAME; ?></th>
+                        <th class="dataTableHeadingContent"><?php echo HEADING_EMAIL_ADDRESS; ?></th>
+                        <th class="dataTableHeadingContent"><?php echo HEADING_WEBSITE; ?></th>
+                        <th class="dataTableHeadingContent"><?php echo HEADING_APPROVED; ?></th>
+                        <th class="dataTableHeadingContent"><?php echo HEADING_BANNED; ?></th>
+                        <th class="dataTableHeadingContent"><?php echo HEADING_UNPAID_TOTAL; ?></th>
+                        <th class="dataTableHeadingContent"><?php echo HEADING_COMMISSION_RATE; ?></th>
+                        <th class="dataTableHeadingContent"><?php echo HEADING_PAYMENT_TYPE; ?></th>
+                        <th class="dataTableHeadingContent text-right"><?php echo HEADING_ACTION; ?></th>
                     </tr>
 <?php
     foreach ($referrers as $referrer) {
@@ -526,13 +521,22 @@ if ($mode == '' || $mode == 'summary') {
                         <td class="dataTableContent"><?php echo $currencies->format($referrer['status_breakdown'][0]['unpaid_commission']); ?></td>
                         <td class="dataTableContent"><?php echo $referrer['referrer_commission'] * 100 . '%'; ?></td>
                         <td class="dataTableContent"><?php echo $payment_types[$referrer['referrer_payment_type']]['text']; ?></td>
+                        <td class="dataTableContent text-right">
+<?php 
+        if ($current_selection) {
+            echo zen_image(DIR_WS_IMAGES . 'icon_arrow_right.gif', '');
+        } else {
+            echo '<a href="' . zen_href_link(FILENAME_REFERRERS, 'referrer=' . $referrer['customers_id'] . '&page=' . $snap_page, 'NONSSL') . '">' . zen_image(DIR_WS_IMAGES . 'icon_info.gif', IMAGE_ICON_INFO) . '</a>'; 
+        }
+?>
+                        </td>
                     </tr>
 <?php
     }
 ?>
                     <tr>
                         <td colspan="4" class="smallText" valign="top"><?php echo $referrer_split->display_count($referrer_query_numrows, SNAP_MAX_REFERRER_DISPLAY, $snap_page, TEXT_DISPLAY_SPLIT); ?></td>
-                        <td colspan="5" class="smallText h-r"><?php echo $referrer_split->display_links($referrer_query_numrows, SNAP_MAX_REFERRER_DISPLAY, MAX_DISPLAY_PAGE_LINKS, $snap_page); ?></td>
+                        <td colspan="5" class="smallText text-right"><?php echo $referrer_split->display_links($referrer_query_numrows, SNAP_MAX_REFERRER_DISPLAY, MAX_DISPLAY_PAGE_LINKS, $snap_page); ?></td>
                     </tr>
                 </table>
             </td>
@@ -551,7 +555,7 @@ if ($mode == '' || $mode == 'summary') {
                     <tr><td class="infoBoxContent"><br><?php echo sprintf(LABEL_WEBSITE, $referrers[$selected]['referrer_homepage']); ?></td></tr>
                     <tr><td class="infoBoxContent"><br><?php echo LABEL_PHONE . ' ' . $referrers[$selected]['customers_telephone']; ?></td></tr>
                     <tr><td class="infoBoxContent"><br><?php echo LABEL_PAYMENT_TYPE . ' ' . $payment_types[$referrers[$selected]['referrer_payment_type']]['text'] . (($referrers[$selected]['referrer_payment_type_detail'] == '') ? '' : (' (' . $referrers[$selected]['referrer_payment_type_detail'] . ')')); ?></td></tr>
-                    <tr><td class="infoBoxContent center"><?php echo ($referrercount > 0) ? snap_button_link(zen_href_link(FILENAME_REFERRERS, 'referrer=' . $referrers[$selected]['customers_id'] . "&amp;mode=details&amp;page=$snap_page", 'NONSSL'), IMAGE_DETAILS, 'button_details.gif') : '&nbsp;'; ?></td></tr>
+                    <tr><td class="infoBoxContent text-center"><?php echo ($referrercount > 0) ? snap_button_link(zen_href_link(FILENAME_REFERRERS, 'referrer=' . $referrers[$selected]['customers_id'] . "&amp;mode=details&amp;page=$snap_page", 'NONSSL'), IMAGE_DETAILS, 'button_details.gif') : '&nbsp;'; ?></td></tr>
                 </table>
             </td>
         </tr>
@@ -633,12 +637,12 @@ if ($mode == '' || $mode == 'summary') {
                    <tr>
                         <td valign="top"><?php echo LABEL_PAYMENT_TYPE; ?></td>
 <?php
-    $payment_type_selections = array();
+    $payment_type_selections = [];
     foreach ($payment_types as $type_id => $type_info) {
-        $payment_type_selections[] = array( 
+        $payment_type_selections[] = [ 
             'id' => $type_id, 
             'text' => $type_info['text'] 
-        );
+        ];
     }
     $referrer_payment_type = (isset($_POST['referrer_payment_type'])) ? $_POST['referrer_payment_type'] : $referrers[$selected]['referrer_payment_type'];
     $referrer_payment_type_detail = (isset($_POST['referrer_payment_type_detail'])) ? $_POST['referrer_payment_type_detail'] : $referrers[$selected]['referrer_payment_type_detail'];
@@ -663,7 +667,7 @@ if ($mode == '' || $mode == 'summary') {
                 <table class="table">
                     <tr>
                         <td><h3><?php echo TEXT_ORDER_HISTORY; ?></h3></td>
-                        <td align="right"><?php echo TEXT_FROM . snap_admin_get_date_dropdown('start', $start_mon, $start_year, $referrers[$selected]['customers_id']) . TEXT_TO . snap_admin_get_date_dropdown('end', $end_mon, $end_year, $referrers[$selected]['customers_id']) . '&nbsp;&nbsp;' . snap_submit_button('choose', TEXT_CHOOSE); ?></td>
+                        <td class="text-right"><?php echo TEXT_FROM . snap_admin_get_date_dropdown('start', $start_mon, $start_year, $referrers[$selected]['customers_id']) . TEXT_TO . snap_admin_get_date_dropdown('end', $end_mon, $end_year, $referrers[$selected]['customers_id']) . '&nbsp;&nbsp;' . snap_submit_button('choose', TEXT_CHOOSE); ?></td>
                     </tr>
                 </table></form>
             </td>
@@ -736,7 +740,7 @@ if ($mode == '' || $mode == 'summary') {
                 }
             }
             $current_total = ($current_orders_status === $orders_status) ? $total : 0;
-          
+
             if ($status_name == '' && $order['ispaid'] && $order['commission_paid_amount'] != 0) {
                 $commission_value = $order['commission_paid_amount'];
             } else {
@@ -770,7 +774,7 @@ if ($mode == '' || $mode == 'summary') {
 
 ?>
                     <tr class="historyFooter">
-                        <td class="h-r" colspan="2"><?php echo HEADING_TOTALS; ?></td>
+                        <td class="text-right" colspan="2"><?php echo HEADING_TOTALS; ?></td>
 <?php
     foreach ($referrers[$selected]['status_breakdown'] as $order_status => $current_totals) {
       if (SNAP_AFFILIATE_COMBINE_EXCLUSIONS == 'Yes' && $order_status !== 0 && $order_status != '*') {
@@ -798,7 +802,7 @@ if ($mode == '' || $mode == 'summary') {
             </td>
         </tr>
         <tr>
-            <td class="h-r"><?php echo snap_button_link(zen_href_link(FILENAME_REFERRERS, 'referrer=' . $referrers[$selected]['customers_id'] . "&amp;page=$snap_page", 'NONSSL'), IMAGE_CANCEL, 'button_cancel.gif'); ?></td>
+            <td class="text-right"><?php echo snap_button_link(zen_href_link(FILENAME_REFERRERS, 'referrer=' . $referrers[$selected]['customers_id'] . "&amp;page=$snap_page", 'NONSSL'), IMAGE_CANCEL, 'button_cancel.gif'); ?></td>
         </tr>
     </table>
 <?php
@@ -877,7 +881,7 @@ if ($mode == '' || $mode == 'summary') {
     }
 ?>
                     <tr>
-                        <td colspan="7" class="h-r"><?php echo snap_submit_button('mode', TEXT_PAY_SELECTED, 'btn-warning'); ?></td>
+                        <td colspan="7" class="text-right"><?php echo snap_submit_button('mode', TEXT_PAY_SELECTED, 'btn-warning'); ?></td>
                     </tr>
                 </table></form>
             </td>
