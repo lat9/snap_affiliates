@@ -251,6 +251,7 @@ ul li ul { padding-left: 0; }
     <li>CHANGE: Dropping support for Zen Cart versions prior to zc157a; template-overrides now use zc157c as the change-basis.</li>
     <li>BUGFIX: Can't pay affiliates via admin-tool if one or more orders' <code>date_purchased</code> is <code>NULL</code>.</li>
     <li>BUGFIX: Create the affiliate-cookie using &quot;samesite=lax&quot;.</li>
+    <li>BUGFIX: Don't offer to pay commissions on orders with excluded statuses.</li>
     <li>The following files were changed or <span class="removed">removed</span>:<ol>
         <li>/includes/functions/snap_functions.php</li>
         <li>/includes/init_includes/init_snap.php</li>

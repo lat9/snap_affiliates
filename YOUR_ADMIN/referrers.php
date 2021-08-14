@@ -1,8 +1,8 @@
 <?php
 // -----
-// Part of the SNAP Affiliates plugin for Zen Carts v155 and later.
+// Part of the SNAP Affiliates plugin for Zen Carts v157a and later.
 //
-// Copyright (c) 2013-2020, Vinos de Frutas Tropicales (lat9)
+// Copyright (c) 2013-2021, Vinos de Frutas Tropicales (lat9)
 // Original: Copyright (c) 2009, Michael Burke (http://www.filterswept.com)
 //
 require 'includes/application_top.php';
@@ -856,7 +856,7 @@ if ($mode == '' || $mode == 'summary') {
 <?php
     $customers_id = $referrers[$selected]['customers_id'];
     foreach ($referrers[$selected]['orders'] as $order) {
-        if (!$order['ispaid']) {
+        if (!$order['ispaid'] && !in_array($order['orders_status'], $order_status_exclusions) && $order['order_total'] > 0) {
             $commission_id = $order['commission_id'];
             $commissionable_total = $order['order_total'] - $order['value'];
             $commission = number_format($commissionable_total * $order['commission_rate'], $currencies->get_decimal_places(DEFAULT_CURRENCY));
